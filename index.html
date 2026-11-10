@@ -20,8 +20,7 @@
   <link rel="preload" href="assets/fonts/Lalezar-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Lalezar&family=Montserrat:wght@500;700;800;900&display=swap"
+  <link href="https://fonts.googleapis.com/css2?family=Lalezar&family=Montserrat:wght@500;700;800;900&display=swap"
     rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
@@ -67,7 +66,7 @@
         <div class="board-header">
           <div class="week-nav">
             <button id="btnCurrentWeek" class="btn-rpg btn-rpg-blue btn-today-pill"
-              title="Voltar para semana atual">Hoje</button>
+              title="Voltar para semana atual"><span class="btn-text">Hoje</span></button>
             <select id="selectRecordedWeeks" class="rpg-select recorded-weeks-select"
               title="Selecionar semana"></select>
           </div>
@@ -95,13 +94,15 @@
     <footer class="app-footer">
       <span>Controle de Ponto Pessoal • Salvo automaticamente no seu dispositivo</span>
       <div class="footer-actions">
-        <button id="btnInstallApp" class="btn-rpg btn-rpg-green" style="display: none;" title="Instalar aplicativo no celular">
+        <button id="btnInstallApp" class="btn-rpg btn-rpg-green" style="display: none;"
+          title="Instalar aplicativo no celular">
           <img src="assets/icon-install.png" class="btn-rpg-icon" alt="">
-          <span>Instalar App</span>
+          <span class="btn-text">Instalar App</span>
         </button>
-        <button id="btnForceAppUpdate" class="btn-rpg btn-rpg-blue" title="Recarregar e baixar a versão mais recente do aplicativo">
+        <button id="btnForceAppUpdate" class="btn-rpg btn-rpg-blue"
+          title="Recarregar e baixar a versão mais recente do aplicativo">
           <img src="assets/icon-reload.png" class="btn-rpg-icon" alt="">
-          <span>Atualizar App</span>
+          <span class="btn-text">Atualizar App</span>
         </button>
       </div>
     </footer>
@@ -126,8 +127,10 @@
             </select>
           </div>
           <div class="toolbar-actions">
-            <button id="btnExportLogsCsv" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-download.png" class="btn-rpg-icon" alt=""> Baixar CSV</button>
-            <button id="btnClearLogs" class="btn-rpg btn-rpg-red btn-sm"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Limpar logs</button>
+            <button id="btnExportLogsCsv" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-download.png"
+                class="btn-rpg-icon" alt=""> Baixar CSV</button>
+            <button id="btnClearLogs" class="btn-rpg btn-rpg-red btn-sm"><img src="assets/icon-trash.png"
+                class="btn-rpg-icon" alt=""> Limpar logs</button>
           </div>
         </div>
         <div class="log-table-wrapper">
@@ -165,21 +168,26 @@
 
         <!-- Redirecionamento Contínuo para Sistema Oficial -->
         <div class="settings-redirect-section">
-          <label for="inputExternalPunchUrl" style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; gap: 6px;">
+          <label for="inputExternalPunchUrl"
+            style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; gap: 6px;">
             🔗 Link do Sistema Oficial de Ponto (opcional)
           </label>
           <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
-            Ao bater um ponto (pelo botão principal ou no quadro), este link será aberto automaticamente em uma nova aba para você registrar o ponto na sua empresa.
+            Ao bater um ponto (pelo botão principal ou no quadro), este link será aberto automaticamente em uma nova aba
+            para você registrar o ponto na sua empresa.
           </p>
-          <input type="url" id="inputExternalPunchUrl" class="schedule-input" style="width: 100%; margin-top: 6px;" placeholder="Ex: https://app.pontomais.com.br">
+          <input type="url" id="inputExternalPunchUrl" class="schedule-input" style="width: 100%; margin-top: 6px;"
+            placeholder="Ex: https://app.pontomais.com.br">
         </div>
 
         <div id="scheduleConfigForm" class="schedule-form">
           <!-- Gerado via JS para cada dia -->
         </div>
         <div class="settings-actions">
-          <button id="btnSaveSettings" class="btn-rpg btn-rpg-green"><img src="assets/icon-save.png" class="btn-rpg-icon" alt=""> Salvar Horários</button>
-          <button id="btnResetSettings" class="btn-rpg btn-rpg-blue"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Restaurar Padrão</button>
+          <button id="btnSaveSettings" class="btn-rpg btn-rpg-green"><img src="assets/icon-save.png"
+              class="btn-rpg-icon" alt=""> Salvar Horários</button>
+          <button id="btnResetSettings" class="btn-rpg btn-rpg-blue"><img src="assets/icon-trash.png"
+              class="btn-rpg-icon" alt=""> Restaurar Padrão</button>
         </div>
       </div>
     </div>
@@ -202,8 +210,10 @@
         <div class="backup-section">
           <h4>Exportar Dados</h4>
           <div class="btn-group">
-            <button id="btnDownloadBackup" class="btn-rpg btn-rpg-green"><img src="assets/icon-download.png" class="btn-rpg-icon" alt=""> Baixar Arquivo JSON</button>
-            <button id="btnCopyBackup" class="btn-rpg btn-rpg-blue"><img src="assets/icon-copy.png" class="btn-rpg-icon" alt=""> Copiar Dados</button>
+            <button id="btnDownloadBackup" class="btn-rpg btn-rpg-green"><img src="assets/icon-download.png"
+                class="btn-rpg-icon" alt=""> Baixar Arquivo JSON</button>
+            <button id="btnCopyBackup" class="btn-rpg btn-rpg-blue"><img src="assets/icon-copy.png" class="btn-rpg-icon"
+                alt=""> Copiar Dados</button>
           </div>
         </div>
 
@@ -211,7 +221,8 @@
           <h4>Importar Dados</h4>
           <input type="file" id="fileImportBackup" accept=".json" style="display: none;">
           <div class="btn-group">
-            <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue"><img src="assets/icon-folder.png" class="btn-rpg-icon" alt=""> Selecionar Arquivo JSON</button>
+            <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue"><img src="assets/icon-folder.png"
+                class="btn-rpg-icon" alt=""> Selecionar Arquivo JSON</button>
           </div>
           <textarea id="importTextarea"
             placeholder="Ou cole aqui os dados em formato JSON para restaurar..."></textarea>
@@ -220,7 +231,8 @@
 
         <div class="backup-section danger-zone">
           <h4>Zona de Perigo</h4>
-          <button id="btnResetAllData" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Limpar Todos os Dados e Registros</button>
+          <button id="btnResetAllData" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png" class="btn-rpg-icon"
+              alt=""> Limpar Todos os Dados e Registros</button>
         </div>
       </div>
     </div>
@@ -242,13 +254,15 @@
             registrado:</label>
           <div style="display: flex; gap: 8px; margin-top: 6px;">
             <input type="time" id="inputEditTime" class="schedule-input" style="flex: 1;">
-            <button id="btnSaveEditedTime" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-save.png" class="btn-rpg-icon" alt=""> Salvar Horário</button>
+            <button id="btnSaveEditedTime" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-save.png"
+                class="btn-rpg-icon" alt=""> Salvar Horário</button>
           </div>
         </div>
 
         <div class="btn-group modal-actions"
           style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
-          <button id="btnConfirmUnmark" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Desmarcar Ponto</button>
+          <button id="btnConfirmUnmark" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png"
+              class="btn-rpg-icon" alt=""> Desmarcar Ponto</button>
           <button class="btn-rpg btn-rpg-blue" data-close="modalConfirmUnmark">Fechar</button>
         </div>
       </div>

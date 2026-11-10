@@ -1129,15 +1129,7 @@ button {
 /* ==========================================================================
    Responsividade Mobile
    ========================================================================== */
-
-@media (max-width: 680px) {
-  body {
-    padding: 6px;
-  }
-
-  .app-wrapper {
-    gap: 10px;
-  }
+@media (max-width: 768px) {
 
   /* Barra Superior em 2 Linhas no Celular */
   .top-nav {
@@ -1146,27 +1138,23 @@ button {
     gap: 8px;
   }
 
-  .brand {
-    width: 100%;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .nav-logo {
-    width: 28px;
-    height: 28px;
+  #btnQuickPunch {
+    flex: 1;
+    min-width: 110px;
+    padding: 0 12px;
+    height: 38px;
   }
 
   .nav-title {
     font-size: 1.15rem;
-    font-weight: normal;
+    width: 100%;
+    font-weight: 300;
   }
 
-  .live-clock {
-    font-size: 0.95rem;
-    font-weight: normal;
-    padding: 3px 8px;
-    margin-left: auto;
+  .brand {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
   }
 
   .nav-actions {
@@ -1177,17 +1165,35 @@ button {
     gap: 6px;
   }
 
+}
+
+@media (max-width: 680px) {
+  body {
+    padding: 6px;
+  }
+
+  .app-wrapper {
+    gap: 10px;
+  }
+
+
+  .nav-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .live-clock {
+    font-size: 0.95rem;
+    font-weight: normal;
+    padding: 3px 8px;
+    margin-left: auto;
+  }
+
+
+
   /* Garante o texto do botão BATER PONTO SEMPRE VISÍVEL no mobile */
   .btn-text {
     display: inline !important;
-    font-size: 0.78rem;
-  }
-
-  #btnQuickPunch {
-    flex: 1;
-    min-width: 110px;
-    padding: 0 12px;
-    height: 38px;
   }
 
   /* Ícones visíveis, ajustados e confortáveis para o toque */
