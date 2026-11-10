@@ -30,7 +30,8 @@ const IMAGES = {
 const STORAGE_KEYS = {
   schedule: 'ponto_schedule_v1',
   records: 'ponto_records_v1',
-  logs: 'ponto_logs_v1'
+  logs: 'ponto_logs_v1',
+  sound: 'ponto_sound_v1'
 };
 
 // ==========================================
@@ -40,6 +41,7 @@ const STORAGE_KEYS = {
 let schedule = loadSchedule();
 let records = loadRecords();
 let logs = loadLogs();
+let soundEnabled = loadSoundSetting();
 let currentViewingDate = new Date();
 let pendingUnmark = null;
 
@@ -54,9 +56,75 @@ document.addEventListener('DOMContentLoaded', () => {
   setupSettings();
   setupBackup();
   setupLogs();
+  setupLiveClockAndSound();
+  setupEditTime();
   renderBoard();
   registerServiceWorker();
 });
+
+function loadSoundSetting() {
+  const saved = localStorage.getItem(STORAGE_KEYS.sound);
+  return saved === null ? true : saved === 'true';
+}
+
+function saveSoundSetting(val) {
+  soundEnabled = val;
+  localStorage.setItem(STORAGE_KEYS.sound, String(val));
+}
+
+function setupLiveClockAndSound() {
+  // Relógio em tempo real
+  const clockElem = document.getElementById('liveClock');
+  function tick() {
+    if (clockElem) {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+      clockElem.textContent = `${h}:${m}:${s}`;
+    }
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // Botão de som
+  const btnSound = document.getElementById('btnToggleSound');
+  const iconSound = document.getElementById('soundIcon');
+  if (btnSound && iconSound) {
+    iconSound.textContent = soundEnabled ? '🔊' : '🔇';
+    btnSound.addEventListener('click', () => {
+      saveSoundSetting(!soundEnabled);
+      iconSound.textContent = soundEnabled ? '🔊' : '🔇';
+      showToast(soundEnabled ? 'Sons ativados 🔊' : 'Sons silenciados 🔇');
+    });
+  }
+}
+
+function setupEditTime() {
+  const btnSave = document.getElementById('btnSaveEditedTime');
+  const inputTime = document.getElementById('inputEditTime');
+  if (btnSave && inputTime) {
+    btnSave.addEventListener('click', () => {
+      if (!pendingUnmark) return;
+      const newTime = inputTime.value;
+      if (!newTime) {
+        alert('Por favor informe um horário válido.');
+        return;
+      }
+
+      const { dateKey, dayLabel, slotTime } = pendingUnmark;
+      if (records[dateKey] && records[dateKey][slotTime]) {
+        records[dateKey][slotTime].markedAt = newTime;
+        saveRecords();
+        addLog('ajustado', dateKey, dayLabel, slotTime, newTime);
+        showToast(`Horário corrigido para ${newTime} ✏️`);
+        renderBoard();
+        closeModal('modalConfirmUnmark');
+        pendingUnmark = null;
+      }
+    });
+  }
+}
 
 // ==========================================
 // Armazenamento (LocalStorage)
@@ -200,6 +268,14 @@ function isToday(date) {
 let audioCtx = null;
 
 function playTickSound(isSuccess = true) {
+  if (!soundEnabled) {
+    // Mesmo sem som, mantém vibração leve se disponível
+    if ('vibrate' in navigator) {
+      try { navigator.vibrate(isSuccess ? [35] : [20, 40, 20]); } catch (e) {}
+    }
+    return;
+  }
+
   try {
     if (!audioCtx) {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -274,6 +350,7 @@ function renderBoard() {
     }
 
     const dayRecords = records[dateKey] || {};
+    const isFolga = Boolean(dayRecords.__isFolga);
     const totalSlots = dayConfig.times.length;
     let markedCount = 0;
 
@@ -283,17 +360,22 @@ function renderBoard() {
       }
     });
 
-    totalWeekSlots += totalSlots;
-    markedWeekSlots += markedCount;
+    if (!isFolga) {
+      totalWeekSlots += totalSlots;
+      markedWeekSlots += markedCount;
+    }
 
     // Regra do orbe de status:
     // - Padrão azul: assets/batida-aberta.png
-    // - Se marcar todos do dia: assets/batida-correta.png
+    // - Se marcar todos do dia (ou folga): assets/batida-correta.png
     // - Se terminar o dia sem marcar algum: assets/batida-faltando.png
     let orbSrc = IMAGES.orbAberta;
     let orbTitle = 'Dia em aberto';
 
-    if (totalSlots > 0) {
+    if (isFolga) {
+      orbSrc = IMAGES.orbCorreta;
+      orbTitle = 'Dia registrado como Folga / Feriado';
+    } else if (totalSlots > 0) {
       if (markedCount === totalSlots) {
         orbSrc = IMAGES.orbCorreta;
         orbTitle = 'Todos os pontos foram marcados!';
@@ -309,7 +391,7 @@ function renderBoard() {
 
     // Criação do elemento do dia
     const dayRow = document.createElement('div');
-    dayRow.className = 'day-row' + (isToday(dateObj) ? ' is-today' : '');
+    dayRow.className = 'day-row' + (isToday(dateObj) ? ' is-today' : '') + (isFolga ? ' is-folga' : '');
 
     // Linha do nome do dia
     const headerLine = document.createElement('div');
@@ -325,6 +407,17 @@ function renderBoard() {
 
     headerLine.appendChild(dayName);
     headerLine.appendChild(dateBadge);
+
+    // Botão de Folga / Feriado
+    const folgaBtn = document.createElement('button');
+    folgaBtn.className = 'btn-folga-pill' + (isFolga ? ' active' : '');
+    folgaBtn.innerHTML = isFolga ? '🏖️ Folga' : '🏖️';
+    folgaBtn.title = isFolga ? 'Clique para desmarcar folga' : 'Marcar este dia como folga/feriado';
+    folgaBtn.addEventListener('click', () => {
+      toggleFolga(dateKey, dayConfig.label);
+    });
+    headerLine.appendChild(folgaBtn);
+
     dayRow.appendChild(headerLine);
 
     // Linha de controles (Orbe + Botões)
@@ -417,12 +510,18 @@ function renderBoard() {
 
 function handleSlotClick(dateKey, dayLabel, slotTime, currentlyMarked, markedAt) {
   if (currentlyMarked) {
-    // Abrir modal de confirmação para desmarcar
+    // Abrir modal de confirmação para desmarcar ou editar
     pendingUnmark = { dateKey, dayLabel, slotTime, markedAt };
     const modalText = document.getElementById('unmarkModalText');
     const modalInfo = document.getElementById('unmarkModalInfo');
-    modalText.textContent = `Deseja desmarcar o ponto de ${dayLabel}?`;
-    modalInfo.innerHTML = `<strong>Horário do ponto:</strong> ${slotTime}<br><strong>Marcado às:</strong> ${markedAt || 'Sem horário exato'}`;
+    const inputEditTime = document.getElementById('inputEditTime');
+
+    modalText.textContent = `Ponto de ${dayLabel}`;
+    modalInfo.innerHTML = `<strong>Horário previsto:</strong> ${slotTime}<br><strong>Horário registrado:</strong> ${markedAt || 'Sem registro exato'}`;
+    
+    if (inputEditTime) {
+      inputEditTime.value = markedAt || slotTime;
+    }
     openModal('modalConfirmUnmark');
   } else {
     // Marcar o ponto
@@ -458,6 +557,22 @@ function unmarkSlot(dateKey, dayLabel, slotTime) {
     showToast(`Ponto de ${slotTime} desmarcado.`);
     renderBoard();
   }
+}
+
+function toggleFolga(dateKey, dayLabel) {
+  if (!records[dateKey]) records[dateKey] = {};
+  const current = Boolean(records[dateKey].__isFolga);
+  records[dateKey].__isFolga = !current;
+  saveRecords();
+  addLog(
+    !current ? 'folga_marcada' : 'folga_removida',
+    dateKey,
+    dayLabel,
+    'Dia todo',
+    formatTimeOnly(new Date())
+  );
+  showToast(!current ? `Dia marcado como Folga/Feriado 🏖️` : `Folga removida de ${dayLabel}`);
+  renderBoard();
 }
 
 // ==========================================

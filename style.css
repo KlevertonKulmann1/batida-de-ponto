@@ -81,6 +81,23 @@ body {
   text-shadow: 0 2px 4px rgba(0,0,0,0.6);
 }
 
+.live-clock {
+  font-family: monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: var(--accent-gold);
+  border: 1px solid rgba(226, 186, 100, 0.2);
+  margin-left: 6px;
+  letter-spacing: 1px;
+}
+
+.btn-ghost.icon-only {
+  padding: 8px 10px;
+}
+
 .nav-actions {
   display: flex;
   align-items: center;
@@ -350,6 +367,34 @@ button:active {
 
 .day-row.is-today .day-name {
   color: #ffe89d;
+}
+
+.day-row.is-folga {
+  opacity: 0.85;
+}
+
+.btn-folga-pill {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #bbb;
+  font-size: 0.68rem;
+  padding: 1px 7px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1.4;
+}
+
+.btn-folga-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.btn-folga-pill.active {
+  background: rgba(226, 186, 100, 0.25);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: 700;
 }
 
 /* Linha com o Orbe e os Botões */
