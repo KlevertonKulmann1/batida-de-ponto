@@ -25,7 +25,7 @@
 
 body {
   background-color: var(--bg-dark);
-  background-image: 
+  background-image:
     radial-gradient(circle at 50% 0%, #2e282a 0%, #151314 100%);
   color: var(--text-main);
   font-family: var(--font-body);
@@ -78,7 +78,7 @@ body {
   font-size: 1.15rem;
   letter-spacing: 0.5px;
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.6);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .live-clock {
@@ -104,76 +104,175 @@ body {
   gap: 8px;
 }
 
-/* Botões Genéricos */
+/* ==========================================================================
+   Botões RPG Temáticos (3-Slice com 39px de altura)
+   ========================================================================== */
+
 button {
   cursor: pointer;
   border: none;
   outline: none;
   font-family: var(--font-body);
-  transition: transform 0.15s ease, filter 0.15s ease, background 0.2s ease;
+  transition: transform 0.15s ease, filter 0.15s ease;
   user-select: none;
 }
 
-button:active {
-  transform: scale(0.96);
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #dfa234 0%, #b87b18 100%);
-  color: #1a1005;
-  font-weight: 800;
-  padding: 8px 16px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(223, 162, 52, 0.4);
+.btn-rpg {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  font-size: 0.9rem;
-}
-
-.btn-primary:hover {
-  filter: brightness(1.15);
-}
-
-.btn-ghost {
-  background: rgba(255, 255, 255, 0.07);
-  color: #eee;
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.btn-ghost:hover {
-  background: rgba(255, 255, 255, 0.14);
-}
-
-.btn-secondary {
-  background: #3e3839;
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 8px;
-  border: 1px solid #554e50;
-  font-weight: 600;
-  font-size: 0.85rem;
-}
-
-.btn-danger {
-  background: linear-gradient(135deg, #d32f2f 0%, #9a1a1a 100%);
-  color: #fff;
-  padding: 8px 14px;
-  border-radius: 8px;
-  font-weight: 700;
-  font-size: 0.85rem;
-}
-
-.btn-sm {
-  padding: 5px 10px;
+  height: 39px;
+  box-sizing: border-box;
+  padding: 0 20px;
+  min-width: 80px;
+  border: none;
+  outline: none;
+  font-family: var(--font-display);
   font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000, 0 0 4px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  user-select: none;
+  background-color: transparent;
+  background-repeat: no-repeat, no-repeat, repeat-x;
+  background-position: left top, right top, 38px top;
+  background-size: 38px 39px, 38px 39px, calc(100% - 76px) 39px;
+  transition: filter 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn-rpg:hover {
+  filter: brightness(1.2);
+}
+
+.btn-rpg:active {
+  transform: scale(0.97);
+}
+
+.btn-rpg.btn-sm {
+  height: 35px;
+  padding: 0 16px;
+  font-size: 0.72rem;
+  background-size: 38px 35px, 38px 35px, calc(100% - 76px) 35px;
+}
+
+/* Dourado / Âmbar (Ação Principal / Bater Ponto) */
+.btn-rpg-gold {
+  background-image:
+    url('assets/btn-fourthiary-left.png'),
+    url('assets/btn-fourthiary-right.png'),
+    url('assets/btn-fourthiary-center.png');
+}
+
+.btn-rpg-gold:active,
+.btn-rpg-gold.active {
+  background-image:
+    url('assets/btn-fourthiary-left-active.png'),
+    url('assets/btn-fourthiary-right-active.png'),
+    url('assets/btn-fourthiary-center-active.png');
+}
+
+/* Azul / Safira (Navegação / Logs / Horários / Backup / Hoje) */
+.btn-rpg-blue {
+  background-image:
+    url('assets/btn-tertiary-left.png'),
+    url('assets/btn-tertiary-right.png'),
+    url('assets/btn-tertiary-center.png');
+}
+
+.btn-rpg-blue:active,
+.btn-rpg-blue.active {
+  background-image:
+    url('assets/btn-tertiary-left-active.png'),
+    url('assets/btn-tertiary-right-active.png'),
+    url('assets/btn-tertiary-center-active.png');
+}
+
+/* Verde / Esmeralda (Confirmações / Salvar / Exportar) */
+.btn-rpg-green {
+  background-image:
+    url('assets/btn-secondary-left.png'),
+    url('assets/btn-secondary-right.png'),
+    url('assets/btn-secondary-center.png');
+}
+
+.btn-rpg-green:active,
+.btn-rpg-green.active {
+  background-image:
+    url('assets/btn-secondary-left-active.png'),
+    url('assets/btn-secondary-right-active.png'),
+    url('assets/btn-secondary-center-active.png');
+}
+
+/* Vermelho / Rubi (Perigo / Desmarcar / Limpar) */
+.btn-rpg-red {
+  background-image:
+    url('assets/btn-primary-left.png'),
+    url('assets/btn-primary-right.png'),
+    url('assets/btn-primary-center.png');
+}
+
+.btn-rpg-red:active,
+.btn-rpg-red.active {
+  background-image:
+    url('assets/btn-primary-left-active.png'),
+    url('assets/btn-primary-right-active.png'),
+    url('assets/btn-primary-center-active.png');
+}
+
+/* Botão Desabilitado */
+.btn-rpg:disabled,
+.btn-rpg.disabled {
+  background-image:
+    url('assets/btn-disabled-left.png'),
+    url('assets/btn-disabled-right.png'),
+    url('assets/btn-disabled-center.png');
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+  transform: none;
+}
+
+/* Botão Caixa Quadrada (box-btn.png - 46x46) */
+.btn-box {
+  width: 44px;
+  height: 44px;
+  background: url('assets/box-btn.png') center / 100% 100% no-repeat;
+  border: none;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+.btn-box:hover {
+  filter: brightness(1.25);
+}
+
+.btn-box:active {
+  transform: scale(0.92);
+}
+
+/* Antigos botões mantidos para compatibilidade */
+.btn-primary {
+  composes: btn-rpg btn-rpg-gold;
+}
+.btn-ghost {
+  composes: btn-rpg btn-rpg-blue;
+}
+.btn-danger {
+  composes: btn-rpg btn-rpg-red;
 }
 
 /* Toast */
@@ -221,8 +320,8 @@ button:active {
   background-image: url('assets/quadro.png');
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  border-radius: 12px;
-  box-shadow: 
+  border-radius: 23px;
+  box-shadow:
     0 16px 40px rgba(0, 0, 0, 0.7),
     inset 0 0 20px rgba(0, 0, 0, 0.4);
   padding: 24px 28px 20px 28px;
@@ -246,67 +345,91 @@ button:active {
 }
 
 .nav-arrow {
-  background: transparent;
+  font-size: 2rem !important;
+  line-height: 40px !important;
   color: #fff;
-  font-size: 1.8rem;
-  font-weight: 900;
-  line-height: 1;
-  padding: 0 6px;
-  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
-  border-radius: 4px;
+  padding: 0;
 }
 
 .nav-arrow:hover {
   color: var(--accent-gold);
-  transform: scale(1.15);
 }
 
+/* Placa da Data da Semana (label-*.png - 48px de altura) */
 .week-display {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 24px;
+  min-width: 140px;
+  background-image:
+    url('assets/label-left.png'),
+    url('assets/label-right.png'),
+    url('assets/label-center.png');
+  background-position: left center, right center, 33px center;
+  background-size: 33px 44px, 33px 44px, calc(100% - 66px) 44px;
+  background-repeat: no-repeat, no-repeat, repeat-x;
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 900;
   letter-spacing: 1px;
   color: #fff;
-  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0, 0, 0, 0.8);
+  user-select: none;
 }
 
-.btn-today-pill {
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  color: #eee;
-  font-size: 0.75rem;
+/* Campos de Select Temáticos (rpg-select) com Plaquinha */
+.rpg-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  height: 40px;
+  padding: 0 32px 0 20px;
+  background-image:
+    url('data:image/svg+xml;utf8,<svg fill="%23e2ba64" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'),
+    url('assets/label-left.png'),
+    url('assets/label-right.png'),
+    url('assets/label-center.png');
+  background-position: right 10px center, left center, right center, 33px center;
+  background-size: 16px 16px, 33px 40px, 33px 40px, calc(100% - 66px) 40px;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
+  border: none;
+  outline: none;
+  color: #e2ba64;
+  font-family: var(--font-display);
+  font-size: 0.78rem;
   font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 20px;
-  text-transform: uppercase;
+  text-shadow: 1px 1px 2px #000;
+  cursor: pointer;
+  box-sizing: border-box;
   letter-spacing: 0.5px;
 }
 
-.btn-today-pill:hover {
-  background: rgba(223, 162, 52, 0.3);
-  border-color: var(--accent-gold);
-  color: #fff;
+.rpg-select:focus {
+  filter: brightness(1.15);
 }
 
-.recorded-weeks-select {
-  background: rgba(0, 0, 0, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #e2ba64;
-  font-size: 0.72rem;
-  font-weight: 700;
-  padding: 3px 6px;
-  border-radius: 6px;
-  outline: none;
-  cursor: pointer;
+/* Opções do Select quando abre: fundo escuro e texto claro */
+.rpg-select option {
+  background-color: #231f20 !important;
+  color: #ffffff !important;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 10px;
 }
 
-.recorded-weeks-select:focus {
-  border-color: var(--accent-gold);
+.rpg-select option:hover,
+.rpg-select option:checked {
+  background-color: #3f3937 !important;
+  color: #e2ba64 !important;
 }
 
-.recorded-weeks-select option {
-  background: #242021;
-  color: #fff;
+.btn-today-pill {
+  min-width: 65px;
+  height: 36px;
+  padding: 0 14px;
 }
 
 .board-title {
@@ -315,7 +438,7 @@ button:active {
   font-weight: 900;
   letter-spacing: 1.5px;
   color: #fff;
-  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 /* Dias da Semana */
@@ -354,7 +477,7 @@ button:active {
   font-weight: 900;
   letter-spacing: 0.5px;
   color: #ffffff;
-  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0,0,0,0.8);
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0, 0, 0, 0.8);
 }
 
 .day-date-badge {
@@ -409,7 +532,8 @@ button:active {
   position: relative;
   width: 48px;
   height: 48px;
-  margin-top: 18px; /* Alinha perfeitamente o centro do orbe com os botões circulares */
+  margin-top: 18px;
+  /* Alinha perfeitamente o centro do orbe com os botões circulares */
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -421,7 +545,7 @@ button:active {
   height: 40px;
   object-fit: contain;
   transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
-  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.6));
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
   cursor: pointer;
 }
 
@@ -465,7 +589,7 @@ button:active {
   font-weight: 900;
   color: #ffffff;
   letter-spacing: 0.5px;
-  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 3px rgba(0,0,0,0.9);
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 3px rgba(0, 0, 0, 0.9);
 }
 
 .slot-btn {
@@ -573,8 +697,13 @@ button:active {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .modal-card {
@@ -596,17 +725,24 @@ button:active {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(15px); }
-  to { transform: translateY(0); }
+  from {
+    transform: translateY(15px);
+  }
+
+  to {
+    transform: translateY(0);
+  }
 }
 
 .modal-header {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 14px 20px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: #252021;
+  min-height: 54px;
 }
 
 .modal-header h3 {
@@ -618,16 +754,30 @@ button:active {
   gap: 8px;
 }
 
+/* Botão Fechar Modal com a Jóia de Rubi (btn-x.png / btn-x-ativo.png) */
 .modal-close {
-  background: transparent;
-  color: #aaa;
-  font-size: 1.6rem;
-  line-height: 1;
-  padding: 0 4px;
+  position: absolute;
+  top: -8px;
+  right: 14px;
+  width: 34px;
+  height: 64px;
+  background: transparent url('assets/btn-x.png') center / contain no-repeat;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.7));
 }
 
 .modal-close:hover {
-  color: #fff;
+  filter: drop-shadow(0 4px 12px rgba(255, 77, 79, 0.6)) brightness(1.2);
+  transform: translateY(-2px);
+}
+
+.modal-close:active {
+  background-image: url('assets/btn-x-ativo.png');
+  transform: translateY(1px);
 }
 
 .modal-body {
@@ -863,7 +1013,8 @@ button:active {
     display: none;
   }
 
-  .btn-primary, .btn-ghost {
+  .btn-primary,
+  .btn-ghost {
     padding: 8px 10px;
   }
 

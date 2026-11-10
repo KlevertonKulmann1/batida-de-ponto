@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v1';
+const CACHE_NAME = 'batida-ponto-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -10,7 +10,40 @@ const ASSETS_TO_CACHE = [
   './assets/batida-correta.png',
   './assets/batida-faltando.png',
   './assets/marcado.png',
-  './assets/nao-marcado.png'
+  './assets/nao-marcado.png',
+  './assets/box-btn.png',
+  './assets/btn-x.png',
+  './assets/btn-x-ativo.png',
+  './assets/label-left.png',
+  './assets/label-center.png',
+  './assets/label-right.png',
+  './assets/btn-fourthiary-left.png',
+  './assets/btn-fourthiary-center.png',
+  './assets/btn-fourthiary-right.png',
+  './assets/btn-fourthiary-left-active.png',
+  './assets/btn-fourthiary-center-active.png',
+  './assets/btn-fourthiary-right-active.png',
+  './assets/btn-tertiary-left.png',
+  './assets/btn-tertiary-center.png',
+  './assets/btn-tertiary-right.png',
+  './assets/btn-tertiary-left-active.png',
+  './assets/btn-tertiary-center-active.png',
+  './assets/btn-tertiary-right-active.png',
+  './assets/btn-secondary-left.png',
+  './assets/btn-secondary-center.png',
+  './assets/btn-secondary-right.png',
+  './assets/btn-secondary-left-active.png',
+  './assets/btn-secondary-center-active.png',
+  './assets/btn-secondary-right-active.png',
+  './assets/btn-primary-left.png',
+  './assets/btn-primary-center.png',
+  './assets/btn-primary-right.png',
+  './assets/btn-primary-left-active.png',
+  './assets/btn-primary-center-active.png',
+  './assets/btn-primary-right-active.png',
+  './assets/btn-disabled-left.png',
+  './assets/btn-disabled-center.png',
+  './assets/btn-disabled-right.png'
 ];
 
 self.addEventListener('install', (event) => {
