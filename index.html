@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Batida de Ponto</title>
+  <meta name="description" content="Controle simples de batida de ponto pessoal, responsivo e sem login.">
+  <meta name="theme-color" content="#252122">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" href="assets/marcado.png">
+  <link rel="apple-touch-icon" href="assets/marcado.png">
+  
+  <!-- Fontes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-wrapper">
+    
+    <!-- Barra Superior de Controle Global -->
+    <header class="top-nav">
+      <div class="brand">
+        <img src="assets/marcado.png" alt="Logo" class="nav-logo">
+        <span class="nav-title">Controle de Ponto</span>
+      </div>
+      <div class="nav-actions">
+        <button id="btnQuickPunch" class="btn-primary" title="Bater o próximo ponto de hoje">
+          <span class="icon">🕒</span> <span class="btn-text">Bater Ponto</span>
+        </button>
+        <button id="btnOpenLogs" class="btn-ghost" title="Histórico de logs">
+          <span class="icon">📜</span> <span class="btn-text">Logs</span>
+        </button>
+        <button id="btnOpenSettings" class="btn-ghost" title="Configurar horários dos dias">
+          <span class="icon">⚙️</span> <span class="btn-text">Horários</span>
+        </button>
+        <button id="btnOpenBackup" class="btn-ghost" title="Backup e restauração">
+          <span class="icon">💾</span> <span class="btn-text">Backup</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Notificação / Mensagem Rápida -->
+    <div id="toastMessage" class="toast hidden"></div>
+
+    <!-- O Quadro Principal de Ponto -->
+    <main class="board-outer">
+      <div class="board-frame" id="boardFrame">
+        
+        <!-- Topo interno do quadro (Navegação de semana e Título) -->
+        <div class="board-header">
+          <div class="week-nav">
+            <button id="btnPrevWeek" class="nav-arrow" title="Semana Anterior" aria-label="Semana Anterior">‹</button>
+            <span id="weekDisplay" class="week-display">Carregando...</span>
+            <button id="btnNextWeek" class="nav-arrow" title="Próxima Semana" aria-label="Próxima Semana">›</button>
+            <button id="btnCurrentWeek" class="btn-today-pill" title="Voltar para semana atual">Hoje</button>
+            <select id="selectRecordedWeeks" class="recorded-weeks-select" title="Ir direto para uma semana com registros">
+              <option value="">📅 Histórico</option>
+            </select>
+          </div>
+          <div class="board-title">Batida de ponto</div>
+        </div>
+
+        <!-- Grade dos Dias da Semana -->
+        <div class="days-container" id="daysContainer">
+          <!-- Renderizado dinamicamente via JS com base no modelo do exemplo.png -->
+        </div>
+
+        <!-- Rodapé do Quadro com Resumo do Dia -->
+        <div class="board-footer">
+          <div class="legend">
+            <span class="legend-item"><img src="assets/batida-aberta.png" alt="Em aberto"> Em aberto</span>
+            <span class="legend-item"><img src="assets/batida-correta.png" alt="Dia completo"> Concluído</span>
+            <span class="legend-item"><img src="assets/batida-faltando.png" alt="Faltando batida"> Incompleto</span>
+          </div>
+          <div id="weekStats" class="week-stats">0 de 0 pontos marcados</div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="app-footer">
+      <span>Controle de Ponto Pessoal • Salvo automaticamente no seu dispositivo</span>
+    </footer>
+
+  </div>
+
+  <!-- MODAL: Histórico de Logs -->
+  <div id="modalLogs" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>📜 Histórico de Registros</h3>
+        <button class="modal-close" data-close="modalLogs">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-toolbar">
+          <div class="filter-group">
+            <label for="logFilter">Filtrar:</label>
+            <select id="logFilter">
+              <option value="week">Somente desta semana</option>
+              <option value="all">Todo o histórico</option>
+            </select>
+          </div>
+          <div class="toolbar-actions">
+            <button id="btnExportLogsCsv" class="btn-sm btn-ghost">📥 Baixar CSV</button>
+            <button id="btnClearLogs" class="btn-sm btn-danger">🗑️ Limpar logs</button>
+          </div>
+        </div>
+        <div class="log-table-wrapper">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>Data/Hora Registro</th>
+                <th>Dia</th>
+                <th>Horário</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody id="logTableBody">
+              <!-- Preenchido via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Configurar Horários -->
+  <div id="modalSettings" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>⚙️ Configuração de Horários</h3>
+        <button class="modal-close" data-close="modalSettings">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Defina os horários esperados para cada dia da semana. Separe os horários por vírgula (ex: <code>08:00, 12:00, 13:00, 18:00</code>).
+        </p>
+        <div id="scheduleConfigForm" class="schedule-form">
+          <!-- Gerado via JS para cada dia -->
+        </div>
+        <div class="settings-actions">
+          <button id="btnSaveSettings" class="btn-primary">Salvar Horários</button>
+          <button id="btnResetSettings" class="btn-ghost">Restaurar Padrão do Exemplo</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Backup e Restauração -->
+  <div id="modalBackup" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>💾 Backup e Sincronização</h3>
+        <button class="modal-close" data-close="modalBackup">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="modal-desc">
+          Seus dados ficam gravados no navegador. Use as opções abaixo para transferir seus pontos entre o celular e o computador, ou salvar uma cópia de segurança.
+        </p>
+
+        <div class="backup-section">
+          <h4>Exportar Dados</h4>
+          <div class="btn-group">
+            <button id="btnDownloadBackup" class="btn-primary">📥 Baixar Arquivo JSON</button>
+            <button id="btnCopyBackup" class="btn-ghost">📋 Copiar Dados</button>
+          </div>
+        </div>
+
+        <div class="backup-section">
+          <h4>Importar Dados</h4>
+          <input type="file" id="fileImportBackup" accept=".json" style="display: none;">
+          <div class="btn-group">
+            <button id="btnTriggerFileImport" class="btn-secondary">📁 Selecionar Arquivo JSON</button>
+          </div>
+          <textarea id="importTextarea" placeholder="Ou cole aqui os dados em formato JSON para restaurar..."></textarea>
+          <button id="btnImportFromText" class="btn-ghost">Restaurar do Texto Colado</button>
+        </div>
+
+        <div class="backup-section danger-zone">
+          <h4>Zona de Perigo</h4>
+          <button id="btnResetAllData" class="btn-danger">🗑️ Limpar Todos os Dados e Registros</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Confirmação de Desmarcação ou Ajuste -->
+  <div id="modalConfirmUnmark" class="modal-overlay hidden">
+    <div class="modal-card modal-sm">
+      <div class="modal-header">
+        <h3>Ajustar Ponto</h3>
+        <button class="modal-close" data-close="modalConfirmUnmark">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="unmarkModalText">Este ponto já foi batido.</p>
+        <div class="unmark-info" id="unmarkModalInfo"></div>
+        <div class="btn-group modal-actions">
+          <button id="btnConfirmUnmark" class="btn-danger">Desmarcar Ponto</button>
+          <button class="btn-ghost" data-close="modalConfirmUnmark">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
