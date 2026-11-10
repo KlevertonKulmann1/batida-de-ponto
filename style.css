@@ -1099,21 +1099,66 @@ button {
     gap: 10px;
   }
 
+  /* Barra Superior em 2 Linhas no Celular */
   .top-nav {
+    flex-direction: column;
     padding: 8px 12px;
+    gap: 8px;
+  }
+
+  .brand {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-logo {
+    width: 28px;
+    height: 28px;
   }
 
   .nav-title {
-    font-size: 0.95rem;
+    font-size: 1rem;
+    font-weight: 800;
   }
 
+  .live-clock {
+    font-size: 0.8rem;
+    padding: 3px 8px;
+    margin-left: auto;
+  }
+
+  .nav-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Garante o texto do botão BATER PONTO SEMPRE VISÍVEL no mobile */
   .btn-text {
-    display: none;
+    display: inline !important;
+    font-size: 0.78rem;
   }
 
-  .btn-primary,
-  .btn-ghost {
-    padding: 8px 10px;
+  #btnQuickPunch {
+    flex: 1;
+    min-width: 110px;
+    padding: 0 12px;
+    height: 38px;
+  }
+
+  /* Ícones visíveis, ajustados e confortáveis para o toque */
+  .nav-icon-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .nav-icon-btn img {
+    width: 38px;
+    height: 38px;
   }
 
   .board-frame {
