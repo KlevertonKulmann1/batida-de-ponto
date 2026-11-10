@@ -487,9 +487,9 @@ button {
     url('assets/label-left.png'),
     url('assets/label-right.png'),
     url('assets/label-center.png');
-  background-position: right 14px center, left center, right center, 32px center;
-  background-size: 16px 16px, 33px 44px, 33px 44px, calc(100% - 64px) 44px;
-  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  background-position: right 14px center, left center, right center, 33px center;
+  background-size: 16px 16px, 33px 44px, 33px 44px, calc(100% - 66px) 44px;
+  background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
@@ -538,7 +538,7 @@ button {
 
 .btn-today-pill {
   min-width: 65px;
-  height: 36px;
+  height: 39px;
   padding: 0 14px;
 }
 
