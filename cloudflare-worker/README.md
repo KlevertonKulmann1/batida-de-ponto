@@ -53,3 +53,4 @@ Mesmo com o celular bloqueado ou com o app 100% fechado, ele tocará e vibrará 
 4. Na seção **Notificações Push**, cole a URL do seu Worker e clique em **"Ativar Notificações"**.
 5. O navegador vai pedir permissão: clique em **Permitir**.
 6. Clique no botão **"🔔 Enviar Notificação de Teste"** para ver seu celular vibrar e apitar na hora!
+
