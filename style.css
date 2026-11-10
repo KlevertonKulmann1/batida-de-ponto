@@ -464,7 +464,7 @@ button {
     url('assets/label-center.png');
   background-position: left center, right center, 33px center;
   background-size: 33px 44px, 33px 44px, calc(100% - 66px) 44px;
-  background-repeat: no-repeat, no-repeat, repeat-x;
+  background-repeat: no-repeat, no-repeat, no-repeat;
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 900;
@@ -489,7 +489,7 @@ button {
     url('assets/label-center.png');
   background-position: right 14px center, left center, right center, 33px center;
   background-size: 16px 16px, 33px 44px, 33px 44px, calc(100% - 66px) 44px;
-  background-repeat: no-repeat, no-repeat, no-repeat, repeat-x;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
   border: none !important;
   outline: none !important;
   box-shadow: none !important;
