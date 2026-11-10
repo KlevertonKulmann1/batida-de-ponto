@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -12,17 +13,20 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/png" href="assets/marcado.png">
   <link rel="apple-touch-icon" href="assets/marcado.png">
-  
+
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Montserrat:wght@500;700;800;900&display=swap" rel="stylesheet">
-  
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Montserrat:wght@500;700;800;900&display=swap"
+    rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="app-wrapper">
-    
+
     <!-- Barra Superior de Controle Global -->
     <header class="top-nav">
       <div class="brand">
@@ -32,19 +36,19 @@
       </div>
       <div class="nav-actions">
         <button id="btnQuickPunch" class="btn-rpg btn-rpg-gold" title="Bater o próximo ponto de hoje">
-          <span class="icon">🕒</span> <span class="btn-text">Bater Ponto</span>
+          <span class="btn-text">Bater Ponto</span>
         </button>
-        <button id="btnToggleSound" class="btn-box" title="Ativar/Desativar som dos cliques">
-          <span id="soundIcon">🔊</span>
+        <button id="btnToggleSound" class="nav-icon-btn" title="Ativar/Desativar Som dos Cliques">
+          <img src="assets/icon-sound.png" alt="Som" id="soundIconImg">
         </button>
-        <button id="btnOpenLogs" class="btn-rpg btn-rpg-blue" title="Histórico de logs">
-          <span class="icon">📜</span> <span class="btn-text">Logs</span>
+        <button id="btnOpenLogs" class="nav-icon-btn" title="Histórico de Logs">
+          <img src="assets/icon-log.png" alt="Logs">
         </button>
-        <button id="btnOpenSettings" class="btn-rpg btn-rpg-blue" title="Configurar horários dos dias">
-          <span class="icon">⚙️</span> <span class="btn-text">Horários</span>
+        <button id="btnOpenSettings" class="nav-icon-btn" title="Configurar Horários">
+          <img src="assets/icon-settings.png" alt="Configurações">
         </button>
-        <button id="btnOpenBackup" class="btn-rpg btn-rpg-blue" title="Backup e restauração">
-          <span class="icon">💾</span> <span class="btn-text">Backup</span>
+        <button id="btnOpenBackup" class="nav-icon-btn" title="Backup e Sincronização">
+          <img src="assets/icon-save.png" alt="Backup">
         </button>
       </div>
     </header>
@@ -55,17 +59,14 @@
     <!-- O Quadro Principal de Ponto -->
     <main class="board-outer">
       <div class="board-frame" id="boardFrame">
-        
+
         <!-- Topo interno do quadro (Navegação de semana e Título) -->
         <div class="board-header">
           <div class="week-nav">
-            <button id="btnPrevWeek" class="btn-box nav-arrow" title="Semana Anterior" aria-label="Semana Anterior">‹</button>
-            <span id="weekDisplay" class="week-display">Carregando...</span>
-            <button id="btnNextWeek" class="btn-box nav-arrow" title="Próxima Semana" aria-label="Próxima Semana">›</button>
-            <button id="btnCurrentWeek" class="btn-rpg btn-rpg-blue btn-today-pill" title="Voltar para semana atual">Hoje</button>
-            <select id="selectRecordedWeeks" class="rpg-select recorded-weeks-select" title="Ir direto para uma semana com registros">
-              <option value="">📅 Histórico</option>
-            </select>
+            <button id="btnCurrentWeek" class="btn-rpg btn-rpg-blue btn-today-pill"
+              title="Voltar para semana atual">Hoje</button>
+            <select id="selectRecordedWeeks" class="rpg-select recorded-weeks-select"
+              title="Selecionar semana"></select>
           </div>
           <div class="board-title">Batida de ponto</div>
         </div>
@@ -98,7 +99,8 @@
   <div id="modalLogs" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>📜 Histórico de Registros</h3>
+        <h3><img src="assets/icon-log.png" alt="Histórico" style="width: 32px;border-radius: 50%;"> Histórico de
+          Registros</h3>
         <button class="modal-close" data-close="modalLogs" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -111,8 +113,8 @@
             </select>
           </div>
           <div class="toolbar-actions">
-            <button id="btnExportLogsCsv" class="btn-rpg btn-rpg-green btn-sm">📥 Baixar CSV</button>
-            <button id="btnClearLogs" class="btn-rpg btn-rpg-red btn-sm">🗑️ Limpar logs</button>
+            <button id="btnExportLogsCsv" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-download.png" class="btn-rpg-icon" alt=""> Baixar CSV</button>
+            <button id="btnClearLogs" class="btn-rpg btn-rpg-red btn-sm"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Limpar logs</button>
           </div>
         </div>
         <div class="log-table-wrapper">
@@ -138,19 +140,21 @@
   <div id="modalSettings" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>⚙️ Configuração de Horários</h3>
+        <h3><img src="assets/icon-settings.png" alt="Configuração" style="width: 32px;border-radius: 50%;"> Configuração
+          de Horários</h3>
         <button class="modal-close" data-close="modalSettings" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
         <p class="modal-desc">
-          Defina os horários esperados para cada dia da semana. Separe os horários por vírgula (ex: <code>08:00, 12:00, 13:00, 18:00</code>).
+          Defina os horários esperados para cada dia da semana. Separe os horários por vírgula (ex:
+          <code>08:00, 12:00, 13:00, 18:00</code>).
         </p>
         <div id="scheduleConfigForm" class="schedule-form">
           <!-- Gerado via JS para cada dia -->
         </div>
         <div class="settings-actions">
-          <button id="btnSaveSettings" class="btn-rpg btn-rpg-green">Salvar Horários</button>
-          <button id="btnResetSettings" class="btn-rpg btn-rpg-blue">Restaurar Padrão</button>
+          <button id="btnSaveSettings" class="btn-rpg btn-rpg-green"><img src="assets/icon-save.png" class="btn-rpg-icon" alt=""> Salvar Horários</button>
+          <button id="btnResetSettings" class="btn-rpg btn-rpg-blue"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Restaurar Padrão</button>
         </div>
       </div>
     </div>
@@ -160,19 +164,21 @@
   <div id="modalBackup" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>💾 Backup e Sincronização</h3>
+        <h3><img src="assets/icon-save.png" alt="Backup" style="width: 32px;border-radius: 50%;"> Backup e Sincronização
+        </h3>
         <button class="modal-close" data-close="modalBackup" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
         <p class="modal-desc">
-          Seus dados ficam gravados no navegador. Use as opções abaixo para transferir seus pontos entre o celular e o computador, ou salvar uma cópia de segurança.
+          Seus dados ficam gravados no navegador. Use as opções abaixo para transferir seus pontos entre o celular e o
+          computador, ou salvar uma cópia de segurança.
         </p>
 
         <div class="backup-section">
           <h4>Exportar Dados</h4>
           <div class="btn-group">
-            <button id="btnDownloadBackup" class="btn-rpg btn-rpg-green">📥 Baixar Arquivo JSON</button>
-            <button id="btnCopyBackup" class="btn-rpg btn-rpg-blue">📋 Copiar Dados</button>
+            <button id="btnDownloadBackup" class="btn-rpg btn-rpg-green"><img src="assets/icon-download.png" class="btn-rpg-icon" alt=""> Baixar Arquivo JSON</button>
+            <button id="btnCopyBackup" class="btn-rpg btn-rpg-blue"><img src="assets/icon-copy.png" class="btn-rpg-icon" alt=""> Copiar Dados</button>
           </div>
         </div>
 
@@ -180,15 +186,16 @@
           <h4>Importar Dados</h4>
           <input type="file" id="fileImportBackup" accept=".json" style="display: none;">
           <div class="btn-group">
-            <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue">📁 Selecionar Arquivo JSON</button>
+            <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue"><img src="assets/icon-folder.png" class="btn-rpg-icon" alt=""> Selecionar Arquivo JSON</button>
           </div>
-          <textarea id="importTextarea" placeholder="Ou cole aqui os dados em formato JSON para restaurar..."></textarea>
+          <textarea id="importTextarea"
+            placeholder="Ou cole aqui os dados em formato JSON para restaurar..."></textarea>
           <button id="btnImportFromText" class="btn-rpg btn-rpg-blue">Restaurar do Texto Colado</button>
         </div>
 
         <div class="backup-section danger-zone">
           <h4>Zona de Perigo</h4>
-          <button id="btnResetAllData" class="btn-rpg btn-rpg-red">🗑️ Limpar Todos os Dados e Registros</button>
+          <button id="btnResetAllData" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Limpar Todos os Dados e Registros</button>
         </div>
       </div>
     </div>
@@ -204,17 +211,19 @@
       <div class="modal-body">
         <p id="unmarkModalText">Este ponto já foi batido.</p>
         <div class="unmark-info" id="unmarkModalInfo"></div>
-        
+
         <div class="edit-time-section">
-          <label for="inputEditTime" style="font-size: 0.8rem; font-weight: 700; color: #ddd;">Corrigir horário registrado:</label>
+          <label for="inputEditTime" style="font-size: 0.8rem; font-weight: 700; color: #ddd;">Corrigir horário
+            registrado:</label>
           <div style="display: flex; gap: 8px; margin-top: 6px;">
             <input type="time" id="inputEditTime" class="schedule-input" style="flex: 1;">
-            <button id="btnSaveEditedTime" class="btn-rpg btn-rpg-green btn-sm">Salvar Horário</button>
+            <button id="btnSaveEditedTime" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-save.png" class="btn-rpg-icon" alt=""> Salvar Horário</button>
           </div>
         </div>
 
-        <div class="btn-group modal-actions" style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
-          <button id="btnConfirmUnmark" class="btn-rpg btn-rpg-red">Desmarcar Ponto</button>
+        <div class="btn-group modal-actions"
+          style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+          <button id="btnConfirmUnmark" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png" class="btn-rpg-icon" alt=""> Desmarcar Ponto</button>
           <button class="btn-rpg btn-rpg-blue" data-close="modalConfirmUnmark">Fechar</button>
         </div>
       </div>
@@ -223,4 +232,5 @@
 
   <script src="app.js"></script>
 </body>
+
 </html>

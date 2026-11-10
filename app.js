@@ -87,14 +87,13 @@ function setupLiveClockAndSound() {
   tick();
   setInterval(tick, 1000);
 
-  // Botão de som
+  // Botão de som (com o ícone temático de autofalante)
   const btnSound = document.getElementById('btnToggleSound');
-  const iconSound = document.getElementById('soundIcon');
-  if (btnSound && iconSound) {
-    iconSound.textContent = soundEnabled ? '🔊' : '🔇';
+  if (btnSound) {
+    btnSound.classList.toggle('sound-muted', !soundEnabled);
     btnSound.addEventListener('click', () => {
       saveSoundSetting(!soundEnabled);
-      iconSound.textContent = soundEnabled ? '🔊' : '🔇';
+      btnSound.classList.toggle('sound-muted', !soundEnabled);
       showToast(soundEnabled ? 'Sons ativados 🔊' : 'Sons silenciados 🔇');
     });
   }
@@ -326,11 +325,13 @@ function renderBoard() {
   const friday = weekDates[4];
   const sunday = weekDates[6];
 
-  // Mostra intervalo de datas ex: "10/11 á 16/11"
+  // Mostra intervalo de datas caso o elemento exista
   const hasWeekend = schedule.sabado.times.length > 0 || schedule.domingo.times.length > 0;
   const lastDay = hasWeekend ? sunday : friday;
   const weekDisplay = document.getElementById('weekDisplay');
-  weekDisplay.textContent = `${formatDateShort(monday)}  á  ${formatDateShort(lastDay)}`;
+  if (weekDisplay) {
+    weekDisplay.textContent = `${formatDateShort(monday)}  á  ${formatDateShort(lastDay)}`;
+  }
 
   const daysContainer = document.getElementById('daysContainer');
   daysContainer.innerHTML = '';
@@ -622,29 +623,47 @@ function setupQuickPunch() {
 // ==========================================
 
 function setupNavigation() {
-  document.getElementById('btnPrevWeek').addEventListener('click', () => {
-    currentViewingDate.setDate(currentViewingDate.getDate() - 7);
-    renderBoard();
-  });
+  const btnPrev = document.getElementById('btnPrevWeek');
+  if (btnPrev) {
+    btnPrev.addEventListener('click', () => {
+      currentViewingDate.setDate(currentViewingDate.getDate() - 7);
+      renderBoard();
+    });
+  }
 
-  document.getElementById('btnNextWeek').addEventListener('click', () => {
-    currentViewingDate.setDate(currentViewingDate.getDate() + 7);
-    renderBoard();
-  });
+  const btnNext = document.getElementById('btnNextWeek');
+  if (btnNext) {
+    btnNext.addEventListener('click', () => {
+      currentViewingDate.setDate(currentViewingDate.getDate() + 7);
+      renderBoard();
+    });
+  }
 
-  document.getElementById('btnCurrentWeek').addEventListener('click', () => {
-    currentViewingDate = new Date();
-    renderBoard();
-  });
+  const btnCurrent = document.getElementById('btnCurrentWeek');
+  if (btnCurrent) {
+    btnCurrent.addEventListener('click', () => {
+      currentViewingDate = new Date();
+      renderBoard();
+    });
+  }
 
   const selectWeeks = document.getElementById('selectRecordedWeeks');
   if (selectWeeks) {
     selectWeeks.addEventListener('change', (e) => {
-      const chosenMondayKey = e.target.value;
-      if (chosenMondayKey) {
-        const parts = chosenMondayKey.split('-');
-        currentViewingDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 12, 0, 0);
+      const val = e.target.value;
+      if (!val) return;
+      if (val === 'prev') {
+        currentViewingDate.setDate(currentViewingDate.getDate() - 7);
         renderBoard();
+      } else if (val === 'next') {
+        currentViewingDate.setDate(currentViewingDate.getDate() + 7);
+        renderBoard();
+      } else {
+        const parts = val.split('-');
+        if (parts.length === 3) {
+          currentViewingDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]), 12, 0, 0);
+          renderBoard();
+        }
       }
     });
   }
@@ -654,6 +673,11 @@ function updateRecordedWeeksSelect() {
   const select = document.getElementById('selectRecordedWeeks');
   if (!select) return;
 
+  const currentMonday = getMonday(currentViewingDate);
+  const currentMondayKey = formatDateKey(currentMonday);
+  const thisWeekMondayKey = formatDateKey(getMonday(new Date()));
+
+  // Procura todas as semanas que possuem pontos registrados
   const recordedDateKeys = Object.keys(records).filter(dateKey => {
     const dayObj = records[dateKey];
     if (!dayObj) return false;
@@ -685,28 +709,45 @@ function updateRecordedWeeksSelect() {
     }
   });
 
-  const currentMondayKey = formatDateKey(getMonday(currentViewingDate));
-  select.innerHTML = '<option value="">📅 Histórico</option>';
-
-  if (weekSet.size === 0) {
-    const opt = document.createElement('option');
-    opt.value = '';
-    opt.textContent = '(Sem semanas salvas)';
-    opt.disabled = true;
-    select.appendChild(opt);
-    return;
+  // Garante que a semana atualmente sendo visualizada sempre apareça na lista
+  if (!weekSet.has(currentMondayKey)) {
+    const lastDay = new Date(currentMonday);
+    lastDay.setDate(currentMonday.getDate() + 6);
+    weekSet.set(currentMondayKey, {
+      monday: currentMonday,
+      label: `${formatDateShort(currentMonday)} a ${formatDateShort(lastDay)}`,
+      count: 0
+    });
   }
 
+  select.innerHTML = '';
+
+  // Opção para navegar para a semana anterior
+  const optPrev = document.createElement('option');
+  optPrev.value = 'prev';
+  optPrev.textContent = '‹ Semana Anterior';
+  select.appendChild(optPrev);
+
+  // Ordena semanas em ordem decrescente (mais recente primeiro)
   const sortedWeeks = Array.from(weekSet.entries()).sort((a, b) => b[0].localeCompare(a[0]));
+
   sortedWeeks.forEach(([mKey, data]) => {
     const opt = document.createElement('option');
     opt.value = mKey;
-    opt.textContent = `${data.label} (${data.count} pts)`;
+    const isThisWeek = mKey === thisWeekMondayKey;
+    const countText = data.count > 0 ? ` (${data.count} pts)` : '';
+    opt.textContent = `${data.label}${isThisWeek ? ' (Esta Semana)' : ''}${countText}`;
     if (mKey === currentMondayKey) {
       opt.selected = true;
     }
     select.appendChild(opt);
   });
+
+  // Opção para avançar para a próxima semana
+  const optNext = document.createElement('option');
+  optNext.value = 'next';
+  optNext.textContent = '› Próxima Semana';
+  select.appendChild(optNext);
 }
 
 // ==========================================
