@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v13';
+const CACHE_NAME = 'batida-ponto-v14';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -93,6 +93,75 @@ self.addEventListener('fetch', (event) => {
         // Fallback para cache quando offline
         return caches.match('./index.html');
       });
+    })
+  );
+});
+
+// ==========================================
+// Notificações Push & Ações Interativas
+// ==========================================
+
+self.addEventListener('push', (event) => {
+  let data = {
+    title: 'Hora de Bater o Ponto! ⏰',
+    body: 'Lembrete automático para registrar seu ponto.',
+    url: './index.html?punch=1'
+  };
+
+  try {
+    if (event.data) {
+      data = Object.assign(data, event.data.json());
+    }
+  } catch (e) {
+    if (event.data) {
+      data.body = event.data.text();
+    }
+  }
+
+  const options = {
+    body: data.body,
+    icon: './assets/icon-192.png',
+    badge: './assets/marcado.png',
+    vibrate: [250, 100, 250, 100, 250],
+    tag: 'ponto-push-alert',
+    renotify: true,
+    requireInteraction: true,
+    data: {
+      url: data.url || './index.html'
+    },
+    actions: [
+      { action: 'punch', title: '⚡ Bater Ponto' },
+      { action: 'open', title: 'Abrir App' }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const action = event.action;
+  let targetUrl = event.notification.data && event.notification.data.url ? event.notification.data.url : './index.html';
+
+  if (action === 'punch' && !targetUrl.includes('punch=')) {
+    targetUrl += (targetUrl.includes('?') ? '&' : '?') + 'punch=1';
+  }
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url && 'focus' in client) {
+          if (action === 'punch') {
+            client.postMessage({ action: 'quickPunch' });
+          }
+          return client.focus();
+        }
+      }
+      if (clients.openWindow) {
+        return clients.openWindow(targetUrl);
+      }
     })
   );
 });

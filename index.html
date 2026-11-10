@@ -180,6 +180,28 @@
             placeholder="Ex: https://app.pontomais.com.br">
         </div>
 
+        <!-- Lembretes & Notificações Push via Cloudflare Worker -->
+        <div class="settings-redirect-section">
+          <label for="inputPushWorkerUrl"
+            style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+            <span>🔔 Lembretes Push no Celular (Cloudflare)</span>
+            <span id="pushStatusBadge" style="font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); color: #aaa;">Desativado</span>
+          </label>
+          <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
+            Receba notificações automáticas no celular nos horários de bater o ponto, mesmo com o app fechado e a tela bloqueada.
+          </p>
+          <input type="url" id="inputPushWorkerUrl" class="schedule-input" style="width: 100%; margin-top: 6px;"
+            placeholder="Cole aqui a URL do seu Worker (ex: https://meu-worker.workers.dev)">
+          <div style="display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+            <button id="btnSubscribePush" class="btn-rpg btn-rpg-green" style="font-size: 0.75rem; height: 34px; padding: 0 12px;">
+              <span>Ativar Notificações</span>
+            </button>
+            <button id="btnTestPush" class="btn-rpg btn-rpg-blue" style="font-size: 0.75rem; height: 34px; padding: 0 12px;">
+              <span>🔔 Testar Push Agora</span>
+            </button>
+          </div>
+        </div>
+
         <div id="scheduleConfigForm" class="schedule-form">
           <!-- Gerado via JS para cada dia -->
         </div>
