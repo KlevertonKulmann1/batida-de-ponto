@@ -91,6 +91,7 @@
 
     <footer class="app-footer">
       <span>Controle de Ponto Pessoal • Salvo automaticamente no seu dispositivo</span>
+      <button id="btnForceAppUpdate" class="btn-footer-update" title="Recarregar e baixar a versão mais recente do aplicativo">🔄 Atualizar App</button>
     </footer>
 
   </div>
@@ -149,6 +150,18 @@
           Defina os horários esperados para cada dia da semana. Separe os horários por vírgula (ex:
           <code>08:00, 12:00, 13:00, 18:00</code>).
         </p>
+
+        <!-- Redirecionamento Contínuo para Sistema Oficial -->
+        <div class="settings-redirect-section">
+          <label for="inputExternalPunchUrl" style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; gap: 6px;">
+            🔗 Link do Sistema Oficial de Ponto (opcional)
+          </label>
+          <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
+            Ao bater um ponto (pelo botão principal ou no quadro), este link será aberto automaticamente em uma nova aba para você registrar o ponto na sua empresa.
+          </p>
+          <input type="url" id="inputExternalPunchUrl" class="schedule-input" style="width: 100%; margin-top: 6px;" placeholder="Ex: https://app.pontomais.com.br">
+        </div>
+
         <div id="scheduleConfigForm" class="schedule-form">
           <!-- Gerado via JS para cada dia -->
         </div>

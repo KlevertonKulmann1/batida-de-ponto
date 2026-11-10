@@ -31,7 +31,8 @@ const STORAGE_KEYS = {
   schedule: 'ponto_schedule_v1',
   records: 'ponto_records_v1',
   logs: 'ponto_logs_v1',
-  sound: 'ponto_sound_v1'
+  sound: 'ponto_sound_v1',
+  redirectUrl: 'ponto_redirect_url_v1'
 };
 
 // ==========================================
@@ -42,6 +43,7 @@ let schedule = loadSchedule();
 let records = loadRecords();
 let logs = loadLogs();
 let soundEnabled = loadSoundSetting();
+let redirectUrl = loadRedirectUrl();
 let currentViewingDate = new Date();
 let pendingUnmark = null;
 
@@ -58,9 +60,33 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLogs();
   setupLiveClockAndSound();
   setupEditTime();
+  setupForceAppUpdate();
   renderBoard();
   registerServiceWorker();
 });
+
+function loadRedirectUrl() {
+  return localStorage.getItem(STORAGE_KEYS.redirectUrl) || '';
+}
+
+function saveRedirectUrl(url) {
+  redirectUrl = url ? url.trim() : '';
+  localStorage.setItem(STORAGE_KEYS.redirectUrl, redirectUrl);
+}
+
+function openExternalRedirectIfConfigured() {
+  if (redirectUrl) {
+    let url = redirectUrl.trim();
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+    try {
+      window.open(url, '_blank');
+    } catch (e) {
+      console.error('Erro ao abrir link externo:', e);
+    }
+  }
+}
 
 function loadSoundSetting() {
   const saved = localStorage.getItem(STORAGE_KEYS.sound);
@@ -547,6 +573,7 @@ function markSlot(dateKey, dayLabel, slotTime, customActualTime = null) {
   playTickSound(true);
   showToast(`Ponto de ${slotTime} batido (${actualTime})! ✨`);
   renderBoard();
+  openExternalRedirectIfConfigured();
 }
 
 function unmarkSlot(dateKey, dayLabel, slotTime) {
@@ -894,6 +921,11 @@ function setupSettings() {
 }
 
 function renderSettingsForm() {
+  const urlInput = document.getElementById('inputExternalPunchUrl');
+  if (urlInput) {
+    urlInput.value = redirectUrl || '';
+  }
+
   const container = document.getElementById('scheduleConfigForm');
   container.innerHTML = '';
 
@@ -925,6 +957,11 @@ function renderSettingsForm() {
 }
 
 function saveSettingsFromForm() {
+  const urlInput = document.getElementById('inputExternalPunchUrl');
+  if (urlInput) {
+    saveRedirectUrl(urlInput.value);
+  }
+
   const newSchedule = {};
 
   DAY_KEYS.forEach(dayKey => {
@@ -1021,7 +1058,8 @@ function getBackupPayload() {
     exportedAt: new Date().toISOString(),
     schedule: schedule,
     records: records,
-    logs: logs
+    logs: logs,
+    redirectUrl: redirectUrl
   };
 }
 
@@ -1063,6 +1101,9 @@ function applyImportedData(data) {
       records = { ...records, ...data.records };
       saveRecords();
     }
+    if (data.redirectUrl !== undefined) {
+      saveRedirectUrl(data.redirectUrl);
+    }
     if (Array.isArray(data.logs)) {
       // Mescla logs sem duplicar ids
       const existingIds = new Set(logs.map(l => l.id));
@@ -1096,15 +1137,55 @@ function showToast(message) {
 }
 
 // ==========================================
-// PWA & Service Worker
+// PWA, Atualizações & Service Worker
 // ==========================================
+
+function setupForceAppUpdate() {
+  const btn = document.getElementById('btnForceAppUpdate');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      showToast('Limpando cache e recarregando... 🔄');
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          return Promise.all(names.map((name) => caches.delete(name)));
+        }).then(() => {
+          setTimeout(() => window.location.reload(true), 500);
+        });
+      } else {
+        window.location.reload(true);
+      }
+    });
+  }
+}
 
 function registerServiceWorker() {
   if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
-    navigator.serviceWorker.register('sw.js').then(() => {
+    navigator.serviceWorker.register('sw.js').then((reg) => {
       console.log('PWA ServiceWorker registrado.');
+      // Força verificação de atualização no GitHub
+      reg.update();
+
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        if (newWorker) {
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              showToast('Nova versão instalada! Atualizando... 🔄');
+              setTimeout(() => window.location.reload(), 1200);
+            }
+          });
+        }
+      });
     }).catch(err => {
       console.log('SW falhou:', err);
+    });
+
+    let refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!refreshing) {
+        refreshing = true;
+        window.location.reload();
+      }
     });
   }
 }

@@ -770,6 +770,37 @@ button {
   font-size: 0.75rem;
   color: #8c8285;
   padding: 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-footer-update {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(226, 186, 100, 0.3);
+  color: #e2ba64;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-footer-update:hover {
+  background: rgba(226, 186, 100, 0.2);
+  border-color: #e2ba64;
+  color: #fff;
+}
+
+.settings-redirect-section {
+  background: #201c1d;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #443c3e;
+  margin-bottom: 8px;
 }
 
 /* ==========================================================================
