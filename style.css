@@ -2,6 +2,14 @@
    Controle de Ponto - Estilos Principais
    ========================================================================== */
 
+@font-face {
+  font-family: 'Lalezar';
+  src: url('assets/fonts/Lalezar-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --bg-dark: #1e1b1c;
   --bg-board: #3f3937;
@@ -12,8 +20,8 @@
   --accent-green: #52c41a;
   --accent-red: #ff4d4f;
   --btn-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  --font-display: 'Montserrat', 'Arial Black', sans-serif;
-  --font-body: 'Montserrat', system-ui, -apple-system, sans-serif;
+  --font-display: 'Lalezar', 'Montserrat', cursive, sans-serif;
+  --font-body: 'Lalezar', 'Montserrat', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -78,8 +86,9 @@ body {
 }
 
 .nav-title {
-  font-weight: 800;
-  font-size: 1.15rem;
+  font-family: var(--font-display);
+  font-weight: normal;
+  font-size: 1.25rem;
   letter-spacing: 0.5px;
   color: #fff;
   white-space: nowrap;
@@ -87,9 +96,9 @@ body {
 }
 
 .live-clock {
-  font-family: monospace;
-  font-size: 0.9rem;
-  font-weight: 800;
+  font-family: var(--font-display), monospace;
+  font-size: 1rem;
+  font-weight: normal;
   background: rgba(0, 0, 0, 0.5);
   padding: 4px 10px;
   border-radius: 6px;
@@ -875,8 +884,10 @@ button {
 }
 
 .modal-header h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: normal;
+  letter-spacing: 0.5px;
   color: #fff;
   display: flex;
   align-items: center;
@@ -1149,12 +1160,13 @@ button {
   }
 
   .nav-title {
-    font-size: 1rem;
-    font-weight: 800;
+    font-size: 1.15rem;
+    font-weight: normal;
   }
 
   .live-clock {
-    font-size: 0.8rem;
+    font-size: 0.95rem;
+    font-weight: normal;
     padding: 3px 8px;
     margin-left: auto;
   }
