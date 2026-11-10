@@ -11,8 +11,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Ponto">
   <link rel="manifest" href="manifest.json">
-  <link rel="icon" type="image/png" href="assets/marcado.png">
-  <link rel="apple-touch-icon" href="assets/marcado.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+  <link rel="icon" type="image/png" sizes="48x48" href="assets/marcado.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="assets/icon-512.png">
 
   <!-- Fontes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -91,7 +93,10 @@
 
     <footer class="app-footer">
       <span>Controle de Ponto Pessoal • Salvo automaticamente no seu dispositivo</span>
-      <button id="btnForceAppUpdate" class="btn-footer-update" title="Recarregar e baixar a versão mais recente do aplicativo">🔄 Atualizar App</button>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+        <button id="btnInstallApp" class="btn-footer-update" style="display: none;" title="Instalar aplicativo no celular">📱 Instalar App</button>
+        <button id="btnForceAppUpdate" class="btn-footer-update" title="Recarregar e baixar a versão mais recente do aplicativo">🔄 Atualizar App</button>
+      </div>
     </footer>
 
   </div>

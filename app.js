@@ -61,6 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupLiveClockAndSound();
   setupEditTime();
   setupForceAppUpdate();
+  setupInstallPrompt();
   renderBoard();
   registerServiceWorker();
 });
@@ -1156,6 +1157,41 @@ function setupForceAppUpdate() {
       }
     });
   }
+}
+
+let deferredInstallPrompt = null;
+
+function setupInstallPrompt() {
+  const btnInstall = document.getElementById('btnInstallApp');
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (btnInstall) {
+      btnInstall.style.display = 'inline-flex';
+    }
+  });
+
+  if (btnInstall) {
+    btnInstall.addEventListener('click', async () => {
+      if (!deferredInstallPrompt) return;
+      deferredInstallPrompt.prompt();
+      const { outcome } = await deferredInstallPrompt.userChoice;
+      if (outcome === 'accepted') {
+        showToast('Instalando aplicativo... ✨');
+      }
+      deferredInstallPrompt = null;
+      btnInstall.style.display = 'none';
+    });
+  }
+
+  window.addEventListener('appinstalled', () => {
+    showToast('Aplicativo instalado com sucesso! 🎉');
+    if (btnInstall) {
+      btnInstall.style.display = 'none';
+    }
+    deferredInstallPrompt = null;
+  });
 }
 
 function registerServiceWorker() {
