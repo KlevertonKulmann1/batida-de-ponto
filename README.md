@@ -82,3 +82,4 @@ git push -u origin main
 3. **No iPhone (Safari):**
    - Toque no botão de compartilhamento (ícone de quadrado com seta para cima) e escolha **"Adicionar à Tela de Início"**.
 4. Pronto! O ícone do relógio aparecerá na tela do seu celular e abrirá em tela cheia, funcionando inclusive offline.
+
