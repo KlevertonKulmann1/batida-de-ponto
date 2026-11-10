@@ -218,11 +218,11 @@ button {
   height: 39px;
   box-sizing: border-box;
   padding: 0 20px;
-  min-width: 80px;
+  min-width: 150px;
   border: none;
   outline: none;
   font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 800;
   letter-spacing: 0.5px;
   color: #fff;
@@ -327,6 +327,10 @@ button {
   cursor: not-allowed;
   filter: grayscale(0.5);
   transform: none;
+}
+
+.btn-rpg .btn-text {
+  padding-top: 4px;
 }
 
 /* Botão Caixa Quadrada (box-btn.png - 46x46) */
@@ -537,7 +541,7 @@ button {
 }
 
 .btn-today-pill {
-  min-width: 65px;
+  min-width: 85px;
   height: 39px;
   padding: 0 14px;
 }
@@ -1212,8 +1216,9 @@ button {
 
   .week-nav {
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 6px;
+    justify-content: space-between;
+    width: 100%;
+    gap: unset;
   }
 
   .board-title {
