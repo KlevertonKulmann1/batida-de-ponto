@@ -279,9 +279,7 @@ async function encryptPayload(clientPublicKeyBytes, clientAuthBytes, text) {
     256
   ));
 
-  const salt = crypto.getRandomValues(new Uint8Array(16));
-
-  // IKM = HMAC-SHA256(auth, sharedSecret)
+  // 2. PRK_key = HMAC-SHA-256(auth_secret, sharedSecret)
   const authKey = await crypto.subtle.importKey(
     'raw',
     clientAuthBytes,
@@ -289,16 +287,27 @@ async function encryptPayload(clientPublicKeyBytes, clientAuthBytes, text) {
     false,
     ['sign']
   );
+  const prkKeyBytes = new Uint8Array(await crypto.subtle.sign('HMAC', authKey, sharedSecret));
 
-  const authInfo = concat(
+  // 3. key_info = "WebPush: info\0" || clientPublicKey || localPublicKey
+  const keyInfo = concat(
     new TextEncoder().encode('WebPush: info\0'),
     clientPublicKeyBytes,
     localPublicKeyRaw
   );
 
-  const ikm = new Uint8Array(await crypto.subtle.sign('HMAC', authKey, sharedSecret));
+  // 4. IKM = HMAC-SHA-256(PRK_key, key_info || 0x01)
+  const prkKeyCrypto = await crypto.subtle.importKey(
+    'raw',
+    prkKeyBytes,
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const ikm = new Uint8Array(await crypto.subtle.sign('HMAC', prkKeyCrypto, concat(keyInfo, new Uint8Array([1]))));
 
-  // PRK = HKDF-Extract(salt, ikm)
+  // 5. PRK = HKDF-Extract(salt, IKM)
+  const salt = crypto.getRandomValues(new Uint8Array(16));
   const saltKey = await crypto.subtle.importKey(
     'raw',
     salt,
@@ -308,8 +317,8 @@ async function encryptPayload(clientPublicKeyBytes, clientAuthBytes, text) {
   );
   const prk = await crypto.subtle.sign('HMAC', saltKey, ikm);
 
-  // CEK = HKDF-Expand(PRK, "Content-Encoding: aes128gcm\0", 16)
-  const cekKey = await crypto.subtle.importKey(
+  // 6. CEK = HKDF-Expand(PRK, "Content-Encoding: aes128gcm\0" || 0x01)[0..16]
+  const prkHmacKey = await crypto.subtle.importKey(
     'raw',
     prk,
     { name: 'HMAC', hash: 'SHA-256' },
@@ -318,11 +327,11 @@ async function encryptPayload(clientPublicKeyBytes, clientAuthBytes, text) {
   );
 
   const cekInfo = concat(new TextEncoder().encode('Content-Encoding: aes128gcm\0'), new Uint8Array([1]));
-  const cekBytes = (new Uint8Array(await crypto.subtle.sign('HMAC', cekKey, cekInfo))).slice(0, 16);
+  const cekBytes = (new Uint8Array(await crypto.subtle.sign('HMAC', prkHmacKey, cekInfo))).slice(0, 16);
 
-  // NONCE = HKDF-Expand(PRK, "Content-Encoding: nonce\0", 12)
+  // 7. NONCE = HKDF-Expand(PRK, "Content-Encoding: nonce\0" || 0x01)[0..12]
   const nonceInfo = concat(new TextEncoder().encode('Content-Encoding: nonce\0'), new Uint8Array([1]));
-  const nonceBytes = (new Uint8Array(await crypto.subtle.sign('HMAC', cekKey, nonceInfo))).slice(0, 12);
+  const nonceBytes = (new Uint8Array(await crypto.subtle.sign('HMAC', prkHmacKey, nonceInfo))).slice(0, 12);
 
   const aesKey = await crypto.subtle.importKey(
     'raw',

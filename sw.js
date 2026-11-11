@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v14';
+const CACHE_NAME = 'batida-ponto-v15';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -121,11 +121,10 @@ self.addEventListener('push', (event) => {
   const options = {
     body: data.body,
     icon: './assets/icon-192.png',
-    badge: './assets/marcado.png',
+    badge: './assets/icon-192.png',
     vibrate: [250, 100, 250, 100, 250],
     tag: 'ponto-push-alert',
     renotify: true,
-    requireInteraction: true,
     data: {
       url: data.url || './index.html'
     },
