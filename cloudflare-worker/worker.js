@@ -257,12 +257,14 @@ async function createVapidHeader(endpoint, vapid) {
 }
 
 async function encryptPayload(clientPublicKeyBytes, clientAuthBytes, text) {
+  // @ts-ignore
   const localKeyPair = await crypto.subtle.generateKey(
     { name: 'ECDH', namedCurve: 'P-256' },
     true,
     ['deriveBits']
   );
 
+  // @ts-ignore
   const localPublicKeyRaw = new Uint8Array(await crypto.subtle.exportKey('raw', localKeyPair.publicKey));
 
   const clientKey = await crypto.subtle.importKey(
@@ -273,6 +275,7 @@ async function encryptPayload(clientPublicKeyBytes, clientAuthBytes, text) {
     []
   );
 
+  // @ts-ignore
   const sharedSecret = new Uint8Array(await crypto.subtle.deriveBits(
     { name: 'ECDH', public: clientKey },
     localKeyPair.privateKey,
