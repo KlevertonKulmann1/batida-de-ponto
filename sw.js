@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v16';
+const CACHE_NAME = 'batida-ponto-v17';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -7,6 +7,7 @@ const ASSETS_TO_CACHE = [
   './ponto-backup.json',
   './manifest.json',
   './assets/fonts/Lalezar-Regular.ttf',
+  './assets/alert-icon.png',
   './assets/icon-192.png',
   './assets/icon-512.png',
   './assets/icon-maskable-192.png',
@@ -121,8 +122,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: './assets/icon-192.png',
-    badge: './assets/icon-192.png',
+    icon: data.icon || './assets/alert-icon.png',
+    badge: './assets/alert-icon.png',
     vibrate: [250, 100, 250, 100, 250],
     tag: 'ponto-push-alert',
     renotify: true,

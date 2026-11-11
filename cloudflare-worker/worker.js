@@ -85,7 +85,7 @@ export default {
         const payload = JSON.stringify({
           title: 'Controle de Ponto ⏰',
           body: 'Teste recebido com sucesso! O seu celular está pronto para os lembretes.',
-          icon: './assets/icon-192.png',
+          icon: './assets/alert-icon.png',
           url: './index.html'
         });
 
@@ -146,7 +146,7 @@ export default {
     const payload = JSON.stringify({
       title: 'Hora de Bater o Ponto! ⏰',
       body: `Horário previsto: ${currentTime}. Toque aqui para registrar agora.`,
-      icon: './assets/icon-192.png',
+      icon: './assets/alert-icon.png',
       url: './index.html?punch=1'
     });
 
