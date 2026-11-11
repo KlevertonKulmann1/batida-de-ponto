@@ -1,0 +1,153 @@
+{
+  "version": 1,
+  "exportedAt": "2026-11-10T21:44:00.000Z",
+  "schedule": {
+    "segunda": {
+      "label": "Segunda",
+      "times": ["08:00", "08:15", "08:45", "11:00", "11:30", "17:00", "18:00", "20:00"]
+    },
+    "terca": {
+      "label": "Terça",
+      "times": ["08:00", "18:00"]
+    },
+    "quarta": {
+      "label": "Quarta",
+      "times": ["08:00", "08:15", "08:45", "11:00", "11:30", "17:00", "18:00", "20:00"]
+    },
+    "quinta": {
+      "label": "Quinta",
+      "times": ["08:00", "18:00"]
+    },
+    "sexta": {
+      "label": "Sexta",
+      "times": ["08:00", "17:00", "18:00", "19:00"]
+    },
+    "sabado": {
+      "label": "Sábado",
+      "times": []
+    },
+    "domingo": {
+      "label": "Domingo",
+      "times": []
+    }
+  },
+  "records": {
+    "2026-11-09": {
+      "08:00": { "marked": true, "timestamp": "2026-11-09T11:00:00.000Z", "markedAt": "08:00" },
+      "08:15": { "marked": true, "timestamp": "2026-11-09T11:15:00.000Z", "markedAt": "08:15" },
+      "08:45": { "marked": true, "timestamp": "2026-11-09T11:45:00.000Z", "markedAt": "08:45" },
+      "11:00": { "marked": true, "timestamp": "2026-11-09T14:00:00.000Z", "markedAt": "11:00" },
+      "11:30": { "marked": true, "timestamp": "2026-11-09T14:30:00.000Z", "markedAt": "11:30" },
+      "17:00": { "marked": true, "timestamp": "2026-11-09T20:00:00.000Z", "markedAt": "17:00" },
+      "18:00": { "marked": true, "timestamp": "2026-11-09T21:00:00.000Z", "markedAt": "18:00" },
+      "20:00": { "marked": true, "timestamp": "2026-11-09T23:00:00.000Z", "markedAt": "20:00" }
+    },
+    "2026-11-10": {
+      "08:00": { "marked": true, "timestamp": "2026-11-10T11:00:00.000Z", "markedAt": "08:00" },
+      "18:00": { "marked": true, "timestamp": "2026-11-10T21:00:00.000Z", "markedAt": "18:00" }
+    }
+  },
+  "logs": [
+    {
+      "id": "log_20261110_1800",
+      "timestamp": "2026-11-10T21:00:00.000Z",
+      "displayDate": "10/11/2026 18:00:00",
+      "dateKey": "2026-11-10",
+      "dayName": "Terça",
+      "slotTime": "18:00",
+      "actualTime": "18:00",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261110_0800",
+      "timestamp": "2026-11-10T11:00:00.000Z",
+      "displayDate": "10/11/2026 08:00:00",
+      "dateKey": "2026-11-10",
+      "dayName": "Terça",
+      "slotTime": "08:00",
+      "actualTime": "08:00",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_2000",
+      "timestamp": "2026-11-09T23:00:00.000Z",
+      "displayDate": "09/11/2026 20:00:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "20:00",
+      "actualTime": "20:00",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_1800",
+      "timestamp": "2026-11-09T21:00:00.000Z",
+      "displayDate": "09/11/2026 18:00:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "18:00",
+      "actualTime": "18:00",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_1700",
+      "timestamp": "2026-11-09T20:00:00.000Z",
+      "displayDate": "09/11/2026 17:00:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "17:00",
+      "actualTime": "17:00",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_1130",
+      "timestamp": "2026-11-09T14:30:00.000Z",
+      "displayDate": "09/11/2026 11:30:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "11:30",
+      "actualTime": "11:30",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_1100",
+      "timestamp": "2026-11-09T14:00:00.000Z",
+      "displayDate": "09/11/2026 11:00:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "11:00",
+      "actualTime": "11:00",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_0845",
+      "timestamp": "2026-11-09T11:45:00.000Z",
+      "displayDate": "09/11/2026 08:45:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "08:45",
+      "actualTime": "08:45",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_0815",
+      "timestamp": "2026-11-09T11:15:00.000Z",
+      "displayDate": "09/11/2026 08:15:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "08:15",
+      "actualTime": "08:15",
+      "action": "marcado"
+    },
+    {
+      "id": "log_20261109_0800",
+      "timestamp": "2026-11-09T11:00:00.000Z",
+      "displayDate": "09/11/2026 08:00:00",
+      "dateKey": "2026-11-09",
+      "dayName": "Segunda",
+      "slotTime": "08:00",
+      "actualTime": "08:00",
+      "action": "marcado"
+    }
+  ],
+  "redirectUrl": "https://platform.senior.com.br/senior-seguranca-patrimonial-web/#/login"
+}

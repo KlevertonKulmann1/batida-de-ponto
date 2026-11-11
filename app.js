@@ -1019,7 +1019,7 @@ function setupBackup() {
     const reader = new FileReader();
     reader.onload = (event) => {
       try {
-        const data = JSON.parse(event.target.result);
+        const data = cleanAndParseJSON(event.target.result);
         applyImportedData(data);
         fileInput.value = '';
       } catch (err) {
@@ -1030,19 +1030,33 @@ function setupBackup() {
   });
 
   document.getElementById('btnImportFromText').addEventListener('click', () => {
-    const txt = document.getElementById('importTextarea').value.trim();
-    if (!txt) {
+    const txt = document.getElementById('importTextarea').value;
+    if (!txt || !txt.trim()) {
       alert('Cole o conteúdo JSON na caixa de texto primeiro.');
       return;
     }
     try {
-      const data = JSON.parse(txt);
+      const data = cleanAndParseJSON(txt);
       applyImportedData(data);
       document.getElementById('importTextarea').value = '';
     } catch (e) {
-      alert('JSON inválido! Verifique o texto colado.');
+      alert('JSON inválido! Verifique o texto colado. Se copiou do celular, certifique-se de copiar todo o bloco.');
     }
   });
+
+  const btnRestorePontoFile = document.getElementById('btnRestorePontoFile');
+  if (btnRestorePontoFile) {
+    btnRestorePontoFile.addEventListener('click', async () => {
+      try {
+        const res = await fetch('ponto-backup.json?t=' + Date.now());
+        if (!res.ok) throw new Error('Arquivo ponto-backup.json não encontrado no servidor.');
+        const data = await res.json();
+        applyImportedData(data, true);
+      } catch (err) {
+        alert('Não foi possível carregar ponto-backup.json: ' + err.message);
+      }
+    });
+  }
 
   document.getElementById('btnResetAllData').addEventListener('click', () => {
     if (confirm('ATENÇÃO: Isto apagará todos os pontos batidos, logs e configurações salvas no dispositivo. Tem certeza?')) {
@@ -1094,13 +1108,38 @@ function copyBackupToClipboard() {
   });
 }
 
-function applyImportedData(data) {
+function cleanAndParseJSON(rawText) {
+  let txt = String(rawText || '').trim();
+  // Remove blocos de código markdown (```json ... ``` ou ``` ... ```)
+  txt = txt.replace(/^```[a-z]*\s*/i, '').replace(/\s*```$/i, '').trim();
+  // Converte aspas curvas/inteligentes de celulares para aspas normais
+  txt = txt.replace(/[\u201C\u201D\u201E\u201F\u2033\u2036]/g, '"');
+  txt = txt.replace(/[\u2018\u2019\u201A\u201B\u2032\u2035]/g, "'");
+  // Extrai apenas o miolo do JSON entre o primeiro { e o último }
+  const firstBrace = txt.indexOf('{');
+  const lastBrace = txt.lastIndexOf('}');
+  if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+    txt = txt.substring(firstBrace, lastBrace + 1);
+  }
+  return JSON.parse(txt);
+}
+
+function applyImportedData(data, skipConfirm = false) {
   if (!data || typeof data !== 'object') {
     alert('Dados de backup corrompidos.');
     return;
   }
 
-  if (confirm('Deseja restaurar estes dados? Os registros atuais serão mesclados com o backup.')) {
+  let shouldProceed = skipConfirm;
+  if (!shouldProceed) {
+    try {
+      shouldProceed = confirm('Deseja restaurar estes dados? Os registros atuais serão mesclados com o backup.');
+    } catch (e) {
+      shouldProceed = true;
+    }
+  }
+
+  if (shouldProceed) {
     if (data.schedule) {
       schedule = { ...DEFAULT_SCHEDULE, ...data.schedule };
       saveSchedule(schedule);

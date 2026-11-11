@@ -1,9 +1,10 @@
-const CACHE_NAME = 'batida-ponto-v15';
+const CACHE_NAME = 'batida-ponto-v16';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
   './app.js',
+  './ponto-backup.json',
   './manifest.json',
   './assets/fonts/Lalezar-Regular.ttf',
   './assets/icon-192.png',
