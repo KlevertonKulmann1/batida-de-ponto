@@ -2,7 +2,7 @@
  * custom-scrollbar.js
  * Barras de rolagem com tamanho de thumb fixo idêntico às artes RPG:
  * - Horizontal (.slots-container): largura fixa exata de horizontal-roll-bar.png (98px)
- * - Vertical (página): altura fixa exata do cristal scroll-indicator.png (32px)
+ * - Vertical (página): botões Up/Down (20px) + altura fixa exata do cristal scroll-indicator.png (32px)
  */
 
 // =========================================================================
@@ -113,13 +113,53 @@ function setupHorizontalScrollbars() {
 }
 
 // =========================================================================
-// 2. ROLAGEM VERTICAL DA PÁGINA (Trilho + Cristal Fixo)
+// 2. ROLAGEM VERTICAL DA PÁGINA (Botões Up/Down + Trilho + Cristal Fixo)
 // =========================================================================
 
+function setupScrollButton(btn, scrollStep) {
+  let scrollInterval = null;
+  let scrollTimeout = null;
+
+  function doScroll() {
+    window.scrollBy({ top: scrollStep, behavior: 'smooth' });
+  }
+
+  function startScrolling(e) {
+    e.preventDefault();
+    doScroll();
+    scrollTimeout = setTimeout(() => {
+      scrollInterval = setInterval(doScroll, 70);
+    }, 250);
+  }
+
+  function stopScrolling() {
+    clearTimeout(scrollTimeout);
+    clearInterval(scrollInterval);
+  }
+
+  btn.addEventListener('pointerdown', startScrolling);
+  btn.addEventListener('pointerup', stopScrolling);
+  btn.addEventListener('pointerleave', stopScrolling);
+  btn.addEventListener('pointercancel', stopScrolling);
+}
+
 function initVerticalScrollbar() {
-  let track = document.getElementById('customVertScrollTrack');
-  if (!track) {
-    track = document.createElement('div');
+  let wrapper = document.getElementById('customVertScrollWrapper');
+  if (!wrapper) {
+    wrapper = document.createElement('div');
+    wrapper.id = 'customVertScrollWrapper';
+    wrapper.className = 'custom-vert-scroll-wrapper';
+
+    // Botão de subir (Up)
+    const btnUp = document.createElement('button');
+    btnUp.id = 'customScrollBtnUp';
+    btnUp.className = 'custom-scroll-btn custom-scroll-btn-up';
+    btnUp.type = 'button';
+    btnUp.title = 'Rolar para cima';
+    wrapper.appendChild(btnUp);
+
+    // Trilho intermediário
+    const track = document.createElement('div');
     track.id = 'customVertScrollTrack';
     track.className = 'custom-vert-scroll-track';
 
@@ -128,19 +168,34 @@ function initVerticalScrollbar() {
     thumb.className = 'custom-vert-scroll-thumb';
     track.appendChild(thumb);
 
-    document.body.appendChild(track);
+    wrapper.appendChild(track);
+
+    // Botão de descer (Down)
+    const btnDown = document.createElement('button');
+    btnDown.id = 'customScrollBtnDown';
+    btnDown.className = 'custom-scroll-btn custom-scroll-btn-down';
+    btnDown.type = 'button';
+    btnDown.title = 'Rolar para baixo';
+    wrapper.appendChild(btnDown);
+
+    document.body.appendChild(wrapper);
+
+    // Conecta a ação de rolagem suave nos botões Up e Down
+    setupScrollButton(btnUp, -140);
+    setupScrollButton(btnDown, 140);
   }
 
+  const track = document.getElementById('customVertScrollTrack');
   const thumb = document.getElementById('customVertScrollThumb');
 
   function update() {
     const docElem = document.documentElement;
     const maxScroll = docElem.scrollHeight - window.innerHeight;
     if (maxScroll <= 10) {
-      track.style.display = 'none';
+      wrapper.style.display = 'none';
       return;
     }
-    track.style.display = 'block';
+    wrapper.style.display = 'flex';
 
     const trackHeight = track.clientHeight;
     const thumbHeight = thumb.offsetHeight || 32;

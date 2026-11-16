@@ -104,24 +104,69 @@ body::-webkit-scrollbar,
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) brightness(1.35);
 }
 
-/* 2. Trilho e Cristal Vertical (Página) */
-.custom-vert-scroll-track {
+/* 2. Container Vertical (Botão Cima + Trilho + Botão Baixo) */
+.custom-vert-scroll-wrapper {
   position: fixed;
   right: 4px;
   top: 14px;
   bottom: 14px;
   width: 22px;
-  background: url('assets/scroll-bar.png') center / 100% 100% no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   z-index: 999;
   user-select: none;
   touch-action: none;
   display: none;
-  opacity: 0.88;
+  opacity: 0.9;
   transition: opacity 0.2s ease;
 }
 
-.custom-vert-scroll-track:hover {
+.custom-vert-scroll-wrapper:hover {
   opacity: 1;
+}
+
+.custom-scroll-btn {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.1s ease, filter 0.15s ease;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.custom-scroll-btn:hover {
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.8)) brightness(1.25);
+  transform: scale(1.08);
+}
+
+.custom-scroll-btn:active {
+  transform: scale(0.92);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) brightness(1.4);
+}
+
+.custom-scroll-btn-up {
+  background: url('assets/scrollbar-btn-up.png') center / contain no-repeat;
+  margin-bottom: 4px;
+}
+
+.custom-scroll-btn-down {
+  background: url('assets/scrollbar-btn-down.png') center / contain no-repeat;
+  margin-top: 4px;
+}
+
+.custom-vert-scroll-track {
+  flex: 1;
+  width: 22px;
+  position: relative;
+  background: url('assets/scroll-bar.png') center / 100% 100% no-repeat;
+  user-select: none;
+  touch-action: none;
 }
 
 .custom-vert-scroll-thumb {
@@ -1385,6 +1430,7 @@ button {
 
   .app-wrapper {
     gap: 10px;
+    padding-right: 25px;
   }
 
 
