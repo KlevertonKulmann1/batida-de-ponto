@@ -2,6 +2,8 @@
  * Controle de Ponto - Interface do Quadro, Slots de Horários, Navegação e Modais
  */
 
+const dismissedLunchOverlays = new Set();
+
 function setupLiveClockAndSound() {
   const clockElem = document.getElementById('liveClock');
   function tick() {
@@ -198,6 +200,19 @@ function renderBoard() {
       workloadBadge.addEventListener('click', () => {
         showToast(`${dayConfig.label}: Dia de folga. Não há horas pendentes!`);
       });
+    } else if (workStats.isCurrentlyInLunch) {
+      workloadBadge.classList.add('workload-working');
+      workloadBadge.innerHTML = `🍽️ <span>No Almoço (${lunchWin.end}) • Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
+      const exitText = workStats.estimatedExitTime ? ` • Saída prevista: ${workStats.estimatedExitTime}` : '';
+      workloadBadge.title = `🍽️ Em horário de almoço (${lunchWin.start} às ${lunchWin.end}). Cronômetro pausado! Já trabalhou ${minutesToHoursMin(workStats.workedMinutes)} de ${targetWorkload}${exitText}. Clique para ver o aviso de almoço.`;
+      workloadBadge.addEventListener('click', () => {
+        if (dismissedLunchOverlays.has(dateKey)) {
+          dismissedLunchOverlays.delete(dateKey);
+          renderBoard();
+        } else {
+          showToast(`🍽️ No almoço até ${lunchWin.end}! Cronômetro pausado (${minutesToHoursMin(workStats.workedMinutes)} trabalhadas).`);
+        }
+      });
     } else if (workStats.punchesCount === 0) {
       workloadBadge.classList.add('workload-pending');
       workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(targetMins)}`;
@@ -208,14 +223,7 @@ function renderBoard() {
     } else if (workStats.isCurrentlyWorking) {
       workloadBadge.classList.add('workload-working');
       const dot = `<span class="workload-dot"></span>`;
-      if (workStats.isCurrentlyInLunch) {
-        workloadBadge.innerHTML = `🍽️ <span>No Almoço (${lunchWin.end}) • Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
-        const exitText = workStats.estimatedExitTime ? ` • Saída prevista: ${workStats.estimatedExitTime}` : '';
-        workloadBadge.title = `🍽️ Em horário de almoço (${lunchWin.start} às ${lunchWin.end}). Cronômetro pausado! Já trabalhou ${minutesToHoursMin(workStats.workedMinutes)} de ${targetWorkload}${exitText}.`;
-        workloadBadge.addEventListener('click', () => {
-          showToast(`🍽️ No almoço até ${lunchWin.end}! Cronômetro pausado (${minutesToHoursMin(workStats.workedMinutes)} trabalhadas).`);
-        });
-      } else if (workStats.remainingMinutes > 0) {
+      if (workStats.remainingMinutes > 0) {
         workloadBadge.innerHTML = `${dot} <span>Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
         const exitText = workStats.estimatedExitTime ? ` • Saída prevista: ${workStats.estimatedExitTime}` : '';
         workloadBadge.title = `Em expediente desde às ${workStats.lastEntrance}! Já trabalhou ${minutesToHoursMin(workStats.workedMinutes)} de ${targetWorkload}${exitText}.`;
@@ -338,6 +346,57 @@ function renderBoard() {
 
     controlsLine.appendChild(slotsContainer);
     dayRow.appendChild(controlsLine);
+
+    // Se o horário de almoço estiver vigente hoje e não for folga, exibe o container de pausa sobre o dia
+    if (isDayToday && workStats.isCurrentlyInLunch && !isFolga && !dismissedLunchOverlays.has(dateKey)) {
+      dayRow.classList.add('is-lunch-active');
+
+      const overlayContainer = document.createElement('div');
+      overlayContainer.className = 'lunch-overlay-container';
+      overlayContainer.id = `lunchOverlay_${dateKey}`;
+
+      const overlayCard = document.createElement('div');
+      overlayCard.className = 'lunch-overlay-card';
+
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'lunch-overlay-close';
+      closeBtn.title = 'Fechar aviso para bater ponto';
+      closeBtn.setAttribute('aria-label', 'Fechar aviso');
+      closeBtn.textContent = '✕';
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        overlayContainer.classList.add('fade-out');
+        setTimeout(() => {
+          overlayContainer.remove();
+          dayRow.classList.remove('is-lunch-active');
+        }, 200);
+        dismissedLunchOverlays.add(dateKey);
+        showToast('Aviso de almoço fechado. Você pode bater o ponto normalmente!');
+      });
+
+      const pictureElem = document.createElement('picture');
+      pictureElem.className = 'lunch-overlay-picture';
+
+      if (IMAGES.pausaAlmocoDesk) {
+        const sourceDesk = document.createElement('source');
+        sourceDesk.media = '(min-width: 476px)';
+        sourceDesk.srcset = IMAGES.pausaAlmocoDesk;
+        pictureElem.appendChild(sourceDesk);
+      }
+
+      const lunchImg = document.createElement('img');
+      lunchImg.className = 'lunch-overlay-img';
+      lunchImg.src = IMAGES.pausaAlmoco;
+      lunchImg.alt = 'Pausa para o Almoço';
+      pictureElem.appendChild(lunchImg);
+
+      overlayCard.appendChild(closeBtn);
+      overlayCard.appendChild(pictureElem);
+      overlayContainer.appendChild(overlayCard);
+      dayRow.appendChild(overlayContainer);
+    }
+
     daysContainer.appendChild(dayRow);
   });
 

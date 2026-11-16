@@ -145,6 +145,9 @@ function saveSettingsFromForm() {
 
   saveSchedule(newSchedule);
   syncScheduleWithWorker(newSchedule);
+  if (typeof dismissedLunchOverlays !== 'undefined') {
+    dismissedLunchOverlays.clear();
+  }
   renderBoard();
   closeModal('modalSettings');
   showToast('Horários atualizados com sucesso!');

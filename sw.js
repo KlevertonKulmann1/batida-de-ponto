@@ -38,6 +38,8 @@ const ASSETS_TO_CACHE = [
   './assets/batida-faltando.png',
   './assets/marcado.png',
   './assets/nao-marcado.png',
+  './assets/pausa-para-almoço.jpg',
+  './assets/pausa-para-almoço-desk.jpg',
   './assets/box-btn.png',
   './assets/clock-icon.png',
   './assets/icon-sound.png',

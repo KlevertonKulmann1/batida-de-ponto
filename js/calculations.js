@@ -70,6 +70,10 @@ function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins, lunchPar
   let hasPendingPunch = false;
   let estimatedExitTime = null;
 
+  const now = new Date();
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const isTimeInLunch = Boolean(isDateToday && (nowMinutes >= lunchStartMins && nowMinutes < lunchEndMins));
+
   if (punches.length === 0) {
     return {
       isFolga: false,
@@ -77,7 +81,14 @@ function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins, lunchPar
       workedMinutes: 0,
       remainingMinutes: targetMins,
       isCurrentlyWorking: false,
-      isCurrentlyInLunch: false,
+      isCurrentlyInLunch: isTimeInLunch,
+      lunchWindow: {
+        startMins: lunchStartMins,
+        endMins: lunchEndMins,
+        start: minutesToHoursMin(lunchStartMins),
+        end: minutesToHoursMin(lunchEndMins),
+        durationMins: lunchDurationMins
+      },
       hasPendingPunch: false,
       estimatedExitTime: null
     };
@@ -141,6 +152,16 @@ function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins, lunchPar
     const exitH = Math.floor(exitMins / 60) % 24;
     const exitM = exitMins % 60;
     estimatedExitTime = `${String(exitH).padStart(2, '0')}:${String(exitM).padStart(2, '0')}`;
+  }
+
+  if (isTimeInLunch) {
+    isCurrentlyInLunch = true;
+    if (remainingMinutes > 0 && !estimatedExitTime) {
+      const exitMins = lunchEndMins + remainingMinutes;
+      const exitH = Math.floor(exitMins / 60) % 24;
+      const exitM = exitMins % 60;
+      estimatedExitTime = `${String(exitH).padStart(2, '0')}:${String(exitM).padStart(2, '0')}`;
+    }
   }
 
   return {

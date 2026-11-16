@@ -19,7 +19,9 @@ const IMAGES = {
   orbCorreta: 'assets/batida-correta.png',
   orbFaltando: 'assets/batida-faltando.png',
   slotNaoMarcado: 'assets/nao-marcado.png',
-  slotMarcado: 'assets/marcado.png'
+  slotMarcado: 'assets/marcado.png',
+  pausaAlmoco: 'assets/pausa-para-almoço.jpg',
+  pausaAlmocoDesk: 'assets/pausa-para-almoço-desk.jpg'
 };
 
 const STORAGE_KEYS = {
