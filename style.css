@@ -152,12 +152,12 @@ body::-webkit-scrollbar,
 
 .custom-scroll-btn-up {
   background: url('assets/scrollbar-btn-up.png') center / contain no-repeat;
-  margin-bottom: 4px;
+  margin-bottom: -4px;
 }
 
 .custom-scroll-btn-down {
   background: url('assets/scrollbar-btn-down.png') center / contain no-repeat;
-  margin-top: 4px;
+  margin-top: -4px;
 }
 
 .custom-vert-scroll-track {
@@ -177,7 +177,7 @@ body::-webkit-scrollbar,
   height: 32px;
   background: url('assets/scroll-indicator.png') center / contain no-repeat;
   cursor: grab;
-  transform: translate(-50%, 0);
+  transform: translate(-50%, 12px);
   user-select: none;
   touch-action: none;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));

@@ -86,7 +86,7 @@ function setupHorizontalScrollbars() {
       if (isDragging) {
         isDragging = false;
         thumb.classList.remove('dragging');
-        try { thumb.releasePointerCapture(e.pointerId); } catch (_) {}
+        try { thumb.releasePointerCapture(e.pointerId); } catch (_) { }
       }
     };
 
@@ -188,6 +188,10 @@ function initVerticalScrollbar() {
   const track = document.getElementById('customVertScrollTrack');
   const thumb = document.getElementById('customVertScrollThumb');
 
+  // Recuo (offset) de 12px no topo e na base do trilho para respeitar as ponteiras ornamentadas
+  const INSET_TOP = 12;
+  const INSET_BOTTOM = 12;
+
   function update() {
     const docElem = document.documentElement;
     const maxScroll = docElem.scrollHeight - window.innerHeight;
@@ -199,11 +203,12 @@ function initVerticalScrollbar() {
 
     const trackHeight = track.clientHeight;
     const thumbHeight = thumb.offsetHeight || 32;
-    const maxTravel = trackHeight - thumbHeight;
+    const maxTravel = trackHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
     if (maxTravel <= 0) return;
 
     const progress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
-    thumb.style.transform = `translate(-50%, ${progress * maxTravel}px)`;
+    const currentY = INSET_TOP + (progress * maxTravel);
+    thumb.style.transform = `translate(-50%, ${currentY}px)`;
   }
 
   window.addEventListener('scroll', update, { passive: true });
@@ -228,7 +233,7 @@ function initVerticalScrollbar() {
     const maxScroll = docElem.scrollHeight - window.innerHeight;
     const trackHeight = track.clientHeight;
     const thumbHeight = thumb.offsetHeight || 32;
-    const maxTravel = trackHeight - thumbHeight;
+    const maxTravel = trackHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
     if (maxTravel <= 0) return;
 
     const deltaY = e.clientY - startY;
@@ -239,7 +244,7 @@ function initVerticalScrollbar() {
     if (isDragging) {
       isDragging = false;
       thumb.classList.remove('dragging');
-      try { thumb.releasePointerCapture(e.pointerId); } catch (_) {}
+      try { thumb.releasePointerCapture(e.pointerId); } catch (_) { }
     }
   };
 
@@ -252,11 +257,11 @@ function initVerticalScrollbar() {
     const rect = track.getBoundingClientRect();
     const clickY = e.clientY - rect.top;
     const thumbHeight = thumb.offsetHeight || 32;
-    const maxTravel = track.clientHeight - thumbHeight;
+    const maxTravel = track.clientHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
     const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
     if (maxTravel <= 0) return;
 
-    const targetTravel = Math.min(maxTravel, Math.max(0, clickY - (thumbHeight / 2)));
+    const targetTravel = Math.min(maxTravel, Math.max(0, clickY - INSET_TOP - (thumbHeight / 2)));
     window.scrollTo(0, (targetTravel / maxTravel) * maxScroll);
   });
 

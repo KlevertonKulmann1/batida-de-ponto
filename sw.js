@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v26';
+const CACHE_NAME = 'batida-ponto-v27';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
