@@ -1,0 +1,154 @@
+/* ==========================================================================
+   Responsividade Mobile (Telas Compactas e Celulares)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+
+  /* Barra Superior em 2 Linhas no Celular */
+  .top-nav {
+    flex-direction: column;
+    padding: 8px 12px;
+    gap: 8px;
+  }
+
+  #btnQuickPunch {
+    flex: 1;
+    min-width: 110px;
+    padding: 0 12px;
+    height: 38px;
+  }
+
+  .nav-title {
+    font-size: 1.15rem;
+    width: 100%;
+    font-weight: 300;
+  }
+
+  .brand {
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-actions {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+  }
+
+}
+
+@media (max-width: 680px) {
+  body {
+    padding: 6px;
+  }
+
+  .app-wrapper {
+    gap: 10px;
+    padding-right: 25px;
+  }
+
+  .nav-logo {
+    width: 28px;
+    height: 28px;
+  }
+
+  .live-clock {
+    font-size: 0.95rem;
+    font-weight: normal;
+    padding: 3px 8px;
+    margin-left: auto;
+  }
+
+  /* Garante o texto do botão BATER PONTO SEMPRE VISÍVEL no mobile */
+  .btn-text {
+    display: inline !important;
+  }
+
+  /* Ícones visíveis, ajustados e confortáveis para o toque */
+  .nav-icon-btn {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+  }
+
+  .nav-icon-btn img {
+    width: 38px;
+    height: 38px;
+  }
+
+  .board-frame {
+    padding: 18px 14px 16px 14px;
+    background-size: 100% 100%;
+  }
+
+  .board-header {
+    flex-direction: column-reverse;
+    align-items: center;
+    gap: 8px;
+    text-align: center;
+  }
+
+  .week-nav {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    gap: unset;
+  }
+
+  .board-title {
+    font-size: 1.4rem;
+    letter-spacing: 0.8px;
+  }
+
+  .week-display {
+    font-size: 1.05rem;
+  }
+
+  .day-name {
+    font-size: 1rem;
+  }
+
+  .day-controls {
+    gap: 8px;
+  }
+
+  .status-orb-wrapper {
+    width: 40px;
+    height: 40px;
+    margin-top: 16px;
+  }
+
+  .status-orb {
+    width: 36px;
+    height: 36px;
+  }
+
+  .slot-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .slot-btn img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .slot-item {
+    min-width: 44px;
+  }
+
+  .board-footer {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .legend {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+}
+

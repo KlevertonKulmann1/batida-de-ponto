@@ -18,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initVerticalScrollbar === 'function') {
     initVerticalScrollbar();
   }
+  if (typeof setupModalScrollbars === 'function') {
+    setupModalScrollbars();
+  }
   registerServiceWorker();
   checkUrlPunchAction();
 });

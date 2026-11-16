@@ -6,7 +6,7 @@ let toastTimer = null;
 function showToast(message) {
   const toast = document.getElementById('toastMessage');
   if (!toast) return;
-  toast.textContent = message;
+  toast.innerHTML = message;
   toast.classList.remove('hidden');
 
   if (toastTimer) clearTimeout(toastTimer);

@@ -116,12 +116,16 @@ function setupHorizontalScrollbars() {
 // 2. ROLAGEM VERTICAL DA PÁGINA (Botões Up/Down + Trilho + Cristal Fixo)
 // =========================================================================
 
-function setupScrollButton(btn, scrollStep) {
+function setupScrollButton(btn, scrollStep, targetElem = null) {
   let scrollInterval = null;
   let scrollTimeout = null;
 
   function doScroll() {
-    window.scrollBy({ top: scrollStep, behavior: 'smooth' });
+    if (targetElem) {
+      targetElem.scrollBy({ top: scrollStep, behavior: 'smooth' });
+    } else {
+      window.scrollBy({ top: scrollStep, behavior: 'smooth' });
+    }
   }
 
   function startScrolling(e) {
@@ -267,4 +271,143 @@ function initVerticalScrollbar() {
 
   // Atualização inicial
   requestAnimationFrame(update);
+}
+
+// =========================================================================
+// 3. ROLAGEM VERTICAL DOS MODAIS (Configurações, Logs, Backup)
+// =========================================================================
+
+function setupModalScrollbars() {
+  const modalCards = document.querySelectorAll('.modal-card');
+  modalCards.forEach(card => {
+    const body = card.querySelector('.modal-body');
+    if (!body) return;
+
+    if (body.dataset.hasCustomScroll) {
+      if (body._updateScroll) body._updateScroll();
+      return;
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-vert-scroll-wrapper';
+
+    // Botão de subir (Up)
+    const btnUp = document.createElement('button');
+    btnUp.className = 'custom-scroll-btn custom-scroll-btn-up';
+    btnUp.type = 'button';
+    btnUp.title = 'Rolar para cima';
+    wrapper.appendChild(btnUp);
+
+    // Trilho intermediário
+    const track = document.createElement('div');
+    track.className = 'custom-vert-scroll-track';
+
+    const thumb = document.createElement('div');
+    thumb.className = 'custom-vert-scroll-thumb';
+    track.appendChild(thumb);
+
+    wrapper.appendChild(track);
+
+    // Botão de descer (Down)
+    const btnDown = document.createElement('button');
+    btnDown.className = 'custom-scroll-btn custom-scroll-btn-down';
+    btnDown.type = 'button';
+    btnDown.title = 'Rolar para baixo';
+    wrapper.appendChild(btnDown);
+
+    card.appendChild(wrapper);
+    body.dataset.hasCustomScroll = 'true';
+
+    setupScrollButton(btnUp, -120, body);
+    setupScrollButton(btnDown, 120, body);
+
+    const INSET_TOP = 12;
+    const INSET_BOTTOM = 12;
+
+    function update() {
+      const maxScroll = body.scrollHeight - body.clientHeight;
+      if (maxScroll <= 5) {
+        wrapper.style.display = 'none';
+        return;
+      }
+      wrapper.style.display = 'flex';
+
+      const trackHeight = track.clientHeight;
+      const thumbHeight = thumb.offsetHeight || 32;
+      const maxTravel = trackHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
+      if (maxTravel <= 0) {
+        requestAnimationFrame(() => {
+          const reTrackHeight = track.clientHeight;
+          const reMaxTravel = reTrackHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
+          if (reMaxTravel > 0) {
+            const progress = Math.min(1, Math.max(0, body.scrollTop / maxScroll));
+            const currentY = INSET_TOP + (progress * reMaxTravel);
+            thumb.style.transform = `translate(-50%, ${currentY}px)`;
+          }
+        });
+        return;
+      }
+
+      const progress = Math.min(1, Math.max(0, body.scrollTop / maxScroll));
+      const currentY = INSET_TOP + (progress * maxTravel);
+      thumb.style.transform = `translate(-50%, ${currentY}px)`;
+    }
+
+    body._updateScroll = update;
+    body.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+
+    let isDragging = false;
+    let startY = 0;
+    let startScrollTop = 0;
+
+    thumb.addEventListener('pointerdown', (e) => {
+      isDragging = true;
+      thumb.setPointerCapture(e.pointerId);
+      startY = e.clientY;
+      startScrollTop = body.scrollTop;
+      thumb.classList.add('dragging');
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    thumb.addEventListener('pointermove', (e) => {
+      if (!isDragging) return;
+      const maxScroll = body.scrollHeight - body.clientHeight;
+      const trackHeight = track.clientHeight;
+      const thumbHeight = thumb.offsetHeight || 32;
+      const maxTravel = trackHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
+      if (maxTravel <= 0) return;
+
+      const deltaY = e.clientY - startY;
+      body.scrollTop = startScrollTop + (deltaY / maxTravel) * maxScroll;
+    });
+
+    const stopDrag = (e) => {
+      if (isDragging) {
+        isDragging = false;
+        thumb.classList.remove('dragging');
+        try { thumb.releasePointerCapture(e.pointerId); } catch (_) { }
+      }
+    };
+
+    thumb.addEventListener('pointerup', stopDrag);
+    thumb.addEventListener('pointercancel', stopDrag);
+
+    // Clicar no trilho para pular
+    track.addEventListener('pointerdown', (e) => {
+      if (e.target === thumb) return;
+      const rect = track.getBoundingClientRect();
+      const clickY = e.clientY - rect.top;
+      const thumbHeight = thumb.offsetHeight || 32;
+      const maxTravel = track.clientHeight - thumbHeight - INSET_TOP - INSET_BOTTOM;
+      const maxScroll = body.scrollHeight - body.clientHeight;
+      if (maxTravel <= 0) return;
+
+      const targetTravel = Math.min(maxTravel, Math.max(0, clickY - INSET_TOP - (thumbHeight / 2)));
+      body.scrollTop = (targetTravel / maxTravel) * maxScroll;
+    });
+
+    requestAnimationFrame(update);
+  });
 }

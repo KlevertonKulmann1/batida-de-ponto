@@ -100,6 +100,11 @@ function renderSettingsForm() {
     row.appendChild(input);
     container.appendChild(row);
   });
+
+  const body = document.querySelector('#modalSettings .modal-body');
+  if (body && body._updateScroll) {
+    requestAnimationFrame(body._updateScroll);
+  }
 }
 
 function saveSettingsFromForm() {

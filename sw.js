@@ -1,8 +1,15 @@
-const CACHE_NAME = 'batida-ponto-v30';
+const CACHE_NAME = 'batida-ponto-v32';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './style.css',
+  './css/base.css',
+  './css/scrollbars.css',
+  './css/buttons.css',
+  './css/header.css',
+  './css/board.css',
+  './css/modals.css',
+  './css/responsive.css',
   './app.js',
   './js/constants.js',
   './js/utils.js',
@@ -25,6 +32,7 @@ const ASSETS_TO_CACHE = [
   './assets/scrollbar-btn-up.png',
   './assets/scrollbar-btn-down.png',
   './assets/horizontal-roll-bar.png',
+  './assets/folga.png',
   './assets/alert-icon.png',
   './assets/icon-192.png',
   './assets/icon-512.png',

@@ -1,0 +1,65 @@
+/* ==========================================================================
+   Barra Superior de Navegação Global
+   ========================================================================== */
+
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(45, 40, 42, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 10px 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.nav-logo {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.nav-title {
+  font-family: var(--font-display);
+  font-weight: normal;
+  font-size: 1.25rem;
+  letter-spacing: 0.5px;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.live-clock {
+  font-family: var(--font-display), monospace;
+  font-size: 1rem;
+  font-weight: normal;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--accent-gold);
+  border: 1px solid rgba(226, 186, 100, 0.25);
+  margin-left: 8px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  width: 90px;
+  text-align: center;
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+

@@ -1,0 +1,256 @@
+/* ==========================================================================
+   Botões RPG Temáticos e Ícones
+   ========================================================================== */
+
+button {
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font-family: var(--font-body);
+  transition: transform 0.15s ease, filter 0.15s ease;
+  user-select: none;
+}
+
+/* Botões de Ícones da Barra Superior */
+.nav-icon-btn {
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  flex-shrink: 0;
+}
+
+.nav-icon-btn img {
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+  transition: transform 0.15s ease;
+}
+
+.nav-icon-btn:hover img {
+  transform: scale(1.1);
+  filter: drop-shadow(0 4px 10px rgba(226, 186, 100, 0.6));
+}
+
+.nav-icon-btn:active img {
+  transform: scale(0.92);
+}
+
+.nav-icon-btn.sound-muted img {
+  opacity: 0.35;
+  filter: grayscale(1) drop-shadow(none);
+}
+
+.nav-icon-box {
+  width: 42px;
+  height: 42px;
+  background: url('../assets/box-btn.png') center / 100% 100% no-repeat;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+  transition: transform 0.15s ease;
+  user-select: none;
+}
+
+.nav-icon-btn:hover .nav-icon-box {
+  transform: scale(1.08);
+  filter: drop-shadow(0 4px 8px rgba(226, 186, 100, 0.5));
+}
+
+.nav-icon-btn:active .nav-icon-box {
+  transform: scale(0.92);
+}
+
+.btn-clock-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  margin-right: 4px;
+}
+
+.btn-rpg-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8));
+  margin-right: 4px;
+  border-radius: 50%;
+}
+
+/* Botões RPG Temáticos (3-Slice com 39px de altura) */
+.btn-rpg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 39px;
+  box-sizing: border-box;
+  padding: 0 20px;
+  min-width: 150px;
+  border: none;
+  outline: none;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000, 0 0 4px rgba(0, 0, 0, 0.8);
+  cursor: pointer;
+  user-select: none;
+  background-color: transparent;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-position: left top, right top, 37px top;
+  background-size: 38px 39px, 38px 39px, calc(100% - 74px) 39px;
+  transition: filter 0.15s ease, transform 0.1s ease;
+  white-space: nowrap;
+}
+
+.btn-rpg:hover {
+  filter: brightness(1.2);
+}
+
+.btn-rpg:active {
+  transform: scale(0.97);
+}
+
+.btn-rpg.btn-sm {
+  height: 35px;
+  padding: 0 16px;
+  font-size: 0.72rem;
+  background-size: 38px 35px, 38px 35px, calc(100% - 76px) 35px;
+}
+
+/* Dourado / Âmbar (Ação Principal / Bater Ponto) */
+.btn-rpg-gold {
+  background-image:
+    url('../assets/btn-fourthiary-left.png'),
+    url('../assets/btn-fourthiary-right.png'),
+    url('../assets/btn-fourthiary-center.png');
+}
+
+.btn-rpg-gold:active,
+.btn-rpg-gold.active {
+  background-image:
+    url('../assets/btn-fourthiary-left-active.png'),
+    url('../assets/btn-fourthiary-right-active.png'),
+    url('../assets/btn-fourthiary-center-active.png');
+}
+
+/* Azul / Safira (Navegação / Logs / Horários / Backup / Hoje) */
+.btn-rpg-blue {
+  background-image:
+    url('../assets/btn-tertiary-left.png'),
+    url('../assets/btn-tertiary-right.png'),
+    url('../assets/btn-tertiary-center.png');
+}
+
+.btn-rpg-blue:active,
+.btn-rpg-blue.active {
+  background-image:
+    url('../assets/btn-tertiary-left-active.png'),
+    url('../assets/btn-tertiary-right-active.png'),
+    url('../assets/btn-tertiary-center-active.png');
+}
+
+/* Verde / Esmeralda (Confirmações / Salvar / Exportar) */
+.btn-rpg-green {
+  background-image:
+    url('../assets/btn-secondary-left.png'),
+    url('../assets/btn-secondary-right.png'),
+    url('../assets/btn-secondary-center.png');
+}
+
+.btn-rpg-green:active,
+.btn-rpg-green.active {
+  background-image:
+    url('../assets/btn-secondary-left-active.png'),
+    url('../assets/btn-secondary-right-active.png'),
+    url('../assets/btn-secondary-center-active.png');
+}
+
+/* Vermelho / Rubi (Perigo / Desmarcar / Limpar) */
+.btn-rpg-red {
+  background-image:
+    url('../assets/btn-primary-left.png'),
+    url('../assets/btn-primary-right.png'),
+    url('../assets/btn-primary-center.png');
+}
+
+.btn-rpg-red:active,
+.btn-rpg-red.active {
+  background-image:
+    url('../assets/btn-primary-left-active.png'),
+    url('../assets/btn-primary-right-active.png'),
+    url('../assets/btn-primary-center-active.png');
+}
+
+/* Botão Desabilitado */
+.btn-rpg:disabled,
+.btn-rpg.disabled {
+  background-image:
+    url('../assets/btn-disabled-left.png'),
+    url('../assets/btn-disabled-right.png'),
+    url('../assets/btn-disabled-center.png');
+  opacity: 0.65;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+  transform: none;
+}
+
+.btn-rpg .btn-text {
+  padding-top: 4px;
+}
+
+/* Botão Caixa Quadrada (box-btn.png - 46x46) */
+.btn-box {
+  width: 44px;
+  height: 44px;
+  background: url('../assets/box-btn.png') center / 100% 100% no-repeat;
+  border: none;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
+}
+
+.btn-box:hover {
+  filter: brightness(1.25);
+}
+
+.btn-box:active {
+  transform: scale(0.92);
+}
+
+/* Antigos botões mantidos para compatibilidade */
+.btn-primary {
+  composes: btn-rpg btn-rpg-gold;
+}
+
+.btn-ghost {
+  composes: btn-rpg btn-rpg-blue;
+}
+
+.btn-danger {
+  composes: btn-rpg btn-rpg-red;
+}
+

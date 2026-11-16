@@ -1,0 +1,97 @@
+/* ==========================================================================
+   Base, Variáveis e Tipografia Global
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Lalezar';
+  src: url('../assets/fonts/Lalezar-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg-dark: #1e1b1c;
+  --bg-board: #3f3937;
+  --text-main: #ffffff;
+  --text-muted: #c5beba;
+  --accent-gold: #e2ba64;
+  --accent-blue: #4fa4f4;
+  --accent-green: #52c41a;
+  --accent-red: #ff4d4f;
+  --btn-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  --font-display: 'Lalezar', 'Montserrat', cursive, sans-serif;
+  --font-body: 'Lalezar', 'Montserrat', system-ui, -apple-system, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+  font-weight: 300 !important;
+  letter-spacing: 1.5px;
+}
+
+body {
+  background-color: var(--bg-dark);
+  background-image:
+    radial-gradient(circle at 50% 0%, #2e282a 0%, #151314 100%);
+  color: var(--text-main);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* App Wrapper */
+.app-wrapper {
+  max-width: 840px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: calc(100vh - 24px);
+}
+
+/* Toast de Notificação */
+.toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2b2627;
+  color: #fff;
+  border: 1px solid var(--accent-gold);
+  border-radius: 8px;
+  padding: 10px 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+  z-index: 9999;
+  font-weight: 700;
+  font-size: 0.95rem;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.toast img {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+  object-fit: contain;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.toast.hidden {
+  opacity: 0;
+  transform: translate(-50%, -20px);
+  pointer-events: none;
+}
+

@@ -1,0 +1,190 @@
+/* ==========================================================================
+   Barra de Rolagem Customizada com Tamanho Fixo RPG
+   - Horizontal (.slots-container): tamanho fixo da imagem horizontal-roll-bar.png (98px)
+   - Vertical (página): tamanho fixo da imagem do cristal scroll-indicator.png (32px)
+   ========================================================================== */
+
+/* Oculta barras nativas na página e nos slots para usar as barras customizadas */
+html,
+body,
+.slots-container {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.slots-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 1. Trilho e Indicador Horizontal (.slots-container) */
+.custom-horiz-scroll-track {
+  position: relative;
+  width: calc(100% - 50px);
+  height: 28px;
+  margin-top: -16px;
+  margin-left: 50px;
+  user-select: none;
+  touch-action: none;
+  display: none;
+}
+
+.custom-horiz-scroll-thumb {
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 98px;
+  height: 28px;
+  background: url('../assets/horizontal-roll-bar.png') center / contain no-repeat;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  transition: filter 0.15s ease;
+}
+
+.custom-horiz-scroll-thumb:hover {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) brightness(1.2);
+}
+
+.custom-horiz-scroll-thumb.dragging,
+.custom-horiz-scroll-thumb:active {
+  cursor: grabbing;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) brightness(1.35);
+}
+
+/* 2. Container Vertical (Botão Cima + Trilho + Botão Baixo) */
+.custom-vert-scroll-wrapper {
+  position: fixed;
+  right: 4px;
+  top: 14px;
+  bottom: 14px;
+  width: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 999;
+  user-select: none;
+  touch-action: none;
+  display: none;
+  opacity: 0.9;
+  transition: opacity 0.2s ease;
+}
+
+.custom-vert-scroll-wrapper:hover {
+  opacity: 1;
+}
+
+.custom-scroll-btn {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.1s ease, filter 0.15s ease;
+  filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.6));
+}
+
+.custom-scroll-btn:hover {
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.8)) brightness(1.25);
+  transform: scale(1.08);
+}
+
+.custom-scroll-btn:active {
+  transform: scale(0.92);
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)) brightness(1.4);
+}
+
+.custom-scroll-btn-up {
+  background: url('../assets/scrollbar-btn-up.png') center / contain no-repeat;
+  margin-bottom: -4px;
+}
+
+.custom-scroll-btn-down {
+  background: url('../assets/scrollbar-btn-down.png') center / contain no-repeat;
+  margin-top: -4px;
+}
+
+.custom-vert-scroll-track {
+  flex: 1;
+  width: 22px;
+  position: relative;
+  background: url('../assets/scroll-bar.png') center / 100% 100% no-repeat;
+  user-select: none;
+  touch-action: none;
+}
+
+.custom-vert-scroll-thumb {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 22px;
+  height: 32px;
+  background: url('../assets/scroll-indicator.png') center / contain no-repeat;
+  cursor: grab;
+  transform: translate(-50%, 12px);
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+  transition: filter 0.15s ease;
+}
+
+.custom-vert-scroll-thumb:hover {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) brightness(1.2);
+}
+
+.custom-vert-scroll-thumb.dragging,
+.custom-vert-scroll-thumb:active {
+  cursor: grabbing;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) brightness(1.35);
+}
+
+/* 3. Container Vertical para Modais (Botão Cima + Trilho + Botão Baixo) */
+.modal-vert-scroll-wrapper {
+  position: absolute;
+  right: 4px;
+  top: 58px;
+  bottom: 12px;
+  width: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 50;
+  user-select: none;
+  touch-action: none;
+  opacity: 0.95;
+  transition: opacity 0.2s ease;
+}
+
+.modal-vert-scroll-wrapper:hover {
+  opacity: 1;
+}
+
+/* Barras dentro de tabelas (mantém WebKit nativo estilizado) */
+.log-table-wrapper::-webkit-scrollbar {
+  width: 14px;
+}
+
+.log-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
+}
+
+.log-table-wrapper::-webkit-scrollbar-thumb {
+  background: url('../assets/scroll-indicator.png') center / contain no-repeat;
+  min-height: 28px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
+  background: transparent;
+}
+

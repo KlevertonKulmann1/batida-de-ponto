@@ -1,0 +1,611 @@
+/* ==========================================================================
+   O Quadro (Board) Estilo Medieval / RPG
+   ========================================================================== */
+
+.board-outer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.board-frame {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  background-color: var(--bg-board);
+  background-image: url('../assets/quadro.png');
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  border-radius: 23px;
+  box-shadow:
+    0 16px 40px rgba(0, 0, 0, 0.7),
+    inset 0 0 20px rgba(0, 0, 0, 0.4);
+  padding: 24px 28px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Cabeçalho do Quadro */
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 6px;
+}
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-arrow {
+  font-size: 2rem !important;
+  line-height: 40px !important;
+  color: #fff;
+  padding: 0;
+}
+
+.nav-arrow:hover {
+  color: var(--accent-gold);
+}
+
+/* Placa da Data da Semana (label-*.png - 48px de altura) */
+.week-display {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  padding: 0 24px;
+  min-width: 140px;
+  background-image:
+    url('../assets/label-left.png'),
+    url('../assets/label-right.png'),
+    url('../assets/label-center.png');
+  background-position: left center, right center, 33px center;
+  background-size: 33px 44px, 33px 44px, calc(100% - 66px) 44px;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0, 0, 0, 0.8);
+  user-select: none;
+}
+
+/* Campos de Select Temáticos (rpg-select) com Plaquinha */
+.rpg-select {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  background-color: transparent !important;
+  height: 44px;
+  padding: 0 34px 0 20px;
+  background-image:
+    url('data:image/svg+xml;utf8,<svg fill="%23e2ba64" height="16" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'),
+    url('../assets/label-left.png'),
+    url('../assets/label-right.png'),
+    url('../assets/label-center.png');
+  background-position: right 14px center, left center, right center, 33px center;
+  background-size: 16px 16px, 33px 44px, 33px 44px, calc(100% - 66px) 44px;
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+  color: #e2ba64;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 800;
+  text-shadow: 1px 1px 2px #000;
+  cursor: pointer;
+  box-sizing: border-box;
+  letter-spacing: 0.5px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.rpg-select::-ms-expand {
+  display: none !important;
+}
+
+.rpg-select:focus,
+.rpg-select:active {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  background-color: transparent !important;
+}
+
+.rpg-select:focus {
+  filter: brightness(1.15);
+}
+
+/* Opções do Select quando abre: fundo escuro e texto claro */
+.rpg-select option {
+  background-color: #231f20 !important;
+  color: #ffffff !important;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 10px;
+}
+
+.rpg-select option:hover,
+.rpg-select option:checked {
+  background-color: #3f3937 !important;
+  color: #e2ba64 !important;
+}
+
+.btn-today-pill {
+  min-width: 85px;
+  height: 39px;
+  padding: 0 14px;
+}
+
+.board-title {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Dias da Semana */
+.days-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.day-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  position: relative;
+  padding: 4px 6px;
+  border-radius: 8px;
+  transition: background 0.2s ease;
+}
+
+.day-row.is-today {
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 12px rgba(226, 186, 100, 0.12);
+  border-left: 3px solid var(--accent-gold);
+}
+
+.day-row.is-today.is-lunch-active {
+  min-height: 110px;
+}
+
+@media (min-width: 476px) {
+  .day-row.is-today.is-lunch-active {
+    min-height: 125px;
+  }
+}
+
+@media (min-width: 680px) {
+  .day-row.is-today.is-lunch-active {
+    min-height: 145px;
+  }
+}
+
+/* Wrapper principal do aviso de almoço (sem overflow para o botão X poder ficar para fora) */
+.lunch-overlay-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 90;
+  pointer-events: auto;
+  animation: lunchOverlayFadeIn 0.25s ease-out forwards;
+}
+
+@keyframes lunchOverlayFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.lunch-overlay-wrapper.fade-out {
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* Container exclusivo da IMAGEM de almoço (com overflow hidden para ela não vazar) */
+.lunch-overlay-img-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(18, 16, 17, 0.88);
+  backdrop-filter: blur(2px);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(226, 186, 100, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lunch-overlay-picture {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.lunch-overlay-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* Botão de Fechar com a Jóia de Rubi (btn-x.png / btn-x-ativo.png) - Fora do container com overflow */
+.lunch-overlay-close {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  width: 28px;
+  height: 52px;
+  background: transparent url('../assets/btn-x.png') center / contain no-repeat;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  z-index: 100;
+  padding: 0;
+  transition: transform 0.15s ease, filter 0.15s ease;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.9));
+}
+
+.lunch-overlay-close:hover {
+  filter: drop-shadow(0 4px 10px rgba(255, 77, 79, 0.7)) brightness(1.2);
+  transform: translateY(-2px);
+}
+
+.lunch-overlay-close:active {
+  background-image: url('../assets/btn-x-ativo.png');
+  transform: translateY(1px);
+}
+
+.day-header-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.day-workload-badge {
+  margin-left: auto;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, border-color 0.2s ease;
+  user-select: none;
+}
+
+.day-workload-badge:hover {
+  transform: translateY(-1px);
+}
+
+.day-workload-badge:active {
+  transform: scale(0.96);
+}
+
+/* Faltando horas para completar */
+.day-workload-badge.workload-pending {
+  background: rgba(226, 186, 100, 0.12);
+  border: 1px solid rgba(226, 186, 100, 0.35);
+  color: #f5d485;
+}
+
+/* Atualmente trabalhando (em expediente ao vivo) */
+.day-workload-badge.workload-working {
+  background: rgba(82, 196, 26, 0.16);
+  border: 1px solid rgba(82, 196, 26, 0.5);
+  color: #73d13d;
+  box-shadow: 0 0 8px rgba(82, 196, 26, 0.2);
+}
+
+.day-workload-badge.workload-working .workload-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #52c41a;
+  box-shadow: 0 0 6px #52c41a;
+  animation: pulseWorking 2s infinite;
+  display: inline-block;
+}
+
+@keyframes pulseWorking {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+}
+
+/* Jornada 100% concluída */
+.day-workload-badge.workload-done {
+  background: rgba(82, 196, 26, 0.22);
+  border: 1px solid rgba(82, 196, 26, 0.6);
+  color: #95de64;
+}
+
+/* Horas extras além da jornada */
+.day-workload-badge.workload-overtime {
+  background: rgba(24, 144, 255, 0.2);
+  border: 1px solid rgba(24, 144, 255, 0.55);
+  color: #69c0ff;
+}
+
+/* Dia de Folga */
+.day-workload-badge.workload-folga {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+}
+
+/* Batida pendente em dia passado */
+.day-workload-badge.workload-warning {
+  background: rgba(250, 140, 22, 0.16);
+  border: 1px solid rgba(250, 140, 22, 0.45);
+  color: #ffa940;
+}
+
+.day-name {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.day-date-badge {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ddd;
+  text-shadow: 1px 1px 2px #000;
+  opacity: 0.9;
+}
+
+.day-row.is-today .day-name {
+  color: #ffe89d;
+}
+
+.day-row.is-folga {
+  opacity: 0.85;
+}
+
+.btn-folga-pill {
+  background: transparent;
+  color: #bbb;
+  font-size: 0.68rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.btn-folga-pill img {
+  width: 30px;
+  transition: transform 0.2s ease;
+}
+
+.btn-folga-pill:hover img {
+  transform: scale(1.13);
+}
+
+.btn-folga-pill.active {
+  border-radius: 30px;
+  background: rgba(226, 186, 100, 0.25);
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+  font-weight: 700;
+  padding: 0 12px;
+}
+
+/* Linha com o Orbe e os Botões */
+.day-controls {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+/* Orbe de Status */
+.status-orb-wrapper {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-top: 18px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-orb {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.25s ease;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.6));
+  cursor: pointer;
+}
+
+.status-orb:hover {
+  transform: scale(1.12);
+}
+
+/* Container de Horários / Slots */
+.slots-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 2px 4px 4px 2px;
+}
+
+/* Item de Slot Individual */
+.slot-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  min-width: 48px;
+}
+
+.slot-time {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: #ffffff;
+  letter-spacing: 1.5px;
+  text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 3px rgba(0, 0, 0, 0.9);
+}
+
+.slot-btn {
+  background: transparent;
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.slot-btn img {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.6));
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.slot-btn:hover img {
+  transform: scale(1.08);
+  filter: drop-shadow(0 4px 8px rgba(226, 186, 100, 0.4));
+}
+
+.slot-btn:active img {
+  transform: scale(0.92);
+}
+
+.slot-marked-at {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #bbf7d0;
+  text-shadow: 1px 1px 1px #000;
+  min-height: 12px;
+  opacity: 0.95;
+}
+
+/* Rodapé do Quadro */
+.board-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 0.78rem;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-muted);
+  font-weight: 700;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.legend-item img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.week-stats {
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Rodapé da Aplicação */
+.app-footer {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #8c8285;
+  padding: 16px 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.footer-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.settings-redirect-section {
+  background: #201c1d;
+  padding: 12px 14px 16px 14px;
+  border-radius: 8px;
+  border: 1px solid #443c3e;
+  margin-bottom: 10px;
+}

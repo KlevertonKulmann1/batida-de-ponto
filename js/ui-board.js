@@ -170,7 +170,7 @@ function renderBoard() {
     // Botão de Folga / Feriado
     const folgaBtn = document.createElement('button');
     folgaBtn.className = 'btn-folga-pill' + (isFolga ? ' active' : '');
-    folgaBtn.innerHTML = isFolga ? '🏖️ Folga' : '🏖️';
+    folgaBtn.innerHTML = isFolga ? '<img src="assets/folga.png">' : '<img src="assets/folga.png">  - Marcar como folga';
     folgaBtn.title = isFolga ? 'Clique para desmarcar folga' : 'Marcar este dia como folga/feriado';
     folgaBtn.addEventListener('click', () => {
       toggleFolga(dateKey, dayConfig.label);
@@ -195,7 +195,7 @@ function renderBoard() {
 
     if (workStats.isFolga) {
       workloadBadge.classList.add('workload-folga');
-      workloadBadge.textContent = '🏖️ Folga';
+      workloadBadge.innerHTML = '<img width="24px" src="assets/folga.png">  - Dia de Folga';
       workloadBadge.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Dia registrado como folga/feriado.`;
       workloadBadge.addEventListener('click', () => {
         showToast(`${dayConfig.label}: Dia de folga. Não há horas pendentes!`);
@@ -351,29 +351,12 @@ function renderBoard() {
     if (isDayToday && workStats.isCurrentlyInLunch && !isFolga && !dismissedLunchOverlays.has(dateKey)) {
       dayRow.classList.add('is-lunch-active');
 
-      const overlayContainer = document.createElement('div');
-      overlayContainer.className = 'lunch-overlay-container';
-      overlayContainer.id = `lunchOverlay_${dateKey}`;
+      const overlayWrapper = document.createElement('div');
+      overlayWrapper.className = 'lunch-overlay-wrapper';
+      overlayWrapper.id = `lunchOverlay_${dateKey}`;
 
-      const overlayCard = document.createElement('div');
-      overlayCard.className = 'lunch-overlay-card';
-
-      const closeBtn = document.createElement('button');
-      closeBtn.type = 'button';
-      closeBtn.className = 'lunch-overlay-close';
-      closeBtn.title = 'Fechar aviso para bater ponto';
-      closeBtn.setAttribute('aria-label', 'Fechar aviso');
-      closeBtn.textContent = '✕';
-      closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        overlayContainer.classList.add('fade-out');
-        setTimeout(() => {
-          overlayContainer.remove();
-          dayRow.classList.remove('is-lunch-active');
-        }, 200);
-        dismissedLunchOverlays.add(dateKey);
-        showToast('Aviso de almoço fechado. Você pode bater o ponto normalmente!');
-      });
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'lunch-overlay-img-container';
 
       const pictureElem = document.createElement('picture');
       pictureElem.className = 'lunch-overlay-picture';
@@ -391,10 +374,27 @@ function renderBoard() {
       lunchImg.alt = 'Pausa para o Almoço';
       pictureElem.appendChild(lunchImg);
 
-      overlayCard.appendChild(closeBtn);
-      overlayCard.appendChild(pictureElem);
-      overlayContainer.appendChild(overlayCard);
-      dayRow.appendChild(overlayContainer);
+      imgContainer.appendChild(pictureElem);
+
+      const closeBtn = document.createElement('button');
+      closeBtn.type = 'button';
+      closeBtn.className = 'lunch-overlay-close';
+      closeBtn.title = 'Fechar aviso para bater ponto';
+      closeBtn.setAttribute('aria-label', 'Fechar aviso');
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        overlayWrapper.classList.add('fade-out');
+        setTimeout(() => {
+          overlayWrapper.remove();
+          dayRow.classList.remove('is-lunch-active');
+        }, 200);
+        dismissedLunchOverlays.add(dateKey);
+        showToast('Aviso de almoço fechado. Você pode bater o ponto normalmente!');
+      });
+
+      overlayWrapper.appendChild(imgContainer);
+      overlayWrapper.appendChild(closeBtn);
+      dayRow.appendChild(overlayWrapper);
     }
 
     daysContainer.appendChild(dayRow);
@@ -424,7 +424,7 @@ function handleSlotClick(dateKey, dayLabel, slotTime, currentlyMarked, markedAt)
 
     modalText.textContent = `Ponto de ${dayLabel}`;
     modalInfo.innerHTML = `<strong>Horário previsto:</strong> ${slotTime}<br><strong>Horário registrado:</strong> ${markedAt || 'Sem registro exato'}`;
-    
+
     if (inputEditTime) {
       inputEditTime.value = markedAt || slotTime;
     }
@@ -436,7 +436,7 @@ function handleSlotClick(dateKey, dayLabel, slotTime, currentlyMarked, markedAt)
 
 function markSlot(dateKey, dayLabel, slotTime, customActualTime = null) {
   if (!records[dateKey]) records[dateKey] = {};
-  
+
   const now = new Date();
   const actualTime = customActualTime || formatTimeOnly(now);
 
@@ -477,7 +477,7 @@ function toggleFolga(dateKey, dayLabel) {
     'Dia todo',
     formatTimeOnly(new Date())
   );
-  showToast(!current ? `Dia marcado como Folga/Feriado 🏖️` : `Folga removida de ${dayLabel}`);
+  showToast(!current ? `Dia marcado como Folga/Feriado <img src="assets/folga.png" alt="Folga">` : `Folga removida de ${dayLabel}`);
   renderBoard();
 }
 
@@ -676,7 +676,20 @@ function setupModals() {
 
 function openModal(id) {
   const modal = document.getElementById(id);
-  if (modal) modal.classList.remove('hidden');
+  if (modal) {
+    modal.classList.remove('hidden');
+    if (typeof setupModalScrollbars === 'function') {
+      setupModalScrollbars();
+    }
+    const updateModalScroll = () => {
+      const body = modal.querySelector('.modal-body');
+      if (body && body._updateScroll) {
+        body._updateScroll();
+      }
+    };
+    requestAnimationFrame(updateModalScroll);
+    setTimeout(updateModalScroll, 220);
+  }
 }
 
 function closeModal(id) {
