@@ -48,69 +48,84 @@ body {
 }
 
 /* ==========================================================================
-   Barra de Rolagem Vertical RPG (Página & Modais)
+   Barra de Rolagem Vertical e Horizontal RPG (Página, Modais & Slots)
    ========================================================================== */
 
-/* Suporte para Firefox */
-html, body, .modal-body, .log-table-wrapper {
-  scrollbar-width: thin;
-  scrollbar-color: #d4a359 #201c1d;
+/* Suporte exclusivo para Firefox (pois o Firefox não suporta ::-webkit-scrollbar) */
+@supports (-moz-appearance: none) {
+  html, body, .modal-body, .log-table-wrapper, .slots-container {
+    scrollbar-width: thin;
+    scrollbar-color: #d4a359 #201c1d;
+  }
 }
 
 /* Suporte para WebKit / Chromium (Chrome, Edge, Opera, Samsung Internet, Android PWA) */
-::-webkit-scrollbar {
+/* NOTA: Não usamos scrollbar-color no Chrome, pois no Chrome 121+ o scrollbar-color desativa o ::-webkit-scrollbar */
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
   width: 22px;
   height: 18px;
 }
 
-::-webkit-scrollbar:vertical {
+::-webkit-scrollbar:vertical,
+*::-webkit-scrollbar:vertical {
   width: 22px;
 }
 
-::-webkit-scrollbar-track:vertical {
+::-webkit-scrollbar-track:vertical,
+*::-webkit-scrollbar-track:vertical {
   background: url('assets/scroll-bar.png') center / 100% 100% no-repeat;
   background-color: transparent;
 }
 
-::-webkit-scrollbar-thumb:vertical {
+::-webkit-scrollbar-thumb:vertical,
+*::-webkit-scrollbar-thumb:vertical {
   background: url('assets/scroll-indicator.png') center / contain no-repeat;
   min-height: 34px;
   cursor: pointer;
 }
 
-::-webkit-scrollbar-thumb:vertical:hover {
+::-webkit-scrollbar-thumb:vertical:hover,
+*::-webkit-scrollbar-thumb:vertical:hover {
   filter: brightness(1.2);
 }
 
-::-webkit-scrollbar-thumb:vertical:active {
+::-webkit-scrollbar-thumb:vertical:active,
+*::-webkit-scrollbar-thumb:vertical:active {
   filter: brightness(1.35);
 }
 
 /* Rolagem Horizontal Global */
-::-webkit-scrollbar:horizontal {
+::-webkit-scrollbar:horizontal,
+*::-webkit-scrollbar:horizontal {
   height: 18px;
 }
 
-::-webkit-scrollbar-track:horizontal {
+::-webkit-scrollbar-track:horizontal,
+*::-webkit-scrollbar-track:horizontal {
   background: url('assets/horizontal-roll-bar.png') center / 100% 100% no-repeat;
   background-color: transparent;
 }
 
-::-webkit-scrollbar-thumb:horizontal {
+::-webkit-scrollbar-thumb:horizontal,
+*::-webkit-scrollbar-thumb:horizontal {
   background: url('assets/scroll-indicator.png') center / contain no-repeat;
   min-width: 28px;
   cursor: pointer;
 }
 
-::-webkit-scrollbar-thumb:horizontal:hover {
+::-webkit-scrollbar-thumb:horizontal:hover,
+*::-webkit-scrollbar-thumb:horizontal:hover {
   filter: brightness(1.2);
 }
 
-::-webkit-scrollbar-thumb:horizontal:active {
+::-webkit-scrollbar-thumb:horizontal:active,
+*::-webkit-scrollbar-thumb:horizontal:active {
   filter: brightness(1.35);
 }
 
-::-webkit-scrollbar-corner {
+::-webkit-scrollbar-corner,
+*::-webkit-scrollbar-corner {
   background: transparent;
 }
 
@@ -826,8 +841,6 @@ button {
   gap: 10px;
   overflow-x: auto;
   padding: 2px 4px 8px 2px;
-  scrollbar-width: thin;
-  scrollbar-color: #d4a359 #201c1d;
 }
 
 .slots-container::-webkit-scrollbar {
