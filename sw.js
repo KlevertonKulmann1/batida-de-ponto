@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v24';
+const CACHE_NAME = 'batida-ponto-v25';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -14,6 +14,7 @@ const ASSETS_TO_CACHE = [
   './js/settings.js',
   './js/backup.js',
   './js/push.js',
+  './js/custom-scrollbar.js',
   './js/ui-board.js',
   './js/app.js',
   './ponto-backup.json',

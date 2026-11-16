@@ -330,6 +330,11 @@ function renderBoard() {
     daysContainer.appendChild(dayRow);
   });
 
+  // Ativa barras de rolagem horizontais customizadas com tamanho fixo
+  if (typeof setupHorizontalScrollbars === 'function') {
+    setupHorizontalScrollbars();
+  }
+
   // Atualiza estatísticas do rodapé
   const statsElem = document.getElementById('weekStats');
   if (statsElem) {

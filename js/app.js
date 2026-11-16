@@ -15,6 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
   setupInstallPrompt();
   setupPushNotifications();
   renderBoard();
+  if (typeof initVerticalScrollbar === 'function') {
+    initVerticalScrollbar();
+  }
   registerServiceWorker();
   checkUrlPunchAction();
 });

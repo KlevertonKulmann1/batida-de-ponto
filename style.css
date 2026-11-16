@@ -48,80 +48,124 @@ body {
 }
 
 /* ==========================================================================
-   Barra de Rolagem Vertical e Horizontal RPG (Página, Modais & Slots)
+   Barra de Rolagem Customizada com Tamanho Fixo RPG
+   - Horizontal (.slots-container): tamanho fixo da imagem horizontal-roll-bar.png (98px)
+   - Vertical (página): tamanho fixo da imagem do cristal scroll-indicator.png (32px)
    ========================================================================== */
 
-/* Suporte exclusivo para Firefox (pois o Firefox não suporta ::-webkit-scrollbar) */
-@supports (-moz-appearance: none) {
-  html, body, .modal-body, .log-table-wrapper, .slots-container {
-    scrollbar-width: thin;
-    scrollbar-color: #d4a359 #201c1d;
-  }
+/* Oculta barras nativas na página e nos slots para usar as barras customizadas */
+html,
+body,
+.slots-container {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-/* Suporte para WebKit / Chromium (Chrome, Edge, Opera, Samsung Internet, Android PWA) */
-/* NOTA: Não usamos scrollbar-color no Chrome, pois no Chrome 121+ o scrollbar-color desativa o ::-webkit-scrollbar */
-::-webkit-scrollbar,
-*::-webkit-scrollbar {
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
+.slots-container::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* 1. Trilho e Indicador Horizontal (.slots-container) */
+.custom-horiz-scroll-track {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  margin-top: 6px;
+  user-select: none;
+  touch-action: none;
+  display: none;
+}
+
+.custom-horiz-scroll-thumb {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 98px;
+  height: 28px;
+  background: url('assets/horizontal-roll-bar.png') center / contain no-repeat;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+  transition: filter 0.15s ease;
+}
+
+.custom-horiz-scroll-thumb:hover {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) brightness(1.2);
+}
+
+.custom-horiz-scroll-thumb.dragging,
+.custom-horiz-scroll-thumb:active {
+  cursor: grabbing;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6)) brightness(1.35);
+}
+
+/* 2. Trilho e Cristal Vertical (Página) */
+.custom-vert-scroll-track {
+  position: fixed;
+  right: 4px;
+  top: 14px;
+  bottom: 14px;
   width: 22px;
-  height: 18px;
-}
-
-::-webkit-scrollbar:vertical,
-*::-webkit-scrollbar:vertical {
-  width: 22px;
-}
-
-::-webkit-scrollbar-track:vertical,
-*::-webkit-scrollbar-track:vertical {
   background: url('assets/scroll-bar.png') center / 100% 100% no-repeat;
-  background-color: transparent;
+  z-index: 999;
+  user-select: none;
+  touch-action: none;
+  display: none;
+  opacity: 0.88;
+  transition: opacity 0.2s ease;
 }
 
-::-webkit-scrollbar-thumb:vertical,
-*::-webkit-scrollbar-thumb:vertical {
+.custom-vert-scroll-track:hover {
+  opacity: 1;
+}
+
+.custom-vert-scroll-thumb {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 22px;
+  height: 32px;
   background: url('assets/scroll-indicator.png') center / contain no-repeat;
-  min-height: 34px;
-  cursor: pointer;
+  cursor: grab;
+  transform: translate(-50%, 0);
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+  transition: filter 0.15s ease;
 }
 
-::-webkit-scrollbar-thumb:vertical:hover,
-*::-webkit-scrollbar-thumb:vertical:hover {
-  filter: brightness(1.2);
+.custom-vert-scroll-thumb:hover {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) brightness(1.2);
 }
 
-::-webkit-scrollbar-thumb:vertical:active,
-*::-webkit-scrollbar-thumb:vertical:active {
-  filter: brightness(1.35);
+.custom-vert-scroll-thumb.dragging,
+.custom-vert-scroll-thumb:active {
+  cursor: grabbing;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) brightness(1.35);
 }
 
-/* Rolagem Horizontal Global */
-::-webkit-scrollbar:horizontal,
-*::-webkit-scrollbar:horizontal {
-  height: 18px;
+/* Barras dentro de modais e tabelas (mantém WebKit nativo estilizado) */
+.modal-body::-webkit-scrollbar,
+.log-table-wrapper::-webkit-scrollbar {
+  width: 14px;
 }
 
-::-webkit-scrollbar-track:horizontal,
-*::-webkit-scrollbar-track:horizontal {
-  background: url('assets/horizontal-roll-bar.png') center / 100% 100% no-repeat;
-  background-color: transparent;
+.modal-body::-webkit-scrollbar-track,
+.log-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 6px;
 }
 
-::-webkit-scrollbar-thumb:horizontal,
-*::-webkit-scrollbar-thumb:horizontal {
+.modal-body::-webkit-scrollbar-thumb,
+.log-table-wrapper::-webkit-scrollbar-thumb {
   background: url('assets/scroll-indicator.png') center / contain no-repeat;
-  min-width: 28px;
+  min-height: 28px;
   cursor: pointer;
-}
-
-::-webkit-scrollbar-thumb:horizontal:hover,
-*::-webkit-scrollbar-thumb:horizontal:hover {
-  filter: brightness(1.2);
-}
-
-::-webkit-scrollbar-thumb:horizontal:active,
-*::-webkit-scrollbar-thumb:horizontal:active {
-  filter: brightness(1.35);
 }
 
 ::-webkit-scrollbar-corner,
@@ -719,9 +763,20 @@ button {
 }
 
 @keyframes pulseWorking {
-  0% { transform: scale(0.9); opacity: 0.8; }
-  50% { transform: scale(1.3); opacity: 1; }
-  100% { transform: scale(0.9); opacity: 0.8; }
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.3);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
 }
 
 /* Jornada 100% concluída */
@@ -840,30 +895,7 @@ button {
   align-items: flex-start;
   gap: 10px;
   overflow-x: auto;
-  padding: 2px 4px 8px 2px;
-}
-
-.slots-container::-webkit-scrollbar {
-  height: 18px;
-}
-
-.slots-container::-webkit-scrollbar-track {
-  background: url('assets/horizontal-roll-bar.png') center / 100% 100% no-repeat;
-  background-color: transparent;
-}
-
-.slots-container::-webkit-scrollbar-thumb {
-  background: url('assets/scroll-indicator.png') center / contain no-repeat;
-  min-width: 28px;
-  cursor: pointer;
-}
-
-.slots-container::-webkit-scrollbar-thumb:hover {
-  filter: brightness(1.2);
-}
-
-.slots-container::-webkit-scrollbar-thumb:active {
-  filter: brightness(1.35);
+  padding: 2px 4px 4px 2px;
 }
 
 /* Item de Slot Individual */
