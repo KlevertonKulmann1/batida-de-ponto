@@ -202,6 +202,23 @@
           </div>
         </div>
 
+        <!-- Jornada Diária de Trabalho -->
+        <div class="settings-redirect-section">
+          <label for="inputDailyWorkload"
+            style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+            <span>⏱️ Carga Horária / Jornada Diária</span>
+            <span style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(Meta a cumprir por dia)</span>
+          </label>
+          <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
+            Informe quantas horas você precisa trabalhar por dia (ex: <code>08:00</code> para 8 horas, ou <code>08:48</code> para 8h48min). O aplicativo calculará automaticamente as horas restantes no topo de cada dia.
+          </p>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+            <input type="text" id="inputDailyWorkload" class="schedule-input" style="width: 100px; text-align: center; font-size: 1rem; font-weight: 800; letter-spacing: 1px;"
+              placeholder="08:00" maxlength="5">
+            <span style="font-size: 0.82rem; color: #ccc;">horas/dia</span>
+          </div>
+        </div>
+
         <div id="scheduleConfigForm" class="schedule-form">
           <!-- Gerado via JS para cada dia -->
         </div>

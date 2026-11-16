@@ -34,7 +34,8 @@ const STORAGE_KEYS = {
   sound: 'ponto_sound_v1',
   redirectUrl: 'ponto_redirect_url_v1',
   pushWorkerUrl: 'ponto_push_worker_url_v1',
-  pushSubscribed: 'ponto_push_subscribed_v1'
+  pushSubscribed: 'ponto_push_subscribed_v1',
+  dailyWorkload: 'ponto_daily_workload_v1'
 };
 
 const VAPID_PUBLIC_KEY = 'BMByAAvpIK5HGGYz8_68rjv6oNv7UmKogE7QrVmrkOkgar0CLFl6Cqa0YvxSM-i5r6lF6FNOBdnykOZgnOY2Kag';
@@ -81,6 +82,23 @@ function saveRedirectUrl(url) {
   localStorage.setItem(STORAGE_KEYS.redirectUrl, redirectUrl);
 }
 
+function loadDailyWorkload() {
+  const saved = localStorage.getItem(STORAGE_KEYS.dailyWorkload);
+  return saved || '08:00';
+}
+
+function saveDailyWorkload(val) {
+  let clean = (val || '08:00').trim();
+  if (/^\d{1,2}:\d{2}$/.test(clean)) {
+    const [h, m] = clean.split(':');
+    clean = `${h.padStart(2, '0')}:${m}`;
+  } else {
+    clean = '08:00';
+  }
+  localStorage.setItem(STORAGE_KEYS.dailyWorkload, clean);
+  return clean;
+}
+
 function openExternalRedirectIfConfigured() {
   if (redirectUrl) {
     let url = redirectUrl.trim();
@@ -109,12 +127,20 @@ function setupLiveClockAndSound() {
   // Relógio em tempo real
   const clockElem = document.getElementById('liveClock');
   function tick() {
+    const now = new Date();
     if (clockElem) {
-      const now = new Date();
       const h = String(now.getHours()).padStart(2, '0');
       const m = String(now.getMinutes()).padStart(2, '0');
       const s = String(now.getSeconds()).padStart(2, '0');
       clockElem.textContent = `${h}:${m}:${s}`;
+    }
+    // A cada minuto checado no segundo 0, atualiza o quadro se estiver vendo a semana atual para manter o tempo restante ao vivo
+    if (now.getSeconds() === 0) {
+      const currentWeekMonday = getMonday(new Date());
+      const viewingMonday = getMonday(currentViewingDate);
+      if (formatDateKey(currentWeekMonday) === formatDateKey(viewingMonday)) {
+        renderBoard();
+      }
     }
   }
   tick();
@@ -294,6 +320,113 @@ function isToday(date) {
 }
 
 // ==========================================
+// Cálculos de Jornada Diária e Horas Trabalhadas
+// ==========================================
+
+function timeToMinutes(t) {
+  if (!t || typeof t !== 'string') return 0;
+  const parts = t.split(':');
+  if (parts.length < 2) return 0;
+  return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
+}
+
+function minutesToHoursMin(totalMins) {
+  const isNeg = totalMins < 0;
+  const abs = Math.abs(totalMins);
+  const h = Math.floor(abs / 60);
+  const m = abs % 60;
+  return `${isNeg ? '-' : ''}${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}`;
+}
+
+function getDayPunches(dateKey) {
+  const dayRecords = records[dateKey] || {};
+  if (dayRecords.__isFolga) return [];
+
+  const punches = [];
+  Object.keys(dayRecords).forEach(k => {
+    if (k.startsWith('__')) return;
+    const rec = dayRecords[k];
+    if (rec && rec.marked) {
+      const timeStr = rec.markedAt || k;
+      if (/^\d{1,2}:\d{2}$/.test(timeStr)) {
+        punches.push({
+          slotKey: k,
+          time: timeStr,
+          minutes: timeToMinutes(timeStr)
+        });
+      }
+    }
+  });
+
+  punches.sort((a, b) => a.minutes - b.minutes);
+  return punches;
+}
+
+function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins) {
+  const dayRecords = records[dateKey] || {};
+  const isFolga = Boolean(dayRecords.__isFolga);
+  if (isFolga) {
+    return {
+      isFolga: true,
+      punchesCount: 0,
+      workedMinutes: 0,
+      remainingMinutes: 0,
+      isCurrentlyWorking: false,
+      hasPendingPunch: false
+    };
+  }
+
+  const punches = getDayPunches(dateKey);
+  let workedMinutes = 0;
+  let isCurrentlyWorking = false;
+  let lastEntrance = null;
+  let hasPendingPunch = false;
+
+  for (let i = 0; i < punches.length; i += 2) {
+    const entrance = punches[i];
+    const exit = punches[i + 1];
+
+    if (exit) {
+      const diff = exit.minutes - entrance.minutes;
+      if (diff > 0) workedMinutes += diff;
+    } else {
+      lastEntrance = entrance.time;
+      if (isDateToday) {
+        const now = new Date();
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+        const currentDiff = nowMinutes - entrance.minutes;
+        if (currentDiff > 0) workedMinutes += currentDiff;
+        isCurrentlyWorking = true;
+      } else if (isDatePast) {
+        hasPendingPunch = true;
+      }
+    }
+  }
+
+  const remainingMinutes = targetMins - workedMinutes;
+  let estimatedExitTime = null;
+  if (isDateToday && isCurrentlyWorking && remainingMinutes > 0) {
+    const now = new Date();
+    const nowMins = now.getHours() * 60 + now.getMinutes();
+    const exitMins = nowMins + remainingMinutes;
+    const exitH = Math.floor(exitMins / 60) % 24;
+    const exitM = exitMins % 60;
+    estimatedExitTime = `${String(exitH).padStart(2, '0')}:${String(exitM).padStart(2, '0')}`;
+  }
+
+  return {
+    isFolga: false,
+    punchesCount: punches.length,
+    workedMinutes,
+    remainingMinutes,
+    isCurrentlyWorking,
+    lastEntrance,
+    hasPendingPunch,
+    estimatedExitTime
+  };
+}
+
+// ==========================================
 // Áudio e Feedback Háptico
 // ==========================================
 
@@ -451,6 +584,83 @@ function renderBoard() {
       toggleFolga(dateKey, dayConfig.label);
     });
     headerLine.appendChild(folgaBtn);
+
+    // Badge de Carga Horária / Horas Faltantes (alinhado à direita)
+    const targetWorkload = loadDailyWorkload();
+    const targetMins = timeToMinutes(targetWorkload);
+    const isPast = isPastDay(dateObj);
+    const isDayToday = isToday(dateObj);
+    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetMins);
+
+    const workloadBadge = document.createElement('div');
+    workloadBadge.className = 'day-workload-badge';
+
+    if (workStats.isFolga) {
+      workloadBadge.classList.add('workload-folga');
+      workloadBadge.textContent = '🏖️ Folga';
+      workloadBadge.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Dia registrado como folga/feriado.`;
+      workloadBadge.addEventListener('click', () => {
+        showToast(`${dayConfig.label}: Dia de folga. Não há horas pendentes!`);
+      });
+    } else if (workStats.punchesCount === 0) {
+      workloadBadge.classList.add('workload-pending');
+      workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(targetMins)}`;
+      workloadBadge.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Nenhuma batida registrada. Meta diária: ${targetWorkload}.`;
+      workloadBadge.addEventListener('click', () => {
+        showToast(`${dayConfig.label}: Nenhuma batida registrada. Meta de hoje: ${targetWorkload}.`);
+      });
+    } else if (workStats.isCurrentlyWorking) {
+      workloadBadge.classList.add('workload-working');
+      const dot = `<span class="workload-dot"></span>`;
+      if (workStats.remainingMinutes > 0) {
+        workloadBadge.innerHTML = `${dot} <span>Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
+        const exitText = workStats.estimatedExitTime ? ` • Saída prevista: ${workStats.estimatedExitTime}` : '';
+        workloadBadge.title = `Em expediente desde às ${workStats.lastEntrance}! Já trabalhou ${minutesToHoursMin(workStats.workedMinutes)} de ${targetWorkload}${exitText}.`;
+        workloadBadge.addEventListener('click', () => {
+          showToast(`🟢 Em expediente! ${minutesToHoursMin(workStats.workedMinutes)}/${targetWorkload}.${exitText}`);
+        });
+      } else {
+        const extraMins = Math.abs(workStats.remainingMinutes);
+        workloadBadge.innerHTML = `${dot} <span>${targetWorkload} (+${minutesToHoursMin(extraMins)})</span>`;
+        workloadBadge.title = `Meta diária cumprida! Já trabalhou ${targetWorkload} e está com ${minutesToHoursMin(extraMins)} extras.`;
+        workloadBadge.addEventListener('click', () => {
+          showToast(`🟢 Meta cumprida! ${targetWorkload} concluídas (+${minutesToHoursMin(extraMins)} extras).`);
+        });
+      }
+    } else if (workStats.hasPendingPunch) {
+      workloadBadge.classList.add('workload-warning');
+      workloadBadge.innerHTML = `⚠️ ${minutesToHoursMin(workStats.workedMinutes)} (pendente)`;
+      workloadBadge.title = `Atenção: Houve entrada sem registro de saída neste dia. Horas calculadas até a última saída: ${minutesToHoursMin(workStats.workedMinutes)}.`;
+      workloadBadge.addEventListener('click', () => {
+        showToast(`⚠️ Atenção: Número ímpar de batidas registradas neste dia.`);
+      });
+    } else if (workStats.remainingMinutes <= 0) {
+      const extra = Math.abs(workStats.remainingMinutes);
+      if (extra > 0) {
+        workloadBadge.classList.add('workload-overtime');
+        workloadBadge.innerHTML = `⭐ +${minutesToHoursMin(extra)} extra`;
+        workloadBadge.title = `${dayConfig.label}: Meta de ${targetWorkload} superada! Total trabalhado: ${minutesToHoursMin(workStats.workedMinutes)} (+${minutesToHoursMin(extra)}).`;
+        workloadBadge.addEventListener('click', () => {
+          showToast(`⭐ ${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas (+${minutesToHoursMin(extra)} extras).`);
+        });
+      } else {
+        workloadBadge.classList.add('workload-done');
+        workloadBadge.innerHTML = `✅ ${targetWorkload} cumpridas`;
+        workloadBadge.title = `${dayConfig.label}: Jornada diária de ${targetWorkload} 100% cumprida!`;
+        workloadBadge.addEventListener('click', () => {
+          showToast(`✅ ${dayConfig.label}: Jornada diária de ${targetWorkload} cumprida!`);
+        });
+      }
+    } else {
+      workloadBadge.classList.add('workload-pending');
+      workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(workStats.remainingMinutes)}`;
+      workloadBadge.title = `${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas de ${targetWorkload}. Restam ${minutesToHoursMin(workStats.remainingMinutes)}.`;
+      workloadBadge.addEventListener('click', () => {
+        showToast(`${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas de ${targetWorkload}. Restam ${minutesToHoursMin(workStats.remainingMinutes)}.`);
+      });
+    }
+
+    headerLine.appendChild(workloadBadge);
 
     dayRow.appendChild(headerLine);
 
@@ -933,6 +1143,11 @@ function renderSettingsForm() {
     urlInput.value = redirectUrl || '';
   }
 
+  const workloadInput = document.getElementById('inputDailyWorkload');
+  if (workloadInput) {
+    workloadInput.value = loadDailyWorkload();
+  }
+
   const container = document.getElementById('scheduleConfigForm');
   container.innerHTML = '';
 
@@ -967,6 +1182,11 @@ function saveSettingsFromForm() {
   const urlInput = document.getElementById('inputExternalPunchUrl');
   if (urlInput) {
     saveRedirectUrl(urlInput.value);
+  }
+
+  const workloadInput = document.getElementById('inputDailyWorkload');
+  if (workloadInput) {
+    saveDailyWorkload(workloadInput.value);
   }
 
   const newSchedule = {};
@@ -1067,6 +1287,7 @@ function setupBackup() {
       saveSchedule(schedule);
       saveRecords();
       saveLogs();
+      saveDailyWorkload('08:00');
       renderBoard();
       closeModal('modalBackup');
       showToast('Todos os dados foram resetados.');
@@ -1081,7 +1302,8 @@ function getBackupPayload() {
     schedule: schedule,
     records: records,
     logs: logs,
-    redirectUrl: redirectUrl
+    redirectUrl: redirectUrl,
+    dailyWorkload: loadDailyWorkload()
   };
 }
 
@@ -1150,6 +1372,9 @@ function applyImportedData(data, skipConfirm = false) {
     }
     if (data.redirectUrl !== undefined) {
       saveRedirectUrl(data.redirectUrl);
+    }
+    if (data.dailyWorkload !== undefined) {
+      saveDailyWorkload(data.dailyWorkload);
     }
     if (Array.isArray(data.logs)) {
       // Mescla logs sem duplicar ids
