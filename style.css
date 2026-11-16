@@ -72,9 +72,10 @@ body::-webkit-scrollbar,
 /* 1. Trilho e Indicador Horizontal (.slots-container) */
 .custom-horiz-scroll-track {
   position: relative;
-  width: 100%;
+  width: calc(100% - 50px);
   height: 28px;
-  margin-top: 6px;
+  margin-top: -16px;
+  margin-left: 50px;
   user-select: none;
   touch-action: none;
   display: none;
