@@ -84,7 +84,7 @@ body::-webkit-scrollbar,
 .custom-horiz-scroll-thumb {
   position: absolute;
   left: 0;
-  top: 0;
+  top: 12px;
   width: 98px;
   height: 28px;
   background: url('assets/horizontal-roll-bar.png') center / contain no-repeat;
