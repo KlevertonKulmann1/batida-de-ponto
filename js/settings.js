@@ -13,12 +13,44 @@ function setupSettings() {
     btnReset.addEventListener('click', () => {
       if (confirm('Deseja restaurar a grade de horários padrão do exemplo?')) {
         saveSchedule(JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)));
+        saveLunchWindow('12:00', '13:12');
         renderSettingsForm();
         renderBoard();
         showToast('Horários restaurados para o padrão.');
       }
     });
   }
+
+  // Monitora alterações nos horários de almoço para atualizar o badge dinamicamente
+  const startInput = document.getElementById('inputLunchStart');
+  const endInput = document.getElementById('inputLunchEnd');
+  if (startInput) startInput.addEventListener('input', updateLunchBadge);
+  if (endInput) endInput.addEventListener('input', updateLunchBadge);
+}
+
+function updateLunchBadge() {
+  const badge = document.getElementById('lunchDurationBadge');
+  const startInput = document.getElementById('inputLunchStart');
+  const endInput = document.getElementById('inputLunchEnd');
+  if (!badge || !startInput || !endInput) return;
+
+  const startVal = startInput.value.trim();
+  const endVal = endInput.value.trim();
+
+  if (/^\d{1,2}:\d{2}$/.test(startVal) && /^\d{1,2}:\d{2}$/.test(endVal)) {
+    const sM = timeToMinutes(startVal);
+    const eM = timeToMinutes(endVal);
+    const diff = eM - sM;
+    if (diff > 0) {
+      const h = String(Math.floor(diff / 60)).padStart(2, '0');
+      const m = String(diff % 60).padStart(2, '0');
+      badge.textContent = `(${h}h${m}m)`;
+      badge.style.color = 'var(--accent-gold)';
+      return;
+    }
+  }
+  badge.textContent = `(Inválido)`;
+  badge.style.color = '#ff6b6b';
 }
 
 function renderSettingsForm() {
@@ -32,10 +64,12 @@ function renderSettingsForm() {
     workloadInput.value = loadDailyWorkload();
   }
 
-  const lunchInput = document.getElementById('inputLunchBreak');
-  if (lunchInput) {
-    lunchInput.value = loadLunchBreak();
-  }
+  const lunchWin = loadLunchWindow();
+  const startInput = document.getElementById('inputLunchStart');
+  const endInput = document.getElementById('inputLunchEnd');
+  if (startInput) startInput.value = lunchWin.start;
+  if (endInput) endInput.value = lunchWin.end;
+  updateLunchBadge();
 
   const container = document.getElementById('scheduleConfigForm');
   if (!container) return;
@@ -79,9 +113,10 @@ function saveSettingsFromForm() {
     saveDailyWorkload(workloadInput.value);
   }
 
-  const lunchInput = document.getElementById('inputLunchBreak');
-  if (lunchInput) {
-    saveLunchBreak(lunchInput.value);
+  const startInput = document.getElementById('inputLunchStart');
+  const endInput = document.getElementById('inputLunchEnd');
+  if (startInput && endInput) {
+    saveLunchWindow(startInput.value, endInput.value);
   }
 
   const newSchedule = {};

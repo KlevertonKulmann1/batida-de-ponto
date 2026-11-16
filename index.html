@@ -224,24 +224,26 @@
               </div>
             </div>
 
-            <!-- Tempo de Almoço -->
-            <div style="flex: 1; min-width: 140px;">
-              <label for="inputLunchBreak"
+            <!-- Horário de Almoço (De ... Até ...) -->
+            <div style="flex: 1.4; min-width: 200px;">
+              <label
                 style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
-                <span>🍽️ Tempo de Almoço</span>
-                <span style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(Intervalo)</span>
+                <span>🍽️ Horário de Almoço</span>
+                <span id="lunchDurationBadge" style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(01h12m)</span>
               </label>
-              <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
-                <input type="text" id="inputLunchBreak" class="schedule-input"
-                  style="width: 100px; text-align: center; font-size: 1rem; font-weight: 800; letter-spacing: 1px;"
-                  placeholder="01:12" maxlength="5">
-                <span style="font-size: 0.82rem; color: #ccc;">tempo</span>
+              <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
+                <input type="text" id="inputLunchStart" class="schedule-input"
+                  style="width: 75px; text-align: center; font-size: 0.95rem; font-weight: 800; letter-spacing: 1px;"
+                  placeholder="12:00" maxlength="5">
+                <span style="font-size: 0.8rem; color: #aaa;">até</span>
+                <input type="text" id="inputLunchEnd" class="schedule-input"
+                  style="width: 75px; text-align: center; font-size: 0.95rem; font-weight: 800; letter-spacing: 1px;"
+                  placeholder="13:12" maxlength="5">
               </div>
             </div>
           </div>
           <p class="modal-desc" style="margin-top: 8px; font-size: 0.78rem;">
-            Se o dia tiver apenas 2 batidas (Entrada e Saída geral, ex: Terça e Quinta), o tempo de almoço será
-            descontado automaticamente do total decorrido. Ele também é somado na previsão do horário de saída!
+            O cronômetro pausa automaticamente durante o intervalo de almoço configurado. Em dias com 2 batidas ou em andamento, o almoço não é contado como hora trabalhada e ajusta a previsão de saída.
           </p>
         </div>
 

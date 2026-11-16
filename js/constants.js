@@ -31,7 +31,9 @@ const STORAGE_KEYS = {
   pushWorkerUrl: 'ponto_push_worker_url_v1',
   pushSubscribed: 'ponto_push_subscribed_v1',
   dailyWorkload: 'ponto_daily_workload_v1',
-  lunchBreak: 'ponto_lunch_break_v1'
+  lunchBreak: 'ponto_lunch_break_v1',
+  lunchStart: 'ponto_lunch_start_v1',
+  lunchEnd: 'ponto_lunch_end_v1'
 };
 
 const VAPID_PUBLIC_KEY = 'BMByAAvpIK5HGGYz8_68rjv6oNv7UmKogE7QrVmrkOkgar0CLFl6Cqa0YvxSM-i5r6lF6FNOBdnykOZgnOY2Kag';

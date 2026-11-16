@@ -106,6 +106,45 @@ function saveLunchBreak(val) {
   return clean;
 }
 
+function loadLunchWindow() {
+  const start = localStorage.getItem(STORAGE_KEYS.lunchStart) || '12:00';
+  const end = localStorage.getItem(STORAGE_KEYS.lunchEnd) || '13:12';
+  return { start, end };
+}
+
+function saveLunchWindow(start, end) {
+  let cleanStart = (start || '12:00').trim();
+  let cleanEnd = (end || '13:12').trim();
+
+  if (/^\d{1,2}:\d{2}$/.test(cleanStart)) {
+    const [h, m] = cleanStart.split(':');
+    cleanStart = `${h.padStart(2, '0')}:${m}`;
+  } else {
+    cleanStart = '12:00';
+  }
+
+  if (/^\d{1,2}:\d{2}$/.test(cleanEnd)) {
+    const [h, m] = cleanEnd.split(':');
+    cleanEnd = `${h.padStart(2, '0')}:${m}`;
+  } else {
+    cleanEnd = '13:12';
+  }
+
+  localStorage.setItem(STORAGE_KEYS.lunchStart, cleanStart);
+  localStorage.setItem(STORAGE_KEYS.lunchEnd, cleanEnd);
+
+  // Calcula a duração em minutos e sincroniza com loadLunchBreak
+  const startMins = timeToMinutes(cleanStart);
+  const endMins = timeToMinutes(cleanEnd);
+  let durMins = endMins - startMins;
+  if (durMins <= 0) durMins = 72;
+  const durH = String(Math.floor(durMins / 60)).padStart(2, '0');
+  const durM = String(durMins % 60).padStart(2, '0');
+  saveLunchBreak(`${durH}:${durM}`);
+
+  return { start: cleanStart, end: cleanEnd, durationMins: durMins };
+}
+
 function loadPushWorkerUrl() {
   return localStorage.getItem(STORAGE_KEYS.pushWorkerUrl) || '';
 }

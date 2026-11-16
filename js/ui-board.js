@@ -178,11 +178,15 @@ function renderBoard() {
     // Badge de Carga Horária / Horas Faltantes (alinhado à direita)
     const targetWorkload = loadDailyWorkload();
     const targetMins = timeToMinutes(targetWorkload);
-    const lunchBreak = loadLunchBreak();
-    const lunchMins = timeToMinutes(lunchBreak);
+    const lunchWin = loadLunchWindow();
+    const lunchParam = {
+      startMins: timeToMinutes(lunchWin.start),
+      endMins: timeToMinutes(lunchWin.end),
+      durationMins: Math.max(0, timeToMinutes(lunchWin.end) - timeToMinutes(lunchWin.start))
+    };
     const isPast = isPastDay(dateObj);
     const isDayToday = isToday(dateObj);
-    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetMins, lunchMins);
+    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetMins, lunchParam);
 
     const workloadBadge = document.createElement('div');
     workloadBadge.className = 'day-workload-badge';
@@ -204,7 +208,14 @@ function renderBoard() {
     } else if (workStats.isCurrentlyWorking) {
       workloadBadge.classList.add('workload-working');
       const dot = `<span class="workload-dot"></span>`;
-      if (workStats.remainingMinutes > 0) {
+      if (workStats.isCurrentlyInLunch) {
+        workloadBadge.innerHTML = `🍽️ <span>No Almoço (${lunchWin.end}) • Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
+        const exitText = workStats.estimatedExitTime ? ` • Saída prevista: ${workStats.estimatedExitTime}` : '';
+        workloadBadge.title = `🍽️ Em horário de almoço (${lunchWin.start} às ${lunchWin.end}). Cronômetro pausado! Já trabalhou ${minutesToHoursMin(workStats.workedMinutes)} de ${targetWorkload}${exitText}.`;
+        workloadBadge.addEventListener('click', () => {
+          showToast(`🍽️ No almoço até ${lunchWin.end}! Cronômetro pausado (${minutesToHoursMin(workStats.workedMinutes)} trabalhadas).`);
+        });
+      } else if (workStats.remainingMinutes > 0) {
         workloadBadge.innerHTML = `${dot} <span>Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
         const exitText = workStats.estimatedExitTime ? ` • Saída prevista: ${workStats.estimatedExitTime}` : '';
         workloadBadge.title = `Em expediente desde às ${workStats.lastEntrance}! Já trabalhou ${minutesToHoursMin(workStats.workedMinutes)} de ${targetWorkload}${exitText}.`;

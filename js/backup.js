@@ -82,7 +82,7 @@ function setupBackup() {
         saveRecords();
         saveLogs();
         saveDailyWorkload('08:48');
-        saveLunchBreak('01:12');
+        saveLunchWindow('12:00', '13:12');
         renderBoard();
         closeModal('modalBackup');
         showToast('Todos os dados foram resetados.');
@@ -92,6 +92,7 @@ function setupBackup() {
 }
 
 function getBackupPayload() {
+  const lunchWin = loadLunchWindow();
   return {
     version: 1,
     exportedAt: new Date().toISOString(),
@@ -100,7 +101,9 @@ function getBackupPayload() {
     logs: logs,
     redirectUrl: redirectUrl,
     dailyWorkload: loadDailyWorkload(),
-    lunchBreak: loadLunchBreak()
+    lunchBreak: loadLunchBreak(),
+    lunchStart: lunchWin.start,
+    lunchEnd: lunchWin.end
   };
 }
 
@@ -176,6 +179,9 @@ function applyImportedData(data, skipConfirm = false) {
     }
     if (data.lunchBreak !== undefined) {
       saveLunchBreak(data.lunchBreak);
+    }
+    if (data.lunchStart && data.lunchEnd) {
+      saveLunchWindow(data.lunchStart, data.lunchEnd);
     }
     if (Array.isArray(data.logs)) {
       const existingIds = new Set(logs.map(l => l.id));
