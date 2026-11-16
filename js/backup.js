@@ -191,3 +191,4 @@ function applyImportedData(data, skipConfirm = false) {
     showToast('Backup restaurado com sucesso! 🎉');
   }
 }
+

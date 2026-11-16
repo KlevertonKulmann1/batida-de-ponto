@@ -114,3 +114,4 @@ function saveSettingsFromForm() {
   closeModal('modalSettings');
   showToast('Horários atualizados com sucesso!');
 }
+

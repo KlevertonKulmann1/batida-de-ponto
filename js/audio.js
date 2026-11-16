@@ -52,3 +52,4 @@ function playTickSound(isSuccess = true) {
     } catch (e) {}
   }
 }
+

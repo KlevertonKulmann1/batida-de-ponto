@@ -128,3 +128,4 @@ function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins, lunchMin
     estimatedExitTime
   };
 }
+

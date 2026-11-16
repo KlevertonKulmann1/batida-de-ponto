@@ -100,3 +100,4 @@ function exportLogsToCsv() {
   URL.revokeObjectURL(url);
   showToast('Download do CSV iniciado!');
 }
+

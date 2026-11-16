@@ -113,3 +113,4 @@ function loadPushWorkerUrl() {
 function savePushWorkerUrl(url) {
   localStorage.setItem(STORAGE_KEYS.pushWorkerUrl, (url || '').trim());
 }
+

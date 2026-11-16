@@ -89,3 +89,4 @@ function minutesToHoursMin(totalMins) {
   const m = abs % 60;
   return `${isNeg ? '-' : ''}${String(h).padStart(2, '0')}h${String(m).padStart(2, '0')}`;
 }
+
