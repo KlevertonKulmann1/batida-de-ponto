@@ -202,21 +202,40 @@
           </div>
         </div>
 
-        <!-- Jornada Diária de Trabalho -->
+        <!-- Jornada Diária e Tempo de Almoço -->
         <div class="settings-redirect-section">
-          <label for="inputDailyWorkload"
-            style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
-            <span>⏱️ Carga Horária / Jornada Diária</span>
-            <span style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(Meta a cumprir por dia)</span>
-          </label>
-          <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
-            Informe quantas horas você precisa trabalhar por dia (ex: <code>08:00</code> para 8 horas, ou <code>08:48</code> para 8h48min). O aplicativo calculará automaticamente as horas restantes no topo de cada dia.
-          </p>
-          <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
-            <input type="text" id="inputDailyWorkload" class="schedule-input" style="width: 100px; text-align: center; font-size: 1rem; font-weight: 800; letter-spacing: 1px;"
-              placeholder="08:00" maxlength="5">
-            <span style="font-size: 0.82rem; color: #ccc;">horas/dia</span>
+          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+            <!-- Carga Horária -->
+            <div style="flex: 1; min-width: 140px;">
+              <label for="inputDailyWorkload"
+                style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+                <span>⏱️ Jornada Diária</span>
+                <span style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(Meta/dia)</span>
+              </label>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                <input type="text" id="inputDailyWorkload" class="schedule-input" style="width: 100px; text-align: center; font-size: 1rem; font-weight: 800; letter-spacing: 1px;"
+                  placeholder="08:48" maxlength="5">
+                <span style="font-size: 0.82rem; color: #ccc;">horas</span>
+              </div>
+            </div>
+
+            <!-- Tempo de Almoço -->
+            <div style="flex: 1; min-width: 140px;">
+              <label for="inputLunchBreak"
+                style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+                <span>🍽️ Tempo de Almoço</span>
+                <span style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(Intervalo)</span>
+              </label>
+              <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                <input type="text" id="inputLunchBreak" class="schedule-input" style="width: 100px; text-align: center; font-size: 1rem; font-weight: 800; letter-spacing: 1px;"
+                  placeholder="01:12" maxlength="5">
+                <span style="font-size: 0.82rem; color: #ccc;">tempo</span>
+              </div>
+            </div>
           </div>
+          <p class="modal-desc" style="margin-top: 8px; font-size: 0.78rem;">
+            Se o dia tiver apenas 2 batidas (Entrada e Saída geral, ex: Terça e Quinta), o tempo de almoço será descontado automaticamente do total decorrido. Ele também é somado na previsão do horário de saída!
+          </p>
         </div>
 
         <div id="scheduleConfigForm" class="schedule-form">

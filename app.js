@@ -35,7 +35,8 @@ const STORAGE_KEYS = {
   redirectUrl: 'ponto_redirect_url_v1',
   pushWorkerUrl: 'ponto_push_worker_url_v1',
   pushSubscribed: 'ponto_push_subscribed_v1',
-  dailyWorkload: 'ponto_daily_workload_v1'
+  dailyWorkload: 'ponto_daily_workload_v1',
+  lunchBreak: 'ponto_lunch_break_v1'
 };
 
 const VAPID_PUBLIC_KEY = 'BMByAAvpIK5HGGYz8_68rjv6oNv7UmKogE7QrVmrkOkgar0CLFl6Cqa0YvxSM-i5r6lF6FNOBdnykOZgnOY2Kag';
@@ -84,18 +85,35 @@ function saveRedirectUrl(url) {
 
 function loadDailyWorkload() {
   const saved = localStorage.getItem(STORAGE_KEYS.dailyWorkload);
-  return saved || '08:00';
+  return saved || '08:48';
 }
 
 function saveDailyWorkload(val) {
-  let clean = (val || '08:00').trim();
+  let clean = (val || '08:48').trim();
   if (/^\d{1,2}:\d{2}$/.test(clean)) {
     const [h, m] = clean.split(':');
     clean = `${h.padStart(2, '0')}:${m}`;
   } else {
-    clean = '08:00';
+    clean = '08:48';
   }
   localStorage.setItem(STORAGE_KEYS.dailyWorkload, clean);
+  return clean;
+}
+
+function loadLunchBreak() {
+  const saved = localStorage.getItem(STORAGE_KEYS.lunchBreak);
+  return saved || '01:12';
+}
+
+function saveLunchBreak(val) {
+  let clean = (val || '01:12').trim();
+  if (/^\d{1,2}:\d{2}$/.test(clean)) {
+    const [h, m] = clean.split(':');
+    clean = `${h.padStart(2, '0')}:${m}`;
+  } else {
+    clean = '01:12';
+  }
+  localStorage.setItem(STORAGE_KEYS.lunchBreak, clean);
   return clean;
 }
 
@@ -362,7 +380,7 @@ function getDayPunches(dateKey) {
   return punches;
 }
 
-function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins) {
+function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins, lunchMins = 72) {
   const dayRecords = records[dateKey] || {};
   const isFolga = Boolean(dayRecords.__isFolga);
   if (isFolga) {
@@ -381,34 +399,73 @@ function calculateDayWork(dateKey, isDateToday, isDatePast, targetMins) {
   let isCurrentlyWorking = false;
   let lastEntrance = null;
   let hasPendingPunch = false;
+  let estimatedExitTime = null;
 
-  for (let i = 0; i < punches.length; i += 2) {
-    const entrance = punches[i];
-    const exit = punches[i + 1];
+  if (punches.length === 0) {
+    return {
+      isFolga: false,
+      punchesCount: 0,
+      workedMinutes: 0,
+      remainingMinutes: targetMins,
+      isCurrentlyWorking: false,
+      hasPendingPunch: false,
+      estimatedExitTime: null
+    };
+  }
 
-    if (exit) {
-      const diff = exit.minutes - entrance.minutes;
-      if (diff > 0) workedMinutes += diff;
+  // Se houver exatamente 2 batidas no dia (1 par completo, ex: Entrada e Saída geral)
+  // Desconta o tempo de almoço para não inflar as horas trabalhadas
+  if (punches.length === 2) {
+    const elapsed = punches[1].minutes - punches[0].minutes;
+    if (elapsed > lunchMins) {
+      workedMinutes = elapsed - lunchMins;
     } else {
-      lastEntrance = entrance.time;
-      if (isDateToday) {
-        const now = new Date();
-        const nowMinutes = now.getHours() * 60 + now.getMinutes();
-        const currentDiff = nowMinutes - entrance.minutes;
-        if (currentDiff > 0) workedMinutes += currentDiff;
-        isCurrentlyWorking = true;
-      } else if (isDatePast) {
-        hasPendingPunch = true;
+      workedMinutes = elapsed;
+    }
+  } else {
+    // Para 1 batida (em andamento) ou 3+ batidas (com saídas/entradas intermediárias)
+    for (let i = 0; i < punches.length; i += 2) {
+      const entrance = punches[i];
+      const exit = punches[i + 1];
+
+      if (exit) {
+        const diff = exit.minutes - entrance.minutes;
+        if (diff > 0) workedMinutes += diff;
+      } else {
+        lastEntrance = entrance.time;
+        if (isDateToday) {
+          const now = new Date();
+          const nowMinutes = now.getHours() * 60 + now.getMinutes();
+          let currentDiff = nowMinutes - entrance.minutes;
+          if (currentDiff > 0) {
+            // Se for a única batida do dia e já passou de 5h direto sem intervalo, desconta o almoço
+            if (punches.length === 1 && currentDiff > (5 * 60) && currentDiff > lunchMins) {
+              workedMinutes += (currentDiff - lunchMins);
+            } else {
+              workedMinutes += currentDiff;
+            }
+          }
+          isCurrentlyWorking = true;
+        } else if (isDatePast) {
+          hasPendingPunch = true;
+        }
       }
     }
   }
 
   const remainingMinutes = targetMins - workedMinutes;
-  let estimatedExitTime = null;
+
   if (isDateToday && isCurrentlyWorking && remainingMinutes > 0) {
     const now = new Date();
     const nowMins = now.getHours() * 60 + now.getMinutes();
-    const exitMins = nowMins + remainingMinutes;
+    let exitMins;
+    // Se só tem 1 batida (ainda não bateu almoço), a saída prevista precisa incluir o tempo de almoço que ainda será cumprido
+    if (punches.length === 1) {
+      exitMins = punches[0].minutes + targetMins + lunchMins;
+    } else {
+      // Já está após o almoço ou registrou intervalos
+      exitMins = nowMins + remainingMinutes;
+    }
     const exitH = Math.floor(exitMins / 60) % 24;
     const exitM = exitMins % 60;
     estimatedExitTime = `${String(exitH).padStart(2, '0')}:${String(exitM).padStart(2, '0')}`;
@@ -588,9 +645,11 @@ function renderBoard() {
     // Badge de Carga Horária / Horas Faltantes (alinhado à direita)
     const targetWorkload = loadDailyWorkload();
     const targetMins = timeToMinutes(targetWorkload);
+    const lunchBreak = loadLunchBreak();
+    const lunchMins = timeToMinutes(lunchBreak);
     const isPast = isPastDay(dateObj);
     const isDayToday = isToday(dateObj);
-    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetMins);
+    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetMins, lunchMins);
 
     const workloadBadge = document.createElement('div');
     workloadBadge.className = 'day-workload-badge';
@@ -1148,6 +1207,11 @@ function renderSettingsForm() {
     workloadInput.value = loadDailyWorkload();
   }
 
+  const lunchInput = document.getElementById('inputLunchBreak');
+  if (lunchInput) {
+    lunchInput.value = loadLunchBreak();
+  }
+
   const container = document.getElementById('scheduleConfigForm');
   container.innerHTML = '';
 
@@ -1187,6 +1251,11 @@ function saveSettingsFromForm() {
   const workloadInput = document.getElementById('inputDailyWorkload');
   if (workloadInput) {
     saveDailyWorkload(workloadInput.value);
+  }
+
+  const lunchInput = document.getElementById('inputLunchBreak');
+  if (lunchInput) {
+    saveLunchBreak(lunchInput.value);
   }
 
   const newSchedule = {};
@@ -1287,7 +1356,8 @@ function setupBackup() {
       saveSchedule(schedule);
       saveRecords();
       saveLogs();
-      saveDailyWorkload('08:00');
+      saveDailyWorkload('08:48');
+      saveLunchBreak('01:12');
       renderBoard();
       closeModal('modalBackup');
       showToast('Todos os dados foram resetados.');
@@ -1303,7 +1373,8 @@ function getBackupPayload() {
     records: records,
     logs: logs,
     redirectUrl: redirectUrl,
-    dailyWorkload: loadDailyWorkload()
+    dailyWorkload: loadDailyWorkload(),
+    lunchBreak: loadLunchBreak()
   };
 }
 
@@ -1375,6 +1446,9 @@ function applyImportedData(data, skipConfirm = false) {
     }
     if (data.dailyWorkload !== undefined) {
       saveDailyWorkload(data.dailyWorkload);
+    }
+    if (data.lunchBreak !== undefined) {
+      saveLunchBreak(data.lunchBreak);
     }
     if (Array.isArray(data.logs)) {
       // Mescla logs sem duplicar ids
