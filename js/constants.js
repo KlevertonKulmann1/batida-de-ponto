@@ -4,11 +4,11 @@
 
 const DEFAULT_SCHEDULE = {
   segunda: { label: 'Segunda', times: ['08:00', '08:15', '08:45', '11:00', '11:30', '17:00', '18:00', '20:00'] },
-  terca:   { label: 'Terça',   times: ['08:00', '18:00'] },
-  quarta:  { label: 'Quarta',  times: ['08:00', '08:15', '08:45', '11:00', '11:30', '17:00', '18:00', '20:00'] },
-  quinta:  { label: 'Quinta',  times: ['08:00', '18:00'] },
-  sexta:   { label: 'Sexta',   times: ['08:00', '17:00', '18:00', '19:00'] },
-  sabado:  { label: 'Sábado',  times: [] },
+  terca: { label: 'Terça', times: ['08:00', '18:00'] },
+  quarta: { label: 'Quarta', times: ['08:00', '08:15', '08:45', '11:00', '11:30', '17:00', '18:00', '20:00'] },
+  quinta: { label: 'Quinta', times: ['08:00', '18:00'] },
+  sexta: { label: 'Sexta', times: ['08:00', '17:00', '18:00', '19:00'] },
+  sabado: { label: 'Sábado', times: [] },
   domingo: { label: 'Domingo', times: [] }
 };
 
