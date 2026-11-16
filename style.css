@@ -58,6 +58,11 @@ html, body, .modal-body, .log-table-wrapper {
 }
 
 /* Suporte para WebKit / Chromium (Chrome, Edge, Opera, Samsung Internet, Android PWA) */
+::-webkit-scrollbar {
+  width: 22px;
+  height: 18px;
+}
+
 ::-webkit-scrollbar:vertical {
   width: 22px;
 }
@@ -78,6 +83,30 @@ html, body, .modal-body, .log-table-wrapper {
 }
 
 ::-webkit-scrollbar-thumb:vertical:active {
+  filter: brightness(1.35);
+}
+
+/* Rolagem Horizontal Global */
+::-webkit-scrollbar:horizontal {
+  height: 18px;
+}
+
+::-webkit-scrollbar-track:horizontal {
+  background: url('assets/horizontal-roll-bar.png') center / 100% 100% no-repeat;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb:horizontal {
+  background: url('assets/scroll-indicator.png') center / contain no-repeat;
+  min-width: 28px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:horizontal:hover {
+  filter: brightness(1.2);
+}
+
+::-webkit-scrollbar-thumb:horizontal:active {
   filter: brightness(1.35);
 }
 
@@ -796,18 +825,32 @@ button {
   align-items: flex-start;
   gap: 10px;
   overflow-x: auto;
-  padding: 2px 4px 6px 2px;
+  padding: 2px 4px 8px 2px;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+  scrollbar-color: #d4a359 #201c1d;
 }
 
 .slots-container::-webkit-scrollbar {
-  height: 4px;
+  height: 18px;
+}
+
+.slots-container::-webkit-scrollbar-track {
+  background: url('assets/horizontal-roll-bar.png') center / 100% 100% no-repeat;
+  background-color: transparent;
 }
 
 .slots-container::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+  background: url('assets/scroll-indicator.png') center / contain no-repeat;
+  min-width: 28px;
+  cursor: pointer;
+}
+
+.slots-container::-webkit-scrollbar-thumb:hover {
+  filter: brightness(1.2);
+}
+
+.slots-container::-webkit-scrollbar-thumb:active {
+  filter: brightness(1.35);
 }
 
 /* Item de Slot Individual */
