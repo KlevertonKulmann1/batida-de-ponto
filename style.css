@@ -44,6 +44,45 @@ body {
   flex-direction: column;
   padding: 12px;
   overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ==========================================================================
+   Barra de Rolagem Vertical RPG (Página & Modais)
+   ========================================================================== */
+
+/* Suporte para Firefox */
+html, body, .modal-body, .log-table-wrapper {
+  scrollbar-width: thin;
+  scrollbar-color: #d4a359 #201c1d;
+}
+
+/* Suporte para WebKit / Chromium (Chrome, Edge, Opera, Samsung Internet, Android PWA) */
+::-webkit-scrollbar:vertical {
+  width: 22px;
+}
+
+::-webkit-scrollbar-track:vertical {
+  background: url('assets/scroll-bar.png') center / 100% 100% no-repeat;
+  background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb:vertical {
+  background: url('assets/scroll-indicator.png') center / contain no-repeat;
+  min-height: 34px;
+  cursor: pointer;
+}
+
+::-webkit-scrollbar-thumb:vertical:hover {
+  filter: brightness(1.2);
+}
+
+::-webkit-scrollbar-thumb:vertical:active {
+  filter: brightness(1.35);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* App Wrapper */
