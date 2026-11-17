@@ -129,7 +129,7 @@ button {
   height: 35px;
   padding: 0 16px;
   font-size: 0.72rem;
-  background-size: 38px 35px, 38px 35px, calc(100% - 76px) 35px;
+  background-size: 38px 35px, 40px 35px, calc(100% - 76px) 35px;
 }
 
 /* Dourado / Âmbar (Ação Principal / Bater Ponto) */
@@ -253,4 +253,3 @@ button {
 .btn-danger {
   composes: btn-rpg btn-rpg-red;
 }
-

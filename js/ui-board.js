@@ -681,10 +681,17 @@ function openModal(id) {
     if (typeof setupModalScrollbars === 'function') {
       setupModalScrollbars();
     }
+    if (typeof setupTableScrollbar === 'function') {
+      setupTableScrollbar();
+    }
     const updateModalScroll = () => {
       const body = modal.querySelector('.modal-body');
       if (body && body._updateScroll) {
         body._updateScroll();
+      }
+      const tableWrapper = modal.querySelector('.log-table-wrapper');
+      if (tableWrapper && tableWrapper._updateScroll) {
+        tableWrapper._updateScroll();
       }
     };
     requestAnimationFrame(updateModalScroll);

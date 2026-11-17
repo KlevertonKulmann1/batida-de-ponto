@@ -139,20 +139,22 @@
                 class="btn-rpg-icon" alt=""> Limpar logs</button>
           </div>
         </div>
-        <div class="log-table-wrapper">
-          <table class="log-table">
-            <thead>
-              <tr>
-                <th>Data/Hora Registro</th>
-                <th>Dia</th>
-                <th>Horário</th>
-                <th>Ação</th>
-              </tr>
-            </thead>
-            <tbody id="logTableBody">
-              <!-- Preenchido via JS -->
-            </tbody>
-          </table>
+        <div class="log-table-container">
+          <div class="log-table-wrapper">
+            <table class="log-table">
+              <thead>
+                <tr>
+                  <th>Data/Hora Registro</th>
+                  <th>Dia</th>
+                  <th>Horário</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="logTableBody">
+                <!-- Preenchido via JS -->
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -167,8 +169,8 @@
       </div>
       <div class="modal-body">
         <p class="modal-desc">
-          Defina os horários esperados para cada dia da semana. Separe os horários por vírgula (ex:
-          <code>08:00, 12:00, 13:00, 18:00</code>).
+          Defina os horários esperados para cada dia da semana | Defina as notificações Push no Cloudflare | Configure
+          redirecionamento do ponto ao fazer a marcação
         </p>
 
         <!-- Redirecionamento Contínuo para Sistema Oficial -->
@@ -244,6 +246,14 @@
             O cronômetro pausa automaticamente durante o intervalo de almoço configurado. Em dias com 2 batidas ou em
             andamento, o almoço não é contado como hora trabalhada e ajusta a previsão de saída.
           </p>
+        </div>
+
+        <!-- Toolbar da Grade Semanal -->
+        <div class="schedule-form-toolbar">
+          <span class="schedule-form-title">📅 Horários por Dia da Semana</span>
+          <button type="button" id="btnToggleScheduleMode" class="btn-text-mode-toggle">
+            📝 Modo Texto
+          </button>
         </div>
 
         <div id="scheduleConfigForm" class="schedule-form">

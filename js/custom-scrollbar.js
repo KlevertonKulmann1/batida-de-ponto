@@ -411,3 +411,120 @@ function setupModalScrollbars() {
     requestAnimationFrame(update);
   });
 }
+
+// =========================================================================
+// 4. ROLAGEM VERTICAL DA TABELA DE LOGS (.log-table-wrapper)
+//    - Sem imagem de fundo no trilho (apenas trilho translúcido sutil)
+//    - Sem botões Up/Down
+//    - Thumb com altura fixa exata de 32px (scroll-indicator.png)
+// =========================================================================
+
+function setupTableScrollbar() {
+  const wrapper = document.querySelector('.log-table-wrapper');
+  if (!wrapper) return;
+
+  if (wrapper.dataset.hasCustomScroll) {
+    if (wrapper._updateScroll) wrapper._updateScroll();
+    return;
+  }
+
+  let container = wrapper.parentElement;
+  if (!container || !container.classList.contains('log-table-container')) {
+    container = document.createElement('div');
+    container.className = 'log-table-container';
+    wrapper.parentNode.insertBefore(container, wrapper);
+    container.appendChild(wrapper);
+  }
+
+  const track = document.createElement('div');
+  track.className = 'table-vert-scroll-track';
+
+  const thumb = document.createElement('div');
+  thumb.className = 'table-vert-scroll-thumb';
+  track.appendChild(thumb);
+
+  container.appendChild(track);
+  wrapper.dataset.hasCustomScroll = 'true';
+
+  const THUMB_HEIGHT = 32;
+
+  function update() {
+    const maxScroll = wrapper.scrollHeight - wrapper.clientHeight;
+    if (maxScroll <= 4) {
+      track.style.display = 'none';
+      return;
+    }
+    track.style.display = 'block';
+
+    const trackHeight = track.clientHeight;
+    const maxTravel = trackHeight - THUMB_HEIGHT;
+    if (maxTravel <= 0) {
+      requestAnimationFrame(() => {
+        const reTrackHeight = track.clientHeight;
+        const reMaxTravel = reTrackHeight - THUMB_HEIGHT;
+        if (reMaxTravel > 0) {
+          const progress = Math.min(1, Math.max(0, wrapper.scrollTop / maxScroll));
+          thumb.style.transform = `translate(-50%, ${progress * reMaxTravel}px)`;
+        }
+      });
+      return;
+    }
+
+    const progress = Math.min(1, Math.max(0, wrapper.scrollTop / maxScroll));
+    thumb.style.transform = `translate(-50%, ${progress * maxTravel}px)`;
+  }
+
+  wrapper._updateScroll = update;
+  wrapper.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+
+  let isDragging = false;
+  let startY = 0;
+  let startScrollTop = 0;
+
+  thumb.addEventListener('pointerdown', (e) => {
+    isDragging = true;
+    thumb.setPointerCapture(e.pointerId);
+    startY = e.clientY;
+    startScrollTop = wrapper.scrollTop;
+    thumb.classList.add('dragging');
+    e.preventDefault();
+    e.stopPropagation();
+  });
+
+  thumb.addEventListener('pointermove', (e) => {
+    if (!isDragging) return;
+    const maxScroll = wrapper.scrollHeight - wrapper.clientHeight;
+    const trackHeight = track.clientHeight;
+    const maxTravel = trackHeight - THUMB_HEIGHT;
+    if (maxTravel <= 0) return;
+
+    const deltaY = e.clientY - startY;
+    wrapper.scrollTop = startScrollTop + (deltaY / maxTravel) * maxScroll;
+  });
+
+  const stopDrag = (e) => {
+    if (isDragging) {
+      isDragging = false;
+      thumb.classList.remove('dragging');
+      try { thumb.releasePointerCapture(e.pointerId); } catch (_) { }
+    }
+  };
+
+  thumb.addEventListener('pointerup', stopDrag);
+  thumb.addEventListener('pointercancel', stopDrag);
+
+  track.addEventListener('pointerdown', (e) => {
+    if (e.target === thumb) return;
+    const rect = track.getBoundingClientRect();
+    const clickY = e.clientY - rect.top;
+    const maxTravel = track.clientHeight - THUMB_HEIGHT;
+    const maxScroll = wrapper.scrollHeight - wrapper.clientHeight;
+    if (maxTravel <= 0) return;
+
+    const targetTravel = Math.min(maxTravel, Math.max(0, clickY - (THUMB_HEIGHT / 2)));
+    wrapper.scrollTop = (targetTravel / maxTravel) * maxScroll;
+  });
+
+  requestAnimationFrame(update);
+}

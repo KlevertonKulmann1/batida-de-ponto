@@ -157,8 +157,9 @@
   color: #fff;
   border: 1px solid #484042;
   border-radius: 6px;
-  padding: 5px 10px;
+  padding: 5px;
   font-size: 0.82rem;
+  letter-spacing: 2px;
 }
 
 .toolbar-actions {
@@ -172,6 +173,14 @@
   overflow-y: auto;
   border: 1px solid #443c3e;
   border-radius: 8px;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.log-table-wrapper::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .log-table {
@@ -198,8 +207,21 @@
   color: #e5e5e5;
 }
 
+.log-table th:last-child,
+.log-table td:last-child {
+  padding-right: 22px;
+}
+
 .log-table tr:hover td {
   background: rgba(255, 255, 255, 0.03);
+}
+
+.log-cell-sub {
+  display: block;
+  opacity: 0.7;
+  font-size: 0.75rem;
+  line-height: 1.25;
+  margin-top: 2px;
 }
 
 .badge-action {
@@ -222,6 +244,38 @@
   border: 1px solid rgba(255, 77, 79, 0.4);
 }
 
+/* Toolbar da Grade Semanal */
+.schedule-form-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+  margin-bottom: -2px;
+}
+
+.schedule-form-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+}
+
+.btn-text-mode-toggle {
+  background: rgba(226, 186, 100, 0.08);
+  border: 1px solid rgba(226, 186, 100, 0.35);
+  border-radius: 6px;
+  color: var(--accent-gold);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-text-mode-toggle:hover {
+  background: rgba(226, 186, 100, 0.18);
+  border-color: var(--accent-gold);
+}
+
 /* Formulário de Configuração de Horários */
 .schedule-form {
   display: flex;
@@ -232,23 +286,211 @@
 .schedule-row {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   background: #242021;
-  padding: 10px 12px;
+  padding: 10px 14px;
   border-radius: 8px;
   border: 1px solid #3d3537;
+  transition: border-color 0.15s ease;
+}
+
+.schedule-row:focus-within {
+  border-color: rgba(226, 186, 100, 0.4);
 }
 
 .schedule-row-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.schedule-day-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .schedule-day-title {
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   color: #fff;
+}
+
+.day-count-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #bbb;
+}
+
+.day-count-badge.folga {
+  background: rgba(255, 77, 79, 0.15);
+  color: #ff7875;
+  border: 1px solid rgba(255, 77, 79, 0.3);
+}
+
+.schedule-day-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-day-action {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: #ccc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-day-action:hover {
+  background: rgba(226, 186, 100, 0.15);
+  color: var(--accent-gold);
+  border-color: rgba(226, 186, 100, 0.4);
+}
+
+.btn-day-action.btn-day-clear:hover {
+  background: rgba(255, 77, 79, 0.15);
+  color: #ff7875;
+  border-color: rgba(255, 77, 79, 0.4);
+}
+
+.btn-day-action.btn-day-default:hover {
+  background: rgba(82, 196, 26, 0.15);
+  color: #73d13d;
+  border-color: rgba(82, 196, 26, 0.4);
+}
+
+/* Chips de Horário (Pill arredondado com Grid responsivo) */
+.time-chips-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  align-items: center;
+  margin-top: 6px;
+}
+
+.time-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #191516;
+  border: 1px solid #4a4143;
+  border-radius: 9999px;
+  padding: 0 8px 0 12px;
+  height: 38px;
+  box-sizing: border-box;
+  width: 100%;
+  transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.time-chip:hover,
+.time-chip:focus-within {
+  border-color: var(--accent-gold);
+  background: #231c1e;
+  box-shadow: 0 0 8px rgba(226, 186, 100, 0.25);
+}
+
+.time-chip-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-family: monospace;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  padding: 0;
+  outline: none;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+}
+
+.time-chip-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+  cursor: pointer;
+  opacity: 0.75;
+  margin-left: 2px;
+  padding: 0;
+}
+
+.time-chip-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.time-chip-remove {
+  background: transparent;
+  border: none;
+  color: #777;
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.time-chip-remove:hover {
+  color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.25);
+}
+
+.btn-add-time-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: rgba(226, 186, 100, 0.08);
+  border: 1px dashed rgba(226, 186, 100, 0.45);
+  border-radius: 9999px;
+  color: var(--accent-gold);
+  font-size: 0.82rem;
+  font-weight: 700;
+  height: 38px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  width: 100%;
+  cursor: pointer;
+  grid-column: 4;
+  /* Sempre no último slot da última linha (desktop 4 cols) */
+  transition: all 0.15s ease;
+}
+
+.btn-add-time-chip:hover {
+  background: rgba(226, 186, 100, 0.18);
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.empty-day-text {
+  font-size: 0.82rem;
+  color: #888;
+  font-style: italic;
+  padding: 0 4px;
+  grid-column: 1 / 4;
+  display: flex;
+  align-items: center;
 }
 
 .schedule-input {
@@ -487,7 +729,7 @@
   border-right: 1px solid;
 }
 
-@media screen and (max-width: 640px) {
+@media screen and (max-width: 680px) {
   .settings-redirect-section .lunch-time {
     flex-direction: column;
     gap: 14px;
@@ -501,6 +743,19 @@
   .settings-unit-label {
     width: 30px;
     text-align: center;
+  }
+
+  /* Tablet: 3 chips por linha, botão sempre no último slot (coluna 3) */
+  .time-chips-container {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .btn-add-time-chip {
+    grid-column: 3;
+  }
+
+  .empty-day-text {
+    grid-column: 1 / 3;
   }
 }
 
@@ -528,5 +783,18 @@
 
   .settings-redirect-section .notification-action button {
     min-height: 40px;
+  }
+
+  /* Mobile: 2 chips por linha, botão sempre no último slot (coluna 2) */
+  .time-chips-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .btn-add-time-chip {
+    grid-column: 2;
+  }
+
+  .empty-day-text {
+    grid-column: 1 / 2;
   }
 }

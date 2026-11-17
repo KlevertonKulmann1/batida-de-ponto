@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof setupModalScrollbars === 'function') {
     setupModalScrollbars();
   }
+  if (typeof setupTableScrollbar === 'function') {
+    setupTableScrollbar();
+  }
   registerServiceWorker();
   checkUrlPunchAction();
 });

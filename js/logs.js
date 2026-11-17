@@ -43,6 +43,30 @@ function setupLogs() {
   }
 }
 
+function formatLogDateTimeCell(entry) {
+  let dateText = '';
+  let timeText = '';
+
+  if (entry.displayDate && entry.displayDate.includes(' ')) {
+    const parts = entry.displayDate.split(' ');
+    dateText = parts[0];
+    timeText = parts.slice(1).join(' ');
+  } else if (entry.timestamp) {
+    const dt = new Date(entry.timestamp);
+    if (!isNaN(dt.getTime())) {
+      dateText = `${String(dt.getDate()).padStart(2, '0')}/${String(dt.getMonth() + 1).padStart(2, '0')}/${dt.getFullYear()}`;
+      timeText = `${String(dt.getHours()).padStart(2, '0')}:${String(dt.getMinutes()).padStart(2, '0')}:${String(dt.getSeconds()).padStart(2, '0')}`;
+    } else {
+      dateText = entry.timestamp;
+    }
+  }
+
+  if (dateText && timeText) {
+    return `${dateText}<span class="log-cell-sub">${timeText}</span>`;
+  }
+  return dateText || entry.displayDate || entry.timestamp || '';
+}
+
 function renderLogsTable() {
   const filterElem = document.getElementById('logFilter');
   const filter = filterElem ? filterElem.value : 'all';
@@ -60,10 +84,18 @@ function renderLogsTable() {
     return true;
   });
 
+  const updateTableScroll = () => {
+    const wrapper = document.querySelector('.log-table-wrapper');
+    if (wrapper && wrapper._updateScroll) {
+      wrapper._updateScroll();
+    }
+  };
+
   if (filteredLogs.length === 0) {
     const tr = document.createElement('tr');
     tr.innerHTML = '<td colspan="4" style="text-align: center; color: #888; padding: 20px;">Nenhum registro encontrado.</td>';
     tbody.appendChild(tr);
+    requestAnimationFrame(updateTableScroll);
     return;
   }
 
@@ -71,13 +103,15 @@ function renderLogsTable() {
     const tr = document.createElement('tr');
     const isMarcado = entry.action === 'marcado';
     tr.innerHTML = `
-      <td>${entry.displayDate || entry.timestamp}</td>
-      <td><strong>${entry.dayName}</strong> (${formatDateShortFromKey(entry.dateKey)})</td>
-      <td>${entry.slotTime} <span style="opacity: 0.7; font-size: 0.75rem;">(às ${entry.actualTime})</span></td>
+      <td>${formatLogDateTimeCell(entry)}</td>
+      <td><strong>${entry.dayName}</strong><span class="log-cell-sub">(${formatDateShortFromKey(entry.dateKey)})</span></td>
+      <td>${entry.slotTime}<span class="log-cell-sub">(às ${entry.actualTime})</span></td>
       <td><span class="badge-action ${isMarcado ? 'marcado' : 'desmarcado'}">${isMarcado ? 'Batido' : 'Removido'}</span></td>
     `;
     tbody.appendChild(tr);
   });
+
+  requestAnimationFrame(updateTableScroll);
 }
 
 function exportLogsToCsv() {

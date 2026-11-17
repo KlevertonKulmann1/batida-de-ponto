@@ -167,20 +167,49 @@ body::-webkit-scrollbar,
   opacity: 1;
 }
 
-/* Barras dentro de tabelas (mantém WebKit nativo estilizado) */
-.log-table-wrapper::-webkit-scrollbar {
+/* 4. Barra de Rolagem da Tabela de Logs (Sem imagem de fundo no trilho, thumb fixo de 32px) */
+.log-table-container {
+  position: relative;
+  width: 100%;
+}
+
+.table-vert-scroll-track {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  bottom: 2px;
   width: 14px;
-}
-
-.log-table-wrapper::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.2);
+  background: rgba(0, 0, 0, 0.28);
   border-radius: 6px;
+  user-select: none;
+  touch-action: none;
+  z-index: 5;
+  display: none;
 }
 
-.log-table-wrapper::-webkit-scrollbar-thumb {
+.table-vert-scroll-thumb {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 20px;
+  height: 32px;
+  transform: translate(-50%, 0);
   background: url('../assets/scroll-indicator.png') center / contain no-repeat;
-  min-height: 28px;
-  cursor: pointer;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+  transition: filter 0.15s ease;
+}
+
+.table-vert-scroll-thumb:hover {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) brightness(1.25);
+}
+
+.table-vert-scroll-thumb.dragging,
+.table-vert-scroll-thumb:active {
+  cursor: grabbing;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7)) brightness(1.4);
 }
 
 ::-webkit-scrollbar-corner,
