@@ -102,8 +102,7 @@
     <footer class="app-footer">
       <span>Controle de Ponto Pessoal • Salvo automaticamente no seu dispositivo</span>
       <div class="footer-actions">
-        <button id="btnInstallApp" class="btn-rpg btn-rpg-green" style="display: none;"
-          title="Instalar aplicativo no celular">
+        <button id="btnInstallApp" class="btn-rpg btn-rpg-green" title="Instalar aplicativo no celular">
           <img src="assets/icon-install.png" class="btn-rpg-icon" alt="">
           <span class="btn-text">Instalar App</span>
         </button>
@@ -121,8 +120,7 @@
   <div id="modalLogs" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><img src="assets/icon-log.png" alt="Histórico" style="width: 32px;border-radius: 50%;"> Histórico de
-          Registros</h3>
+        <h3><img src="assets/icon-log.png" alt="Histórico"> Histórico de Registros</h3>
         <button class="modal-close" data-close="modalLogs" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -164,8 +162,7 @@
   <div id="modalSettings" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><img src="assets/icon-settings.png" alt="Configuração" style="width: 32px;border-radius: 50%;"> Configuração
-          de Horários</h3>
+        <h3><img src="assets/icon-settings.png" alt="Configuração"> Configuração de Horários</h3>
         <button class="modal-close" data-close="modalSettings" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -176,39 +173,34 @@
 
         <!-- Redirecionamento Contínuo para Sistema Oficial -->
         <div class="settings-redirect-section">
-          <label for="inputExternalPunchUrl"
-            style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; gap: 6px;">
+          <label for="inputExternalPunchUrl" class="settings-label-link">
             🔗 Link do Sistema Oficial de Ponto (opcional)
           </label>
-          <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
+          <p class="modal-desc">
             Ao bater um ponto (pelo botão principal ou no quadro), este link será aberto automaticamente em uma nova aba
             para você registrar o ponto na sua empresa.
           </p>
-          <input type="url" id="inputExternalPunchUrl" class="schedule-input" style="width: 100%; margin-top: 6px;"
+          <input type="url" id="inputExternalPunchUrl" class="schedule-input settings-input-full"
             placeholder="Ex: https://app.pontomais.com.br">
         </div>
 
         <!-- Lembretes & Notificações Push via Cloudflare Worker -->
         <div class="settings-redirect-section">
-          <label for="inputPushWorkerUrl"
-            style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+          <label for="inputPushWorkerUrl">
             <span>🔔 Lembretes Push no Celular (Cloudflare)</span>
-            <span id="pushStatusBadge"
-              style="font-size: 0.72rem; padding: 2px 6px; border-radius: 4px; background: rgba(255,255,255,0.1); color: #aaa;">Desativado</span>
+            <span id="pushStatusBadge" class="status-badge">Desativado</span>
           </label>
-          <p class="modal-desc" style="margin-top: 4px; font-size: 0.78rem;">
+          <p class="modal-desc">
             Receba notificações automáticas no celular nos horários de bater o ponto, mesmo com o app fechado e a tela
             bloqueada.
           </p>
-          <input type="url" id="inputPushWorkerUrl" class="schedule-input" style="width: 100%; margin-top: 6px;"
+          <input type="url" id="inputPushWorkerUrl" class="schedule-input settings-input-full"
             placeholder="Cole aqui a URL do seu Worker (ex: https://meu-worker.workers.dev)">
-          <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
-            <button id="btnSubscribePush" class="btn-rpg btn-rpg-green"
-              style="font-size: 0.8rem; height: 39px; padding: 0 14px; min-width: 130px; flex: 1;">
+          <div class="notification-action">
+            <button id="btnSubscribePush" class="btn-rpg btn-rpg-green">
               <span class="btn-text">Ativar Notificações</span>
             </button>
-            <button id="btnTestPush" class="btn-rpg btn-rpg-blue"
-              style="font-size: 0.8rem; height: 39px; padding: 0 14px; min-width: 130px; flex: 1;">
+            <button id="btnTestPush" class="btn-rpg btn-rpg-blue">
               <span class="btn-text">🔔 Testar Push Agora</span>
             </button>
           </div>
@@ -216,42 +208,41 @@
 
         <!-- Jornada Diária e Tempo de Almoço -->
         <div class="settings-redirect-section">
-          <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <div class="lunch-time">
             <!-- Carga Horária -->
-            <div style="flex: 1; min-width: 140px;">
-              <label for="inputDailyWorkload"
-                style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+            <div class="settings-col-workload">
+              <label for="inputWorkloadHours">
                 <span>⏱️ Jornada Diária</span>
-                <span style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(Meta/dia)</span>
+                <span class="settings-label-hint">(Meta/dia)</span>
               </label>
-              <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
-                <input type="text" id="inputDailyWorkload" class="schedule-input"
-                  style="width: 100px; text-align: center; font-size: 1rem; font-weight: 800; letter-spacing: 1px;"
-                  placeholder="08:48" maxlength="5">
-                <span style="font-size: 0.82rem; color: #ccc;">horas</span>
+              <div class="settings-input-group">
+                <input type="text" id="inputWorkloadHours" class="schedule-input input-workload-unit" placeholder="08"
+                  maxlength="2" inputmode="numeric">
+                <span class="settings-unit-label">:</span>
+                <input type="text" id="inputWorkloadMinutes" class="schedule-input input-workload-unit" placeholder="48"
+                  maxlength="2" inputmode="numeric">
+
               </div>
             </div>
 
             <!-- Horário de Almoço (De ... Até ...) -->
-            <div style="flex: 1.4; min-width: 200px;">
-              <label
-                style="font-size: 0.85rem; font-weight: 800; color: var(--accent-gold); display: flex; align-items: center; justify-content: space-between;">
+            <div class="settings-col-lunch">
+              <label>
                 <span>🍽️ Horário de Almoço</span>
-                <span id="lunchDurationBadge" style="font-size: 0.72rem; color: #bbb; font-weight: normal;">(01h12m)</span>
+                <span id="lunchDurationBadge" class="settings-label-hint">(01h12m)</span>
               </label>
-              <div style="display: flex; align-items: center; gap: 6px; margin-top: 6px; flex-wrap: wrap;">
-                <input type="text" id="inputLunchStart" class="schedule-input"
-                  style="width: 75px; text-align: center; font-size: 0.95rem; font-weight: 800; letter-spacing: 1px;"
-                  placeholder="12:00" maxlength="5">
-                <span style="font-size: 0.8rem; color: #aaa;">até</span>
-                <input type="text" id="inputLunchEnd" class="schedule-input"
-                  style="width: 75px; text-align: center; font-size: 0.95rem; font-weight: 800; letter-spacing: 1px;"
-                  placeholder="13:12" maxlength="5">
+              <div class="settings-input-range">
+                <input type="text" id="inputLunchStart" class="schedule-input input-lunch-time" placeholder="12:00"
+                  maxlength="5">
+                <span class="settings-range-separator">até</span>
+                <input type="text" id="inputLunchEnd" class="schedule-input input-lunch-time" placeholder="13:12"
+                  maxlength="5">
               </div>
             </div>
           </div>
-          <p class="modal-desc" style="margin-top: 8px; font-size: 0.78rem;">
-            O cronômetro pausa automaticamente durante o intervalo de almoço configurado. Em dias com 2 batidas ou em andamento, o almoço não é contado como hora trabalhada e ajusta a previsão de saída.
+          <p class="modal-desc modal-desc-mt">
+            O cronômetro pausa automaticamente durante o intervalo de almoço configurado. Em dias com 2 batidas ou em
+            andamento, o almoço não é contado como hora trabalhada e ajusta a previsão de saída.
           </p>
         </div>
 
@@ -272,8 +263,7 @@
   <div id="modalBackup" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><img src="assets/icon-save.png" alt="Backup" style="width: 32px;border-radius: 50%;"> Backup e Sincronização
-        </h3>
+        <h3><img src="assets/icon-save.png" alt="Backup"> Backup e Sincronização</h3>
         <button class="modal-close" data-close="modalBackup" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -294,12 +284,12 @@
 
         <div class="backup-section">
           <h4>Importar Dados</h4>
-          <input type="file" id="fileImportBackup" accept=".json" style="display: none;">
+          <input type="file" id="fileImportBackup" accept=".json">
           <div class="btn-group">
             <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue"><img src="assets/icon-folder.png"
                 class="btn-rpg-icon" alt=""> Selecionar Arquivo JSON</button>
             <button id="btnRestorePontoFile" class="btn-rpg btn-rpg-green"><img src="assets/icon-save.png"
-                class="btn-rpg-icon" alt=""> Carregar ponto-backup.json</button>
+                class="btn-rpg-icon" alt=""> Carregar backup</button>
           </div>
           <textarea id="importTextarea"
             placeholder="Ou cole aqui os dados em formato JSON para restaurar..."></textarea>
@@ -327,17 +317,15 @@
         <div class="unmark-info" id="unmarkModalInfo"></div>
 
         <div class="edit-time-section">
-          <label for="inputEditTime" style="font-size: 0.8rem; font-weight: 700; color: #ddd;">Corrigir horário
-            registrado:</label>
-          <div style="display: flex; gap: 8px; margin-top: 6px;">
-            <input type="time" id="inputEditTime" class="schedule-input" style="flex: 1;">
+          <label for="inputEditTime">Corrigir horário registrado:</label>
+          <div class="edit-time-controls">
+            <input type="time" id="inputEditTime" class="schedule-input">
             <button id="btnSaveEditedTime" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-save.png"
                 class="btn-rpg-icon" alt=""> Salvar Horário</button>
           </div>
         </div>
 
-        <div class="btn-group modal-actions"
-          style="margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 12px;">
+        <div class="btn-group modal-actions modal-actions-divided">
           <button id="btnConfirmUnmark" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png"
               class="btn-rpg-icon" alt=""> Desmarcar Ponto</button>
           <button class="btn-rpg btn-rpg-blue" data-close="modalConfirmUnmark">Fechar</button>

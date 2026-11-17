@@ -602,10 +602,6 @@
   align-items: center;
 }
 
-.settings-redirect-section {
-  background: #201c1d;
-  padding: 12px 14px 16px 14px;
-  border-radius: 8px;
-  border: 1px solid #443c3e;
-  margin-bottom: 10px;
+#btnInstallApp {
+  display: none;
 }

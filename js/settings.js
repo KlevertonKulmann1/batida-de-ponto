@@ -14,10 +14,27 @@ function setupSettings() {
       if (confirm('Deseja restaurar a grade de horários padrão do exemplo?')) {
         saveSchedule(JSON.parse(JSON.stringify(DEFAULT_SCHEDULE)));
         saveLunchWindow('12:00', '13:12');
+        saveDailyWorkload('08:48');
         renderSettingsForm();
         renderBoard();
         showToast('Horários restaurados para o padrão.');
       }
+    });
+  }
+
+  // Auto-avanço de horas para minutos na jornada diária
+  const hInput = document.getElementById('inputWorkloadHours');
+  const mInput = document.getElementById('inputWorkloadMinutes');
+  if (hInput && mInput) {
+    hInput.addEventListener('input', () => {
+      hInput.value = hInput.value.replace(/\D/g, '');
+      if (hInput.value.length >= 2) {
+        mInput.focus();
+        mInput.select();
+      }
+    });
+    mInput.addEventListener('input', () => {
+      mInput.value = mInput.value.replace(/\D/g, '');
     });
   }
 
@@ -59,10 +76,12 @@ function renderSettingsForm() {
     urlInput.value = redirectUrl || '';
   }
 
-  const workloadInput = document.getElementById('inputDailyWorkload');
-  if (workloadInput) {
-    workloadInput.value = loadDailyWorkload();
-  }
+  const workload = loadDailyWorkload() || '08:48';
+  const [wHours, wMinutes] = workload.split(':');
+  const hInput = document.getElementById('inputWorkloadHours');
+  const mInput = document.getElementById('inputWorkloadMinutes');
+  if (hInput) hInput.value = wHours || '08';
+  if (mInput) mInput.value = wMinutes || '48';
 
   const lunchWin = loadLunchWindow();
   const startInput = document.getElementById('inputLunchStart');
@@ -113,9 +132,14 @@ function saveSettingsFromForm() {
     saveRedirectUrl(urlInput.value);
   }
 
-  const workloadInput = document.getElementById('inputDailyWorkload');
-  if (workloadInput) {
-    saveDailyWorkload(workloadInput.value);
+  const hInput = document.getElementById('inputWorkloadHours');
+  const mInput = document.getElementById('inputWorkloadMinutes');
+  if (hInput && mInput) {
+    const rawH = hInput.value.replace(/\D/g, '');
+    const rawM = mInput.value.replace(/\D/g, '');
+    const h = String(Math.min(23, Math.max(0, parseInt(rawH || '8', 10)))).padStart(2, '0');
+    const m = String(Math.min(59, Math.max(0, parseInt(rawM || '0', 10)))).padStart(2, '0');
+    saveDailyWorkload(`${h}:${m}`);
   }
 
   const startInput = document.getElementById('inputLunchStart');

@@ -81,6 +81,13 @@
   gap: 8px;
 }
 
+.modal-header h3 img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
 /* Botão Fechar Modal com a Jóia de Rubi (btn-x.png / btn-x-ativo.png) */
 .modal-close {
   position: absolute;
@@ -251,7 +258,9 @@
   border-radius: 6px;
   padding: 8px 10px;
   font-family: monospace;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
+  box-sizing: border-box;
+  width: 100%;
 }
 
 .schedule-input:focus {
@@ -282,10 +291,20 @@
   color: var(--accent-gold);
 }
 
+.backup-section .btn-group button {
+  width: -webkit-fill-available;
+}
+
 .btn-group {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.backup-section .btn-group {
+  display: flex;
+  gap: 8px;
+  flex-wrap: unset;
 }
 
 #importTextarea {
@@ -309,7 +328,125 @@
   color: #ff7875;
 }
 
-/* Modal Desmarcação */
+/* Seções de Configurações Especiais (Link Externo, Push, Jornada/Almoço) */
+.settings-redirect-section {
+  background: #201c1d;
+  padding: 12px 14px 16px 14px;
+  border-radius: 8px;
+  border: 1px solid #443c3e;
+  margin-bottom: 10px;
+}
+
+.settings-redirect-section label {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.settings-label-link {
+  justify-content: flex-start !important;
+}
+
+.settings-redirect-section .modal-desc {
+  margin-top: 4px;
+  font-size: 0.78rem;
+}
+
+.settings-redirect-section .modal-desc.modal-desc-mt {
+  margin-top: 8px;
+}
+
+.settings-redirect-section input[type="url"],
+.settings-input-full {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.status-badge {
+  font-size: 0.72rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #aaa;
+}
+
+.notification-action {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.notification-action .btn-rpg {
+  font-size: 0.8rem;
+  height: 39px;
+  padding: 0 14px;
+  min-width: 130px;
+  flex: 1;
+}
+
+.lunch-time {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings-col-workload,
+.settings-col-lunch {
+  flex: 1;
+  min-width: 200px;
+}
+
+.settings-label-hint {
+  font-size: 0.72rem;
+  color: #bbb;
+  font-weight: normal;
+}
+
+.settings-input-group,
+.settings-input-range {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  width: 100%;
+}
+
+.input-workload-unit,
+.input-lunch-time {
+  flex: 1;
+  min-width: 0;
+  height: 40px;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.settings-unit-label {
+  font-size: 0.82rem;
+  color: #ccc;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.settings-range-separator {
+  font-size: 0.82rem;
+  color: #aaa;
+  font-weight: 700;
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+#fileImportBackup {
+  display: none;
+}
+
+/* Modal Desmarcação e Ajuste de Horário */
 .unmark-info {
   background: #242021;
   padding: 10px;
@@ -318,8 +455,78 @@
   color: #ddd;
 }
 
+.edit-time-section label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #ddd;
+}
+
+.edit-time-controls {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.edit-time-controls .schedule-input {
+  flex: 1;
+}
+
 .modal-actions {
   justify-content: flex-end;
   margin-top: 10px;
 }
 
+.modal-actions-divided {
+  margin-top: 12px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 12px;
+}
+
+.settings-col-workload {
+  padding-right: 8px;
+  border-right: 1px solid;
+}
+
+@media screen and (max-width: 640px) {
+  .settings-redirect-section .lunch-time {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .settings-col-workload {
+    padding-right: 0;
+    border-right: 0 solid;
+  }
+
+  .settings-unit-label {
+    width: 30px;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .modal-overlay {
+    padding: 8px;
+  }
+
+  .modal-body {
+    padding: 14px 26px 14px 12px;
+    gap: 12px;
+  }
+
+  .settings-redirect-section {
+    padding: 10px 10px 14px 10px;
+  }
+
+  .settings-actions {
+    flex-direction: column;
+  }
+
+  .settings-redirect-section .notification-action {
+    flex-direction: column;
+  }
+
+  .settings-redirect-section .notification-action button {
+    min-height: 40px;
+  }
+}
