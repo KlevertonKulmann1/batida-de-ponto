@@ -504,6 +504,17 @@
   color: #ffffff;
   letter-spacing: 1.5px;
   text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 0 1px 3px rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.slot-time:hover {
+  color: var(--accent-gold);
+  background: rgba(226, 186, 100, 0.18);
+  transform: translateY(-1px);
 }
 
 .slot-btn {
@@ -542,6 +553,20 @@
   text-shadow: 1px 1px 1px #000;
   min-height: 12px;
   opacity: 0.95;
+  cursor: pointer;
+  padding: 1px 4px;
+  border-radius: 4px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  user-select: none;
+}
+
+.slot-marked-at:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  transform: scale(1.05);
 }
 
 /* Rodapé do Quadro */

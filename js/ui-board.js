@@ -51,14 +51,29 @@ function setupEditTime() {
       }
 
       const { dateKey, dayLabel, slotTime } = pendingUnmark;
-      if (records[dateKey] && records[dateKey][slotTime]) {
-        records[dateKey][slotTime].markedAt = newTime;
-        saveRecords();
-        addLog('ajustado', dateKey, dayLabel, slotTime, newTime);
-        showToast(`Horário corrigido para ${newTime} ✏️`);
-        renderBoard();
-        closeModal('modalConfirmUnmark');
-        pendingUnmark = null;
+      if (!records[dateKey]) records[dateKey] = {};
+
+      const wasMarked = Boolean(records[dateKey][slotTime] && records[dateKey][slotTime].marked);
+      const now = new Date();
+
+      records[dateKey][slotTime] = {
+        marked: true,
+        timestamp: wasMarked && records[dateKey][slotTime].timestamp ? records[dateKey][slotTime].timestamp : now.toISOString(),
+        markedAt: newTime
+      };
+      saveRecords();
+      addLog(wasMarked ? 'ajustado' : 'marcado', dateKey, dayLabel, slotTime, newTime);
+      playTickSound(true);
+      showToast(wasMarked ? `Horário corrigido para ${newTime} ✏️` : `Ponto registrado às ${newTime}! ✨`);
+      renderBoard();
+      closeModal('modalConfirmUnmark');
+      pendingUnmark = null;
+    });
+
+    inputTime.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        btnSave.click();
       }
     });
   }
@@ -314,6 +329,13 @@ function renderBoard() {
         const timeLabel = document.createElement('span');
         timeLabel.className = 'slot-time';
         timeLabel.textContent = timeStr;
+        timeLabel.title = isMarked
+          ? `Horário previsto: ${timeStr} (clique para ajustar)`
+          : `Horário previsto: ${timeStr} (clique para registrar retroativo)`;
+        timeLabel.addEventListener('click', (e) => {
+          e.stopPropagation();
+          openSlotAdjustModal(dateKey, dayConfig.label, timeStr, isMarked, markedAt);
+        });
 
         const slotBtn = document.createElement('button');
         slotBtn.className = 'slot-btn';
@@ -331,11 +353,43 @@ function renderBoard() {
 
         const markedAtLabel = document.createElement('span');
         markedAtLabel.className = 'slot-marked-at';
-        markedAtLabel.textContent = isMarked ? (markedAt || '✓') : '';
+        if (isMarked) {
+          markedAtLabel.innerHTML = `${markedAt || '✓'} <span style="font-size: 0.55rem; opacity: 0.75;">✏️</span>`;
+          markedAtLabel.title = `Registrado às ${markedAt || timeStr}. Clique para ajustar.`;
+          markedAtLabel.addEventListener('click', (e) => {
+            e.stopPropagation();
+            openSlotAdjustModal(dateKey, dayConfig.label, timeStr, isMarked, markedAt);
+          });
+        } else {
+          markedAtLabel.textContent = '';
+        }
 
         slotBtn.addEventListener('click', () => {
           handleSlotClick(dateKey, dayConfig.label, timeStr, isMarked, markedAt);
         });
+
+        slotBtn.addEventListener('contextmenu', (e) => {
+          e.preventDefault();
+          openSlotAdjustModal(dateKey, dayConfig.label, timeStr, isMarked, markedAt);
+        });
+
+        // Toque longo no celular (500ms) para abrir modal de ajuste
+        let longPressTimer = null;
+        slotBtn.addEventListener('touchstart', () => {
+          longPressTimer = setTimeout(() => {
+            openSlotAdjustModal(dateKey, dayConfig.label, timeStr, isMarked, markedAt);
+            longPressTimer = null;
+          }, 500);
+        }, { passive: true });
+        const cancelLongPress = () => {
+          if (longPressTimer) {
+            clearTimeout(longPressTimer);
+            longPressTimer = null;
+          }
+        };
+        slotBtn.addEventListener('touchend', cancelLongPress);
+        slotBtn.addEventListener('touchcancel', cancelLongPress);
+        slotBtn.addEventListener('touchmove', cancelLongPress);
 
         slotItem.appendChild(timeLabel);
         slotItem.appendChild(slotBtn);
@@ -415,23 +469,98 @@ function renderBoard() {
   updateRecordedWeeksSelect();
 }
 
+function openSlotAdjustModal(dateKey, dayLabel, slotTime, currentlyMarked, markedAt) {
+  pendingUnmark = { dateKey, dayLabel, slotTime, markedAt, currentlyMarked };
+
+  const modalTitle = document.getElementById('modalAdjustTitle');
+  const modalText = document.getElementById('unmarkModalText');
+  const modalInfo = document.getElementById('unmarkModalInfo');
+  const inputEditTime = document.getElementById('inputEditTime');
+  const btnPresetPlanned = document.getElementById('btnPresetPlannedTime');
+  const btnPresetNow = document.getElementById('btnPresetNowTime');
+  const btnConfirmUnmark = document.getElementById('btnConfirmUnmark');
+  const lblEditTime = document.getElementById('lblEditTime');
+
+  if (modalTitle) {
+    modalTitle.innerHTML = `<img src="assets/icon-settings.png" alt="" class="modal-header-icon"> ${currentlyMarked ? 'Ajustar Horário do Ponto' : 'Registrar Ponto Retroativo'}`;
+  }
+
+  if (modalText) {
+    modalText.textContent = currentlyMarked
+      ? 'Corrija o horário da batida registrada para sincronizar com a empresa.'
+      : 'Registre o ponto já batido na empresa sem abrir redirecionamentos indesejados.';
+  }
+
+  if (modalInfo) {
+    modalInfo.innerHTML = `
+      <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+        <span><strong>Dia:</strong> ${dayLabel}</span>
+        <span style="opacity:0.8;">(${formatDateShortFromKey(dateKey)})</span>
+      </div>
+      <div><strong>Horário previsto:</strong> ${slotTime}</div>
+      <div><strong>Status atual:</strong> ${currentlyMarked ? `<span style="color:#73d13d; font-weight:700;">Batido às ${markedAt || slotTime}</span>` : '<span style="color:#ff7875; font-weight:700;">Não batido no app</span>'}</div>
+    `;
+  }
+
+  if (btnPresetPlanned) {
+    btnPresetPlanned.textContent = `⚡ Usar Previsto (${slotTime})`;
+    btnPresetPlanned.onclick = () => {
+      if (inputEditTime) inputEditTime.value = slotTime;
+    };
+  }
+
+  if (btnPresetNow) {
+    const nowTimeStr = formatTimeOnly(new Date());
+    btnPresetNow.textContent = `🕒 Usar Agora (${nowTimeStr})`;
+    btnPresetNow.onclick = () => {
+      if (inputEditTime) inputEditTime.value = formatTimeOnly(new Date());
+    };
+  }
+
+  if (lblEditTime) {
+    lblEditTime.textContent = currentlyMarked ? 'Horário real batido na empresa:' : 'Horário em que bateu na empresa:';
+  }
+
+  if (inputEditTime) {
+    inputEditTime.value = currentlyMarked ? (markedAt || slotTime) : slotTime;
+  }
+
+  if (btnConfirmUnmark) {
+    btnConfirmUnmark.style.display = currentlyMarked ? 'inline-flex' : 'none';
+  }
+
+  openModal('modalConfirmUnmark');
+}
+
 function handleSlotClick(dateKey, dayLabel, slotTime, currentlyMarked, markedAt) {
   if (currentlyMarked) {
-    pendingUnmark = { dateKey, dayLabel, slotTime, markedAt };
-    const modalText = document.getElementById('unmarkModalText');
-    const modalInfo = document.getElementById('unmarkModalInfo');
-    const inputEditTime = document.getElementById('inputEditTime');
-
-    modalText.textContent = `Ponto de ${dayLabel}`;
-    modalInfo.innerHTML = `<strong>Horário previsto:</strong> ${slotTime}<br><strong>Horário registrado:</strong> ${markedAt || 'Sem registro exato'}`;
-
-    if (inputEditTime) {
-      inputEditTime.value = markedAt || slotTime;
-    }
-    openModal('modalConfirmUnmark');
-  } else {
-    markSlot(dateKey, dayLabel, slotTime);
+    openSlotAdjustModal(dateKey, dayLabel, slotTime, true, markedAt);
+    return;
   }
+
+  const todayKey = formatDateKey(new Date());
+  const isToday = dateKey === todayKey;
+
+  // Se for de outro dia (passado ou futuro), abre o modal de registro retroativo
+  if (!isToday) {
+    openSlotAdjustModal(dateKey, dayLabel, slotTime, false, null);
+    return;
+  }
+
+  // Se for hoje, verifica se o horário previsto já passou há mais de 20 minutos
+  const now = new Date();
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+  const slotMinutes = timeToMinutes(slotTime);
+  const diffMinutes = currentMinutes - slotMinutes;
+
+  if (diffMinutes > 20) {
+    // Horário já passou (esqueceu de bater na hora!). Abre o modal para confirmar ou ajustar
+    openSlotAdjustModal(dateKey, dayLabel, slotTime, false, null);
+    return;
+  }
+
+  // No horário normal (ou adiantado), bate direto
+  markSlot(dateKey, dayLabel, slotTime);
 }
 
 function markSlot(dateKey, dayLabel, slotTime, customActualTime = null) {
@@ -451,7 +580,9 @@ function markSlot(dateKey, dayLabel, slotTime, customActualTime = null) {
   playTickSound(true);
   showToast(`Ponto de ${slotTime} batido (${actualTime})! ✨`);
   renderBoard();
-  openExternalRedirectIfConfigured();
+  if (!customActualTime) {
+    openExternalRedirectIfConfigured();
+  }
 }
 
 function unmarkSlot(dateKey, dayLabel, slotTime) {

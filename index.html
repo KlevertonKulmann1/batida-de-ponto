@@ -315,19 +315,24 @@
     </div>
   </div>
 
-  <!-- MODAL: Confirmação de Desmarcação ou Ajuste de Horário -->
+  <!-- MODAL: Ajuste ou Registro de Ponto -->
   <div id="modalConfirmUnmark" class="modal-overlay hidden">
     <div class="modal-card modal-sm">
       <div class="modal-header">
-        <h3>Ajustar Ponto</h3>
+        <h3 id="modalAdjustTitle"><img src="assets/icon-settings.png" alt="" class="modal-header-icon"> Ajustar Ponto</h3>
         <button class="modal-close" data-close="modalConfirmUnmark" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
-        <p id="unmarkModalText">Este ponto já foi batido.</p>
+        <p id="unmarkModalText">Ajuste ou registre o horário real da batida.</p>
         <div class="unmark-info" id="unmarkModalInfo"></div>
 
+        <div class="quick-time-presets">
+          <button type="button" id="btnPresetPlannedTime" class="btn-time-preset">⚡ Usar Previsto</button>
+          <button type="button" id="btnPresetNowTime" class="btn-time-preset">🕒 Usar Agora</button>
+        </div>
+
         <div class="edit-time-section">
-          <label for="inputEditTime">Corrigir horário registrado:</label>
+          <label for="inputEditTime" id="lblEditTime">Horário registrado na empresa:</label>
           <div class="edit-time-controls">
             <input type="time" id="inputEditTime" class="schedule-input">
             <button id="btnSaveEditedTime" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-save.png"
