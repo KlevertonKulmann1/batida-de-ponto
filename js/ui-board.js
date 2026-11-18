@@ -50,11 +50,16 @@ function setupEditTime() {
         return;
       }
 
-      const { dateKey, dayLabel, slotTime } = pendingUnmark;
+      const { dateKey, dayLabel, slotTime, shouldRedirect: flagRedirect } = pendingUnmark;
       if (!records[dateKey]) records[dateKey] = {};
 
       const wasMarked = Boolean(records[dateKey][slotTime] && records[dateKey][slotTime].marked);
       const now = new Date();
+
+      const isToday = dateKey === formatDateKey(now);
+      const nowTimeStr = formatTimeOnly(now);
+      const isCurrentTime = isToday && (newTime === nowTimeStr || Math.abs(timeToMinutes(newTime) - timeToMinutes(nowTimeStr)) <= 1);
+      const shouldRedirect = Boolean(flagRedirect || (!wasMarked && isCurrentTime));
 
       records[dateKey][slotTime] = {
         marked: true,
@@ -68,6 +73,10 @@ function setupEditTime() {
       renderBoard();
       closeModal('modalConfirmUnmark');
       pendingUnmark = null;
+
+      if (shouldRedirect) {
+        openExternalRedirectIfConfigured();
+      }
     });
 
     inputTime.addEventListener('keydown', (e) => {
@@ -470,7 +479,7 @@ function renderBoard() {
 }
 
 function openSlotAdjustModal(dateKey, dayLabel, slotTime, currentlyMarked, markedAt) {
-  pendingUnmark = { dateKey, dayLabel, slotTime, markedAt, currentlyMarked };
+  pendingUnmark = { dateKey, dayLabel, slotTime, markedAt, currentlyMarked, shouldRedirect: false };
 
   const modalTitle = document.getElementById('modalAdjustTitle');
   const modalText = document.getElementById('unmarkModalText');
@@ -488,7 +497,7 @@ function openSlotAdjustModal(dateKey, dayLabel, slotTime, currentlyMarked, marke
   if (modalText) {
     modalText.textContent = currentlyMarked
       ? 'Corrija o horário da batida registrada para sincronizar com a empresa.'
-      : 'Registre o ponto já batido na empresa sem abrir redirecionamentos indesejados.';
+      : 'Registre o ponto já batido na empresa ou bata agora no horário atual.';
   }
 
   if (modalInfo) {
@@ -503,17 +512,26 @@ function openSlotAdjustModal(dateKey, dayLabel, slotTime, currentlyMarked, marke
   }
 
   if (btnPresetPlanned) {
+    btnPresetPlanned.classList.remove('active');
     btnPresetPlanned.textContent = `⚡ Usar Previsto (${slotTime})`;
     btnPresetPlanned.onclick = () => {
       if (inputEditTime) inputEditTime.value = slotTime;
+      if (pendingUnmark) pendingUnmark.shouldRedirect = false;
+      btnPresetPlanned.classList.add('active');
+      if (btnPresetNow) btnPresetNow.classList.remove('active');
     };
   }
 
   if (btnPresetNow) {
+    btnPresetNow.classList.remove('active');
     const nowTimeStr = formatTimeOnly(new Date());
     btnPresetNow.textContent = `🕒 Usar Agora (${nowTimeStr})`;
     btnPresetNow.onclick = () => {
-      if (inputEditTime) inputEditTime.value = formatTimeOnly(new Date());
+      const nowStr = formatTimeOnly(new Date());
+      if (inputEditTime) inputEditTime.value = nowStr;
+      if (pendingUnmark) pendingUnmark.shouldRedirect = true;
+      btnPresetNow.classList.add('active');
+      if (btnPresetPlanned) btnPresetPlanned.classList.remove('active');
     };
   }
 
@@ -523,6 +541,16 @@ function openSlotAdjustModal(dateKey, dayLabel, slotTime, currentlyMarked, marke
 
   if (inputEditTime) {
     inputEditTime.value = currentlyMarked ? (markedAt || slotTime) : slotTime;
+    inputEditTime.oninput = () => {
+      if (btnPresetNow) btnPresetNow.classList.remove('active');
+      if (btnPresetPlanned) btnPresetPlanned.classList.remove('active');
+      if (pendingUnmark) {
+        const now = new Date();
+        const isToday = pendingUnmark.dateKey === formatDateKey(now);
+        const nowStr = formatTimeOnly(now);
+        pendingUnmark.shouldRedirect = Boolean(isToday && inputEditTime.value === nowStr);
+      }
+    };
   }
 
   if (btnConfirmUnmark) {

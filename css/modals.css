@@ -736,6 +736,13 @@
   border-color: var(--accent-gold);
 }
 
+.btn-time-preset.active {
+  background: rgba(226, 186, 100, 0.28);
+  border-color: var(--accent-gold);
+  color: #fff;
+  box-shadow: 0 0 8px rgba(226, 186, 100, 0.35);
+}
+
 .edit-time-section label {
   font-size: 0.8rem;
   font-weight: 700;
