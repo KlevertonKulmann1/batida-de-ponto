@@ -121,6 +121,19 @@ function renderBoard() {
 
   let totalWeekSlots = 0;
   let markedWeekSlots = 0;
+  let totalWorkedWeekMinutes = 0;
+  let folgasCount = 0;
+
+  const targetWorkload = loadDailyWorkload();
+  const targetDailyMins = timeToMinutes(targetWorkload);
+  const baseWeeklyWorkload = loadWeeklyWorkload();
+  const baseWeeklyMins = timeToMinutes(baseWeeklyWorkload);
+  const lunchWin = loadLunchWindow();
+  const lunchParam = {
+    startMins: timeToMinutes(lunchWin.start),
+    endMins: timeToMinutes(lunchWin.end),
+    durationMins: Math.max(0, timeToMinutes(lunchWin.end) - timeToMinutes(lunchWin.start))
+  };
 
   // Renderiza cada dia da semana
   DAY_KEYS.forEach((dayKey, index) => {
@@ -147,6 +160,8 @@ function renderBoard() {
     if (!isFolga) {
       totalWeekSlots += totalSlots;
       markedWeekSlots += markedCount;
+    } else if (totalSlots > 0) {
+      folgasCount++;
     }
 
     // Regra do orbe de status:
@@ -174,7 +189,41 @@ function renderBoard() {
 
     // Elemento do dia
     const dayRow = document.createElement('div');
-    dayRow.className = 'day-row' + (isToday(dateObj) ? ' is-today' : '') + (isFolga ? ' is-folga' : '');
+    dayRow.className = 'day-row' + (isToday(dateObj) ? ' is-today' : '') + (isFolga ? ' is-folga-row' : '');
+
+    // Se o dia for marcado como folga/feriado, substitui completamente o bloco pela imagem
+    if (isFolga) {
+      dayRow.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Feriado / Folga (Clique para desmarcar)`;
+
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'feriado-overlay-img-container';
+
+      const pictureElem = document.createElement('picture');
+      pictureElem.className = 'feriado-overlay-picture';
+
+      if (IMAGES.feriadoDesk) {
+        const sourceDesk = document.createElement('source');
+        sourceDesk.media = '(min-width: 476px)';
+        sourceDesk.srcset = IMAGES.feriadoDesk;
+        pictureElem.appendChild(sourceDesk);
+      }
+
+      const feriadoImg = document.createElement('img');
+      feriadoImg.className = 'feriado-overlay-img';
+      feriadoImg.src = IMAGES.feriado || 'assets/feriado.jpg';
+      feriadoImg.alt = `Feriado / Folga - ${dayConfig.label}`;
+      pictureElem.appendChild(feriadoImg);
+
+      imgContainer.appendChild(pictureElem);
+      dayRow.appendChild(imgContainer);
+
+      dayRow.addEventListener('click', () => {
+        toggleFolga(dateKey, dayConfig.label);
+      });
+
+      daysContainer.appendChild(dayRow);
+      return;
+    }
 
     // Linha do cabeçalho do dia
     const headerLine = document.createElement('div');
@@ -202,17 +251,10 @@ function renderBoard() {
     headerLine.appendChild(folgaBtn);
 
     // Badge de Carga Horária / Horas Faltantes (alinhado à direita)
-    const targetWorkload = loadDailyWorkload();
-    const targetMins = timeToMinutes(targetWorkload);
-    const lunchWin = loadLunchWindow();
-    const lunchParam = {
-      startMins: timeToMinutes(lunchWin.start),
-      endMins: timeToMinutes(lunchWin.end),
-      durationMins: Math.max(0, timeToMinutes(lunchWin.end) - timeToMinutes(lunchWin.start))
-    };
     const isPast = isPastDay(dateObj);
     const isDayToday = isToday(dateObj);
-    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetMins, lunchParam);
+    const workStats = calculateDayWork(dateKey, isDayToday, isPast, targetDailyMins, lunchParam);
+    totalWorkedWeekMinutes += workStats.workedMinutes;
 
     const workloadBadge = document.createElement('div');
     workloadBadge.className = 'day-workload-badge';
@@ -468,10 +510,69 @@ function renderBoard() {
     setupHorizontalScrollbars();
   }
 
-  // Atualiza estatísticas do rodapé
+  // Atualiza estatísticas do rodapé e contadores de horas semanais
+  const folgaCompensationMins = folgasCount * targetDailyMins;
+  const effectiveTargetWeekMins = Math.max(0, baseWeeklyMins - folgaCompensationMins);
+
+  const workedHoursStr = minutesToHoursMin(totalWorkedWeekMinutes);
+  const targetHoursStr = minutesToHoursMin(effectiveTargetWeekMins);
+  const percentWorked = effectiveTargetWeekMins > 0 ? Math.round((totalWorkedWeekMinutes / effectiveTargetWeekMins) * 100) : 100;
+  const balanceMinutes = totalWorkedWeekMinutes - effectiveTargetWeekMins;
+
+  let balanceText = '';
+  let statusClass = 'pending';
+
+  if (balanceMinutes > 0) {
+    statusClass = 'overtime';
+    balanceText = `(+${minutesToHoursMin(balanceMinutes)} extra)`;
+  } else if (balanceMinutes === 0 && totalWorkedWeekMinutes > 0) {
+    statusClass = 'done';
+    balanceText = `(Meta cumprida)`;
+  } else {
+    statusClass = 'pending';
+    balanceText = `(Faltam ${minutesToHoursMin(Math.abs(balanceMinutes))})`;
+  }
+
+  // 1. Atualiza Badge no Topo do Quadro
+  const headerHoursBadge = document.getElementById('headerWeekHoursBadge');
+  const headerHoursText = document.getElementById('headerWeekHoursText');
+  if (headerHoursBadge && headerHoursText) {
+    headerHoursText.textContent = `${workedHoursStr} / ${targetHoursStr}`;
+    headerHoursBadge.className = `header-week-hours-badge ${statusClass}`;
+    let tooltip = `Horas da Semana: ${workedHoursStr} cumpridas de ${targetHoursStr} acordadas (${percentWorked}%).`;
+    if (folgasCount > 0) {
+      tooltip += ` (${folgasCount} folga/feriado compensada: -${minutesToHoursMin(folgaCompensationMins)} na meta).`;
+    }
+    tooltip += ` ${balanceText}`;
+    headerHoursBadge.title = tooltip;
+    headerHoursBadge.onclick = () => {
+      showToast(`⏱️ Semana: ${workedHoursStr} / ${targetHoursStr} (${percentWorked}%) ${balanceText}`);
+    };
+  }
+
+  // 2. Atualiza Contador no Rodapé do Quadro
+  const weekHoursCounter = document.getElementById('weekHoursCounter');
+  const weekHoursVal = document.getElementById('weekHoursVal');
+  const weekHoursBadge = document.getElementById('weekHoursBadge');
+  if (weekHoursCounter && weekHoursVal && weekHoursBadge) {
+    weekHoursVal.textContent = `${workedHoursStr} / ${targetHoursStr}`;
+    weekHoursBadge.textContent = `${percentWorked}%`;
+    weekHoursCounter.className = `week-hours-counter ${statusClass}`;
+    let tooltip = `Jornada Semanal: ${workedHoursStr} cumpridas de ${targetHoursStr} acordadas.`;
+    if (folgasCount > 0) {
+      tooltip += ` ${folgasCount} folga/feriado compensado (-${minutesToHoursMin(folgaCompensationMins)}).`;
+    }
+    tooltip += ` ${balanceText}`;
+    weekHoursCounter.title = tooltip;
+    weekHoursCounter.onclick = () => {
+      showToast(`⏱️ Semana: ${workedHoursStr} de ${targetHoursStr} cumpridas ${balanceText}`);
+    };
+  }
+
+  // 3. Atualiza Resumo de Pontos Marcados no Rodapé
   const statsElem = document.getElementById('weekStats');
   if (statsElem) {
-    statsElem.textContent = `${markedWeekSlots} de ${totalWeekSlots} pontos marcados`;
+    statsElem.textContent = `${markedWeekSlots} de ${totalWeekSlots} batidas • ${balanceText}`;
   }
 
   // Atualiza lista de seleção rápida de semanas com registros

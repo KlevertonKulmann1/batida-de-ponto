@@ -1,4 +1,4 @@
-const CACHE_NAME = 'batida-ponto-v38';
+const CACHE_NAME = 'batida-ponto-v40';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
@@ -48,6 +48,8 @@ const ASSETS_TO_CACHE = [
   './assets/nao-marcado.png',
   './assets/pausa-para-almoço.jpg',
   './assets/pausa-para-almoço-desk.jpg',
+  './assets/feriado.jpg',
+  './assets/feriado-desk.jpg',
   './assets/editar.png',
   './assets/estrela.png',
   './assets/box-btn.png',

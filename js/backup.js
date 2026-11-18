@@ -101,6 +101,7 @@ function getBackupPayload() {
     logs: logs,
     redirectUrl: redirectUrl,
     dailyWorkload: loadDailyWorkload(),
+    weeklyWorkload: loadWeeklyWorkload(),
     lunchBreak: loadLunchBreak(),
     lunchStart: lunchWin.start,
     lunchEnd: lunchWin.end
@@ -176,6 +177,9 @@ function applyImportedData(data, skipConfirm = false) {
     }
     if (data.dailyWorkload !== undefined) {
       saveDailyWorkload(data.dailyWorkload);
+    }
+    if (data.weeklyWorkload !== undefined) {
+      saveWeeklyWorkload(data.weeklyWorkload);
     }
     if (data.lunchBreak !== undefined) {
       saveLunchBreak(data.lunchBreak);

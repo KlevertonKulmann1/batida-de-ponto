@@ -89,6 +89,41 @@ function saveDailyWorkload(val) {
   return clean;
 }
 
+function loadWeeklyWorkload() {
+  const saved = localStorage.getItem(STORAGE_KEYS.weeklyWorkload);
+  if (saved && /^\d{1,3}:\d{2}$/.test(saved)) {
+    return saved;
+  }
+  // Cálculo padrão inteligente: dias úteis configurados na grade x meta diária
+  const daily = loadDailyWorkload();
+  const dailyMins = timeToMinutes(daily);
+  let workingDays = 0;
+  if (typeof schedule === 'object' && schedule) {
+    DAY_KEYS.forEach(k => {
+      if (schedule[k] && schedule[k].times && schedule[k].times.length > 0) {
+        workingDays++;
+      }
+    });
+  }
+  if (workingDays === 0) workingDays = 5;
+  const totalMins = workingDays * dailyMins;
+  const h = Math.floor(totalMins / 60);
+  const m = totalMins % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function saveWeeklyWorkload(val) {
+  let clean = (val || '').trim();
+  if (/^\d{1,3}:\d{2}$/.test(clean)) {
+    const [h, m] = clean.split(':');
+    clean = `${h.padStart(2, '0')}:${m}`;
+    localStorage.setItem(STORAGE_KEYS.weeklyWorkload, clean);
+  } else {
+    localStorage.removeItem(STORAGE_KEYS.weeklyWorkload);
+  }
+  return clean;
+}
+
 function loadLunchBreak() {
   const saved = localStorage.getItem(STORAGE_KEYS.lunchBreak);
   return saved || '01:12';

@@ -82,6 +82,22 @@ function setupSettings() {
     });
   }
 
+  // Auto-avanço para jornada semanal
+  const whInput = document.getElementById('inputWeeklyWorkloadHours');
+  const wmInput = document.getElementById('inputWeeklyWorkloadMinutes');
+  if (whInput && wmInput) {
+    whInput.addEventListener('input', () => {
+      whInput.value = whInput.value.replace(/\D/g, '');
+      if (whInput.value.length >= 2) {
+        wmInput.focus();
+        wmInput.select();
+      }
+    });
+    wmInput.addEventListener('input', () => {
+      wmInput.value = wmInput.value.replace(/\D/g, '');
+    });
+  }
+
   // Monitora alterações nos horários de almoço para atualizar o badge dinamicamente
   const startInput = document.getElementById('inputLunchStart');
   const endInput = document.getElementById('inputLunchEnd');
@@ -126,6 +142,13 @@ function renderSettingsForm() {
   const mInput = document.getElementById('inputWorkloadMinutes');
   if (hInput) hInput.value = wHours || '08';
   if (mInput) mInput.value = wMinutes || '48';
+
+  const weeklyWorkload = loadWeeklyWorkload() || '44:00';
+  const [whHours, whMinutes] = weeklyWorkload.split(':');
+  const whInput = document.getElementById('inputWeeklyWorkloadHours');
+  const wmInput = document.getElementById('inputWeeklyWorkloadMinutes');
+  if (whInput) whInput.value = whHours || '44';
+  if (wmInput) wmInput.value = whMinutes || '00';
 
   const lunchWin = loadLunchWindow();
   const startInput = document.getElementById('inputLunchStart');
@@ -357,6 +380,16 @@ function saveSettingsFromForm() {
     const h = String(Math.min(23, Math.max(0, parseInt(rawH || '8', 10)))).padStart(2, '0');
     const m = String(Math.min(59, Math.max(0, parseInt(rawM || '0', 10)))).padStart(2, '0');
     saveDailyWorkload(`${h}:${m}`);
+  }
+
+  const whInput = document.getElementById('inputWeeklyWorkloadHours');
+  const wmInput = document.getElementById('inputWeeklyWorkloadMinutes');
+  if (whInput && wmInput) {
+    const rawWH = whInput.value.replace(/\D/g, '');
+    const rawWM = wmInput.value.replace(/\D/g, '');
+    const wh = String(Math.min(168, Math.max(0, parseInt(rawWH || '44', 10)))).padStart(2, '0');
+    const wm = String(Math.min(59, Math.max(0, parseInt(rawWM || '0', 10)))).padStart(2, '0');
+    saveWeeklyWorkload(`${wh}:${wm}`);
   }
 
   const startInput = document.getElementById('inputLunchStart');

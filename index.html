@@ -78,7 +78,13 @@
             <select id="selectRecordedWeeks" class="rpg-select recorded-weeks-select"
               title="Selecionar semana"></select>
           </div>
-          <div class="board-title">Batida de ponto</div>
+          <div class="board-header-right">
+            <div id="headerWeekHoursBadge" class="header-week-hours-badge" title="Horas cumpridas / horas semanais acordadas">
+              <span class="badge-icon">⏱️</span>
+              <span id="headerWeekHoursText">00h00 / 44h00</span>
+            </div>
+            <div class="board-title">Batida de ponto</div>
+          </div>
         </div>
 
         <!-- Grade dos Dias da Semana -->
@@ -93,7 +99,14 @@
             <span class="legend-item"><img src="assets/batida-correta.png" alt="Dia completo"> Concluído</span>
             <span class="legend-item"><img src="assets/batida-faltando.png" alt="Faltando batida"> Incompleto</span>
           </div>
-          <div id="weekStats" class="week-stats">0 de 0 pontos marcados</div>
+          <div class="week-summary-box">
+            <div id="weekHoursCounter" class="week-hours-counter" title="Horas cumpridas / horas semanais acordadas">
+              <span class="hours-label">⏱️ Horas Semanais:</span>
+              <span class="hours-val" id="weekHoursVal">00h00 / 44h00</span>
+              <span class="hours-badge" id="weekHoursBadge">0%</span>
+            </div>
+            <div id="weekStats" class="week-stats">0 de 0 pontos marcados</div>
+          </div>
         </div>
 
       </div>
@@ -211,7 +224,7 @@
         <!-- Jornada Diária e Tempo de Almoço -->
         <div class="settings-redirect-section">
           <div class="lunch-time">
-            <!-- Carga Horária -->
+            <!-- Carga Horária Diária -->
             <div class="settings-col-workload">
               <label for="inputWorkloadHours">
                 <span>⏱️ Jornada Diária</span>
@@ -223,7 +236,21 @@
                 <span class="settings-unit-label">:</span>
                 <input type="text" id="inputWorkloadMinutes" class="schedule-input input-workload-unit" placeholder="48"
                   maxlength="2" inputmode="numeric">
+              </div>
+            </div>
 
+            <!-- Carga Horária Semanal Acordada -->
+            <div class="settings-col-workload settings-col-weekly">
+              <label for="inputWeeklyWorkloadHours">
+                <span>📅 Meta Semanal</span>
+                <span id="weeklyWorkloadHint" class="settings-label-hint">(Acordada)</span>
+              </label>
+              <div class="settings-input-group">
+                <input type="text" id="inputWeeklyWorkloadHours" class="schedule-input input-workload-unit" placeholder="44"
+                  maxlength="3" inputmode="numeric">
+                <span class="settings-unit-label">:</span>
+                <input type="text" id="inputWeeklyWorkloadMinutes" class="schedule-input input-workload-unit" placeholder="00"
+                  maxlength="2" inputmode="numeric">
               </div>
             </div>
 

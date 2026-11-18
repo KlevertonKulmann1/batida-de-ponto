@@ -28,6 +28,49 @@
   gap: 16px;
 }
 
+/* Topo do Quadro e Badge de Horas Semanais */
+.board-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-week-hours-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(226, 186, 100, 0.1);
+  border: 1px solid rgba(226, 186, 100, 0.35);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-shadow: 1px 1px 2px #000;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.header-week-hours-badge:hover {
+  background: rgba(226, 186, 100, 0.22);
+  border-color: var(--accent-gold);
+  transform: translateY(-1px);
+}
+
+.header-week-hours-badge.overtime {
+  background: rgba(24, 144, 255, 0.18);
+  border-color: rgba(24, 144, 255, 0.5);
+  color: #69c0ff;
+}
+
+.header-week-hours-badge.done {
+  background: rgba(82, 196, 26, 0.18);
+  border-color: rgba(82, 196, 26, 0.5);
+  color: #73d13d;
+}
+
 /* Cabeçalho do Quadro */
 .board-header {
   display: flex;
@@ -434,6 +477,76 @@
   opacity: 0.85;
 }
 
+/* Bloco do Dia de Feriado / Folga */
+.day-row.is-folga-row {
+  position: relative;
+  min-height: 110px;
+  height: 110px;
+  padding: 0;
+  margin-bottom: 2px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  user-select: none;
+}
+
+@media (min-width: 476px) {
+  .day-row.is-folga-row {
+    min-height: 125px;
+    height: 125px;
+  }
+}
+
+@media (min-width: 680px) {
+  .day-row.is-folga-row {
+    min-height: 145px;
+    height: 145px;
+  }
+}
+
+.day-row.is-folga-row:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(226, 186, 100, 0.5);
+}
+
+.feriado-overlay-img-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  background: rgba(18, 16, 17, 0.88);
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(226, 186, 100, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feriado-overlay-picture {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.feriado-overlay-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 0.25s ease;
+}
+
+.day-row.is-folga-row:hover .feriado-overlay-img {
+  transform: scale(1.02);
+}
+
 .btn-folga-pill {
   background: transparent;
   color: #bbb;
@@ -631,9 +744,76 @@
   object-fit: contain;
 }
 
-.week-stats {
+.week-summary-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.week-hours-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
   font-weight: 800;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+  user-select: none;
+}
+
+.week-hours-counter:hover {
+  transform: translateY(-1px);
+}
+
+.week-hours-counter .hours-label {
+  color: #c9b48b;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+
+.week-hours-counter .hours-val {
   color: var(--accent-gold);
+  font-size: 0.88rem;
+  letter-spacing: 0.5px;
+}
+
+.week-hours-counter .hours-badge {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(226, 186, 100, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid rgba(226, 186, 100, 0.3);
+}
+
+.week-hours-counter.overtime .hours-val {
+  color: #69c0ff;
+}
+
+.week-hours-counter.overtime .hours-badge {
+  background: rgba(24, 144, 255, 0.2);
+  color: #69c0ff;
+  border-color: rgba(24, 144, 255, 0.4);
+}
+
+.week-hours-counter.done .hours-val {
+  color: #73d13d;
+}
+
+.week-hours-counter.done .hours-badge {
+  background: rgba(82, 196, 26, 0.2);
+  color: #73d13d;
+  border-color: rgba(82, 196, 26, 0.4);
+}
+
+.week-stats {
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #bbb;
   text-shadow: 1px 1px 2px #000;
 }
 
