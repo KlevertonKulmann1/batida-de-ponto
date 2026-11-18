@@ -21,7 +21,9 @@ const IMAGES = {
   slotNaoMarcado: 'assets/nao-marcado.png',
   slotMarcado: 'assets/marcado.png',
   pausaAlmoco: 'assets/pausa-para-almoço.jpg',
-  pausaAlmocoDesk: 'assets/pausa-para-almoço-desk.jpg'
+  pausaAlmocoDesk: 'assets/pausa-para-almoço-desk.jpg',
+  editar: 'assets/editar.png',
+  estrela: 'assets/estrela.png'
 };
 
 const STORAGE_KEYS = {

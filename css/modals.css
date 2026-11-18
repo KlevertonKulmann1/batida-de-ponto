@@ -88,6 +88,11 @@
   object-fit: contain;
 }
 
+.modal-header h3 img.modal-header-icon {
+  border-radius: 0;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+}
+
 /* Botão Fechar Modal com a Jóia de Rubi (btn-x.png / btn-x-ativo.png) */
 .modal-close {
   position: absolute;

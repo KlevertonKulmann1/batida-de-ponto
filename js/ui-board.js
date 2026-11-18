@@ -64,7 +64,7 @@ function setupEditTime() {
       saveRecords();
       addLog(wasMarked ? 'ajustado' : 'marcado', dateKey, dayLabel, slotTime, newTime);
       playTickSound(true);
-      showToast(wasMarked ? `Horário corrigido para ${newTime} ✏️` : `Ponto registrado às ${newTime}! ✨`);
+      showToast(wasMarked ? `Horário corrigido para ${newTime} <img src="${IMAGES.editar || 'assets/editar.png'}" style="width: 18px; vertical-align: middle; margin-left: 4px;" alt="">` : `Ponto registrado às ${newTime}! ✨`);
       renderBoard();
       closeModal('modalConfirmUnmark');
       pendingUnmark = null;
@@ -264,10 +264,10 @@ function renderBoard() {
       const extra = Math.abs(workStats.remainingMinutes);
       if (extra > 0) {
         workloadBadge.classList.add('workload-overtime');
-        workloadBadge.innerHTML = `⭐ +${minutesToHoursMin(extra)} extra`;
+        workloadBadge.innerHTML = `<img src="${IMAGES.estrela || 'assets/estrela.png'}" class="badge-star-icon" alt=""> <span>+${minutesToHoursMin(extra)} extra</span>`;
         workloadBadge.title = `${dayConfig.label}: Meta de ${targetWorkload} superada! Total trabalhado: ${minutesToHoursMin(workStats.workedMinutes)} (+${minutesToHoursMin(extra)}).`;
         workloadBadge.addEventListener('click', () => {
-          showToast(`⭐ ${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas (+${minutesToHoursMin(extra)} extras).`);
+          showToast(`<img src="${IMAGES.estrela || 'assets/estrela.png'}" class="toast-img-icon" alt=""> ${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas (+${minutesToHoursMin(extra)} extras).`);
         });
       } else {
         workloadBadge.classList.add('workload-done');
@@ -354,7 +354,7 @@ function renderBoard() {
         const markedAtLabel = document.createElement('span');
         markedAtLabel.className = 'slot-marked-at';
         if (isMarked) {
-          markedAtLabel.innerHTML = `${markedAt || '✓'} <span style="font-size: 0.55rem; opacity: 0.75;">✏️</span>`;
+          markedAtLabel.innerHTML = `${markedAt || '✓'} <img src="${IMAGES.editar || 'assets/editar.png'}" class="slot-edit-icon" alt="Ajustar">`;
           markedAtLabel.title = `Registrado às ${markedAt || timeStr}. Clique para ajustar.`;
           markedAtLabel.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -482,7 +482,7 @@ function openSlotAdjustModal(dateKey, dayLabel, slotTime, currentlyMarked, marke
   const lblEditTime = document.getElementById('lblEditTime');
 
   if (modalTitle) {
-    modalTitle.innerHTML = `<img src="assets/icon-settings.png" alt="" class="modal-header-icon"> ${currentlyMarked ? 'Ajustar Horário do Ponto' : 'Registrar Ponto Retroativo'}`;
+    modalTitle.innerHTML = `<img src="${IMAGES.editar || 'assets/editar.png'}" alt="" class="modal-header-icon"> ${currentlyMarked ? 'Ajustar Horário do Ponto' : 'Registrar Ponto Retroativo'}`;
   }
 
   if (modalText) {
