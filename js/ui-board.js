@@ -193,7 +193,13 @@ function renderBoard() {
 
     // Se o dia for marcado como folga/feriado, substitui completamente o bloco pela imagem
     if (isFolga) {
-      dayRow.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Feriado / Folga (Clique para desmarcar)`;
+      dayRow.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Feriado / Folga (Deslize para desmarcar)`;
+
+      // Fundo revelado durante o arraste/swipe
+      const bgAction = document.createElement('div');
+      bgAction.className = 'feriado-swipe-bg';
+      bgAction.innerHTML = '<span class="feriado-swipe-action-text"><span aria-hidden="true">🗑️</span> Desmarcar Feriado</span>';
+      dayRow.appendChild(bgAction);
 
       const imgContainer = document.createElement('div');
       imgContainer.className = 'feriado-overlay-img-container';
@@ -212,14 +218,113 @@ function renderBoard() {
       feriadoImg.className = 'feriado-overlay-img';
       feriadoImg.src = IMAGES.feriado || 'assets/feriado.jpg';
       feriadoImg.alt = `Feriado / Folga - ${dayConfig.label}`;
+      feriadoImg.draggable = false;
       pictureElem.appendChild(feriadoImg);
 
       imgContainer.appendChild(pictureElem);
+
+      // Pill com dica visual de swipe
+      const swipePill = document.createElement('div');
+      swipePill.className = 'feriado-swipe-pill';
+      swipePill.innerHTML = '<span aria-hidden="true">↔</span><span>Deslize para desmarcar</span>';
+      imgContainer.appendChild(swipePill);
+
       dayRow.appendChild(imgContainer);
 
-      dayRow.addEventListener('click', () => {
-        toggleFolga(dateKey, dayConfig.label);
-      });
+      // Lógica de swipe/arraste horizontal para desmarcar (evita toques acidentais ou scroll vertical)
+      let startX = 0;
+      let startY = 0;
+      let currentX = 0;
+      let isPointerDown = false;
+      let isHorizontalDrag = false;
+      const SWIPE_THRESHOLD = 75;
+
+      const onPointerDown = (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
+        isPointerDown = true;
+        isHorizontalDrag = false;
+        startX = e.clientX;
+        startY = e.clientY;
+        currentX = 0;
+      };
+
+      const onPointerMove = (e) => {
+        if (!isPointerDown) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        if (!isHorizontalDrag) {
+          // Se o usuário estiver rolando verticalmente a tela, cancela para não travar a rolagem
+          if (Math.abs(dy) > 7 && Math.abs(dy) > Math.abs(dx)) {
+            isPointerDown = false;
+            return;
+          }
+          // Se moveu horizontalmente mais que o deadband, engaja o modo swipe
+          if (Math.abs(dx) > 7) {
+            isHorizontalDrag = true;
+            imgContainer.classList.add('is-dragging');
+            try {
+              imgContainer.setPointerCapture(e.pointerId);
+            } catch (_) { }
+          }
+        }
+
+        if (isHorizontalDrag) {
+          currentX = dx;
+          imgContainer.style.transform = `translateX(${dx}px)`;
+
+          bgAction.classList.add('is-visible');
+          if (dx > 0) {
+            bgAction.className = 'feriado-swipe-bg is-visible swipe-right';
+          } else {
+            bgAction.className = 'feriado-swipe-bg is-visible swipe-left';
+          }
+
+          if (swipePill) {
+            swipePill.style.opacity = Math.max(0, 1 - Math.abs(dx) / 50);
+          }
+        }
+      };
+
+      const onPointerEnd = (e) => {
+        if (!isPointerDown && !isHorizontalDrag) return;
+
+        const wasDragging = isHorizontalDrag;
+        const finalDx = currentX;
+
+        isPointerDown = false;
+        isHorizontalDrag = false;
+        imgContainer.classList.remove('is-dragging');
+
+        try {
+          if (imgContainer.hasPointerCapture(e.pointerId)) {
+            imgContainer.releasePointerCapture(e.pointerId);
+          }
+        } catch (_) { }
+
+        if (wasDragging && Math.abs(finalDx) >= SWIPE_THRESHOLD) {
+          // Swipe confirmado: anima saída do card e desmarca o feriado
+          const flyOutX = finalDx > 0 ? 120 : -120;
+          imgContainer.style.transition = 'transform 0.22s ease-out, opacity 0.22s ease-out';
+          imgContainer.style.transform = `translateX(${flyOutX}%)`;
+          imgContainer.style.opacity = '0';
+
+          setTimeout(() => {
+            toggleFolga(dateKey, dayConfig.label);
+          }, 220);
+        } else {
+          // Volta suavemente à posição inicial
+          imgContainer.style.transform = '';
+          imgContainer.style.opacity = '';
+          if (swipePill) swipePill.style.opacity = '';
+          bgAction.classList.remove('is-visible');
+        }
+      };
+
+      imgContainer.addEventListener('pointerdown', onPointerDown);
+      imgContainer.addEventListener('pointermove', onPointerMove);
+      imgContainer.addEventListener('pointerup', onPointerEnd);
+      imgContainer.addEventListener('pointercancel', onPointerEnd);
 
       daysContainer.appendChild(dayRow);
       return;
@@ -281,7 +386,7 @@ function renderBoard() {
       });
     } else if (workStats.punchesCount === 0) {
       workloadBadge.classList.add('workload-pending');
-      workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(targetMins)}`;
+      workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(targetDailyMins)}`;
       workloadBadge.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Nenhuma batida registrada. Meta diária: ${targetWorkload}.`;
       workloadBadge.addEventListener('click', () => {
         showToast(`${dayConfig.label}: Nenhuma batida registrada. Meta de hoje: ${targetWorkload}.`);

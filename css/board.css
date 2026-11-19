@@ -486,9 +486,10 @@
   margin-bottom: 2px;
   border-radius: 8px;
   overflow: hidden;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+  touch-action: pan-y;
+  background: #2a1114;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 @media (min-width: 476px) {
@@ -505,13 +506,49 @@
   }
 }
 
-.day-row.is-folga-row:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.08);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(226, 186, 100, 0.5);
+/* Background revelado durante o swipe para desmarcar */
+.feriado-swipe-bg {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  background: linear-gradient(90deg, rgba(168, 38, 38, 0.95), rgba(72, 14, 14, 0.95));
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.feriado-swipe-bg.is-visible {
+  opacity: 1;
+}
+
+.feriado-swipe-bg.swipe-left {
+  justify-content: flex-end;
+  background: linear-gradient(270deg, rgba(168, 38, 38, 0.95), rgba(72, 14, 14, 0.95));
+}
+
+.feriado-swipe-bg.swipe-right {
+  justify-content: flex-start;
+  background: linear-gradient(90deg, rgba(168, 38, 38, 0.95), rgba(72, 14, 14, 0.95));
+}
+
+.feriado-swipe-action-text {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .feriado-overlay-img-container {
+  position: relative;
+  z-index: 2;
   width: 100%;
   height: 100%;
   overflow: hidden;
@@ -521,6 +558,43 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: grab;
+  touch-action: pan-y;
+  will-change: transform;
+  transition: transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.feriado-overlay-img-container:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(226, 186, 100, 0.5);
+}
+
+.feriado-overlay-img-container.is-dragging {
+  cursor: grabbing;
+  transition: none !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(226, 186, 100, 0.7);
+}
+
+.feriado-swipe-pill {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  background: rgba(14, 13, 15, 0.78);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(226, 186, 100, 0.3);
+  border-radius: 20px;
+  padding: 3px 9px;
+  font-size: 0.66rem;
+  font-weight: 500;
+  color: #e2ba64;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  transition: opacity 0.2s ease;
 }
 
 .feriado-overlay-picture {
@@ -530,6 +604,7 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .feriado-overlay-img {
@@ -540,6 +615,7 @@
   display: block;
   user-select: none;
   -webkit-user-drag: none;
+  pointer-events: none;
   transition: transform 0.25s ease;
 }
 
