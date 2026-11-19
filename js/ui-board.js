@@ -265,7 +265,7 @@ function renderBoard() {
             imgContainer.classList.add('is-dragging');
             try {
               imgContainer.setPointerCapture(e.pointerId);
-            } catch (_) { }
+            } catch (_) {}
           }
         }
 
@@ -300,7 +300,7 @@ function renderBoard() {
           if (imgContainer.hasPointerCapture(e.pointerId)) {
             imgContainer.releasePointerCapture(e.pointerId);
           }
-        } catch (_) { }
+        } catch (_) {}
 
         if (wasDragging && Math.abs(finalDx) >= SWIPE_THRESHOLD) {
           // Swipe confirmado: anima saída do card e desmarca o feriado
