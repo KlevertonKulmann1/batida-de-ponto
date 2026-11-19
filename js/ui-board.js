@@ -441,7 +441,7 @@ function renderBoard() {
       }
     } else {
       workloadBadge.classList.add('workload-pending');
-      workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(workStats.remainingMinutes)}`;
+      workloadBadge.innerHTML = `<img src="assets/ampulheta.png" width="15px" class="badge-ampulheta-icon" alt=""/> <span>Falta ${minutesToHoursMin(workStats.remainingMinutes)}</span>`;
       workloadBadge.title = `${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas de ${targetWorkload}. Restam ${minutesToHoursMin(workStats.remainingMinutes)}.`;
       workloadBadge.addEventListener('click', () => {
         showToast(`${dayConfig.label}: ${minutesToHoursMin(workStats.workedMinutes)} trabalhadas de ${targetWorkload}. Restam ${minutesToHoursMin(workStats.remainingMinutes)}.`);
