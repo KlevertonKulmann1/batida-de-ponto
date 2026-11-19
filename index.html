@@ -40,7 +40,7 @@
     <!-- Barra Superior de Controle Global -->
     <header class="top-nav">
       <div class="brand">
-        <img src="assets/marcado.png" alt="Logo" class="nav-logo">
+        <img src="assets/ponto.png" alt="Logo" class="nav-logo">
         <span class="nav-title">Controle de Ponto</span>
         <span id="liveClock" class="live-clock" title="Horário atual">--:--:--</span>
       </div>
@@ -79,8 +79,9 @@
               title="Selecionar semana"></select>
           </div>
           <div class="board-header-right">
-            <div id="headerWeekHoursBadge" class="header-week-hours-badge" title="Horas cumpridas / horas semanais acordadas">
-              <span class="badge-icon">⏱️</span>
+            <div id="headerWeekHoursBadge" class="header-week-hours-badge"
+              title="Horas cumpridas / horas semanais acordadas">
+              <span class="badge-icon"><img width="15px" src="assets/ponto.png" /></span>
               <span id="headerWeekHoursText">00h00 / 44h00</span>
             </div>
             <div class="board-title">Batida de ponto</div>
@@ -101,7 +102,7 @@
           </div>
           <div class="week-summary-box">
             <div id="weekHoursCounter" class="week-hours-counter" title="Horas cumpridas / horas semanais acordadas">
-              <span class="hours-label">⏱️ Horas Semanais:</span>
+              <span class="hours-label"><img width="15px" src="assets/ponto.png" /> Horas Semanais:</span>
               <span class="hours-val" id="weekHoursVal">00h00 / 44h00</span>
               <span class="hours-badge" id="weekHoursBadge">0%</span>
             </div>
@@ -116,12 +117,12 @@
       <span>Controle de Ponto Pessoal • Salvo automaticamente no seu dispositivo</span>
       <div class="footer-actions">
         <button id="btnInstallApp" class="btn-rpg btn-rpg-green" title="Instalar aplicativo no celular">
-          <img src="assets/icon-install.png" class="btn-rpg-icon" alt="">
+          <img src="assets/instalar.png" class="btn-rpg-icon" alt="">
           <span class="btn-text">Instalar App</span>
         </button>
         <button id="btnForceAppUpdate" class="btn-rpg btn-rpg-blue"
           title="Recarregar e baixar a versão mais recente do aplicativo">
-          <img src="assets/icon-reload.png" class="btn-rpg-icon" alt="">
+          <img src="assets/recarregar.png" class="btn-rpg-icon" alt="">
           <span class="btn-text">Atualizar App</span>
         </button>
       </div>
@@ -133,7 +134,7 @@
   <div id="modalLogs" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><img src="assets/icon-log.png" alt="Histórico"> Histórico de Registros</h3>
+        <h3><img src="assets/recarregar.png" alt="Histórico"> Histórico de Registros</h3>
         <button class="modal-close" data-close="modalLogs" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -146,9 +147,9 @@
             </select>
           </div>
           <div class="toolbar-actions">
-            <button id="btnExportLogsCsv" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/icon-download.png"
+            <button id="btnExportLogsCsv" class="btn-rpg btn-rpg-green btn-sm"><img src="assets/baixar.png"
                 class="btn-rpg-icon" alt=""> Baixar CSV</button>
-            <button id="btnClearLogs" class="btn-rpg btn-rpg-red btn-sm"><img src="assets/icon-trash.png"
+            <button id="btnClearLogs" class="btn-rpg btn-rpg-red btn-sm"><img src="assets/lixeira.png"
                 class="btn-rpg-icon" alt=""> Limpar logs</button>
           </div>
         </div>
@@ -177,7 +178,7 @@
   <div id="modalSettings" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><img src="assets/icon-settings.png" alt="Configuração"> Configuração de Horários</h3>
+        <h3><img src="assets/config.png" alt="Configuração"> Configuração de Horários</h3>
         <button class="modal-close" data-close="modalSettings" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -189,7 +190,7 @@
         <!-- Redirecionamento Contínuo para Sistema Oficial -->
         <div class="settings-redirect-section">
           <label for="inputExternalPunchUrl" class="settings-label-link">
-            🔗 Link do Sistema Oficial de Ponto (opcional)
+            Link do Sistema Oficial de Ponto (opcional)
           </label>
           <p class="modal-desc">
             Ao bater um ponto (pelo botão principal ou no quadro), este link será aberto automaticamente em uma nova aba
@@ -202,7 +203,7 @@
         <!-- Lembretes & Notificações Push via Cloudflare Worker -->
         <div class="settings-redirect-section">
           <label for="inputPushWorkerUrl">
-            <span>🔔 Lembretes Push no Celular (Cloudflare)</span>
+            <span>Lembretes Push no Celular (Cloudflare)</span>
             <span id="pushStatusBadge" class="status-badge">Desativado</span>
           </label>
           <p class="modal-desc">
@@ -216,7 +217,7 @@
               <span class="btn-text">Ativar Notificações</span>
             </button>
             <button id="btnTestPush" class="btn-rpg btn-rpg-blue">
-              <span class="btn-text">🔔 Testar Push Agora</span>
+              <span class="btn-text">Testar Push Agora</span>
             </button>
           </div>
         </div>
@@ -227,7 +228,8 @@
             <!-- Carga Horária Diária -->
             <div class="settings-col-workload">
               <label for="inputWorkloadHours">
-                <span>⏱️ Jornada Diária</span>
+                <span><img src="assets/ponto.png" width="15px" class="btn-day-action-icon" alt=""> Jornada
+                  Diária</span>
                 <span class="settings-label-hint">(Meta/dia)</span>
               </label>
               <div class="settings-input-group">
@@ -242,22 +244,23 @@
             <!-- Carga Horária Semanal Acordada -->
             <div class="settings-col-workload settings-col-weekly">
               <label for="inputWeeklyWorkloadHours">
-                <span>📅 Meta Semanal</span>
+                <span><img src="assets/ampulheta.png" width="15px" class="btn-day-action-icon" alt=""> Meta
+                  Semanal</span>
                 <span id="weeklyWorkloadHint" class="settings-label-hint">(Acordada)</span>
               </label>
               <div class="settings-input-group">
-                <input type="text" id="inputWeeklyWorkloadHours" class="schedule-input input-workload-unit" placeholder="44"
-                  maxlength="3" inputmode="numeric">
+                <input type="text" id="inputWeeklyWorkloadHours" class="schedule-input input-workload-unit"
+                  placeholder="44" maxlength="3" inputmode="numeric">
                 <span class="settings-unit-label">:</span>
-                <input type="text" id="inputWeeklyWorkloadMinutes" class="schedule-input input-workload-unit" placeholder="00"
-                  maxlength="2" inputmode="numeric">
+                <input type="text" id="inputWeeklyWorkloadMinutes" class="schedule-input input-workload-unit"
+                  placeholder="00" maxlength="2" inputmode="numeric">
               </div>
             </div>
 
             <!-- Horário de Almoço (De ... Até ...) -->
             <div class="settings-col-lunch">
               <label>
-                <span>🍽️ Horário de Almoço</span>
+                <span>Horário de Almoço</span>
                 <span id="lunchDurationBadge" class="settings-label-hint">(01h12m)</span>
               </label>
               <div class="settings-input-range">
@@ -277,9 +280,10 @@
 
         <!-- Toolbar da Grade Semanal -->
         <div class="schedule-form-toolbar">
-          <span class="schedule-form-title">📅 Horários por Dia da Semana</span>
+          <span class="schedule-form-title"><img width="15px" src="assets/ampulheta.png" alt=""> Horários por Dia da
+            Semana</span>
           <button type="button" id="btnToggleScheduleMode" class="btn-text-mode-toggle">
-            📝 Modo Texto
+            <img width="15px" src="assets/editar.png" alt=""> Modo Texto
           </button>
         </div>
 
@@ -287,10 +291,10 @@
           <!-- Gerado via JS para cada dia -->
         </div>
         <div class="settings-actions">
-          <button id="btnSaveSettings" class="btn-rpg btn-rpg-green"><img src="assets/icon-save.png"
-              class="btn-rpg-icon" alt=""> Salvar Horários</button>
-          <button id="btnResetSettings" class="btn-rpg btn-rpg-blue"><img src="assets/icon-trash.png"
-              class="btn-rpg-icon" alt=""> Restaurar Padrão</button>
+          <button id="btnSaveSettings" class="btn-rpg btn-rpg-green"><img src="assets/salvar.png" class="btn-rpg-icon"
+              alt=""> Salvar Horários</button>
+          <button id="btnResetSettings" class="btn-rpg btn-rpg-blue"><img src="assets/lixeira.png" class="btn-rpg-icon"
+              alt=""> Restaurar Padrão</button>
         </div>
       </div>
     </div>
@@ -300,7 +304,7 @@
   <div id="modalBackup" class="modal-overlay hidden">
     <div class="modal-card">
       <div class="modal-header">
-        <h3><img src="assets/icon-save.png" alt="Backup"> Backup e Sincronização</h3>
+        <h3><img src="assets/salvar.png" alt="Backup"> Backup e Sincronização</h3>
         <button class="modal-close" data-close="modalBackup" aria-label="Fechar"></button>
       </div>
       <div class="modal-body">
@@ -312,9 +316,9 @@
         <div class="backup-section">
           <h4>Exportar Dados</h4>
           <div class="btn-group">
-            <button id="btnDownloadBackup" class="btn-rpg btn-rpg-green"><img src="assets/icon-download.png"
+            <button id="btnDownloadBackup" class="btn-rpg btn-rpg-green"><img src="assets/baixar.png"
                 class="btn-rpg-icon" alt=""> Baixar Arquivo JSON</button>
-            <button id="btnCopyBackup" class="btn-rpg btn-rpg-blue"><img src="assets/icon-copy.png" class="btn-rpg-icon"
+            <button id="btnCopyBackup" class="btn-rpg btn-rpg-blue"><img src="assets/copiar.png" class="btn-rpg-icon"
                 alt=""> Copiar Dados</button>
           </div>
         </div>
@@ -323,9 +327,9 @@
           <h4>Importar Dados</h4>
           <input type="file" id="fileImportBackup" accept=".json">
           <div class="btn-group">
-            <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue"><img src="assets/icon-folder.png"
+            <button id="btnTriggerFileImport" class="btn-rpg btn-rpg-blue"><img src="assets/caderno.png"
                 class="btn-rpg-icon" alt=""> Selecionar Arquivo JSON</button>
-            <button id="btnRestorePontoFile" class="btn-rpg btn-rpg-green"><img src="assets/icon-save.png"
+            <button id="btnRestorePontoFile" class="btn-rpg btn-rpg-green"><img src="assets/salvar.png"
                 class="btn-rpg-icon" alt=""> Carregar backup</button>
           </div>
           <textarea id="importTextarea"
@@ -335,7 +339,7 @@
 
         <div class="backup-section danger-zone">
           <h4>Zona de Perigo</h4>
-          <button id="btnResetAllData" class="btn-rpg btn-rpg-red"><img src="assets/icon-trash.png" class="btn-rpg-icon"
+          <button id="btnResetAllData" class="btn-rpg btn-rpg-red"><img src="assets/lixeira.png" class="btn-rpg-icon"
               alt=""> Limpar Todos os Dados e Registros</button>
         </div>
       </div>

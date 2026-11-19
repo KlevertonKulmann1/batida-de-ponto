@@ -168,7 +168,7 @@ function renderScheduleRows() {
 
   const toggleBtn = document.getElementById('btnToggleScheduleMode');
   if (toggleBtn) {
-    toggleBtn.textContent = isScheduleTextMode ? '🏷️ Modo Visual (Chips)' : '📝 Modo Texto';
+    toggleBtn.innerHTML = isScheduleTextMode ? '<img src="assets/caderno.png" class="btn-rpg-icon" alt=""> Modo Visual (Chips)' : '<img src="assets/editar.png" class="btn-rpg-icon" alt=""> Modo Texto';
   }
 
   if (isScheduleTextMode) {
@@ -249,7 +249,7 @@ function renderScheduleRows() {
         copyBtn.type = 'button';
         copyBtn.className = 'btn-day-action';
         copyBtn.title = `Replicar horários de ${dayConfig.label} para Segunda a Sexta`;
-        copyBtn.textContent = '📋 Replicar Seg-Sex';
+        copyBtn.innerHTML = '<img src="assets/copiar.png" width="15px" class="btn-day-action-icon" alt=""> Replicar Seg-Sex';
         copyBtn.addEventListener('click', () => {
           ['segunda', 'terca', 'quarta', 'quinta', 'sexta'].forEach(k => {
             if (currentScheduleDraft[k]) {
@@ -265,7 +265,7 @@ function renderScheduleRows() {
         clearBtn.type = 'button';
         clearBtn.className = 'btn-day-action btn-day-clear';
         clearBtn.title = 'Remover todos os horários deste dia';
-        clearBtn.textContent = '🗑️ Limpar';
+        clearBtn.innerHTML = '<img src="assets/lixeira.png" width="15px" class="btn-day-action-icon" alt=""> Limpar';
         clearBtn.addEventListener('click', () => {
           dayConfig.times = [];
           renderScheduleRows();

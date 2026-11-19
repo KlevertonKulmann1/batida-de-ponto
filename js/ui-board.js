@@ -33,7 +33,7 @@ function setupLiveClockAndSound() {
     btnSound.addEventListener('click', () => {
       saveSoundSetting(!soundEnabled);
       btnSound.classList.toggle('sound-muted', !soundEnabled);
-      showToast(soundEnabled ? 'Sons ativados 🔊' : 'Sons silenciados 🔇');
+      showToast(soundEnabled ? 'Sons ativados <img src="assets/som.png">' : 'Sons silenciados <img src="assets/som.png">');
     });
   }
 }
@@ -223,6 +223,12 @@ function renderBoard() {
 
       imgContainer.appendChild(pictureElem);
 
+      // Dia da semana e data no canto superior esquerdo (mesmo estilo direto dos dias normais, sem fundo/badge)
+      const dayHeader = document.createElement('div');
+      dayHeader.className = 'feriado-day-header';
+      dayHeader.innerHTML = `<span class="day-name">${dayConfig.label}</span><span class="day-date-badge">${formatDateShort(dateObj)}</span>`;
+      imgContainer.appendChild(dayHeader);
+
       // Pill com dica visual de swipe
       const swipePill = document.createElement('div');
       swipePill.className = 'feriado-swipe-pill';
@@ -265,7 +271,7 @@ function renderBoard() {
             imgContainer.classList.add('is-dragging');
             try {
               imgContainer.setPointerCapture(e.pointerId);
-            } catch (_) {}
+            } catch (_) { }
           }
         }
 
@@ -300,7 +306,7 @@ function renderBoard() {
           if (imgContainer.hasPointerCapture(e.pointerId)) {
             imgContainer.releasePointerCapture(e.pointerId);
           }
-        } catch (_) {}
+        } catch (_) { }
 
         if (wasDragging && Math.abs(finalDx) >= SWIPE_THRESHOLD) {
           // Swipe confirmado: anima saída do card e desmarca o feriado
@@ -386,7 +392,7 @@ function renderBoard() {
       });
     } else if (workStats.punchesCount === 0) {
       workloadBadge.classList.add('workload-pending');
-      workloadBadge.innerHTML = `⏳ Falta ${minutesToHoursMin(targetDailyMins)}`;
+      workloadBadge.innerHTML = `<img width="15px" src="assets/ampulheta.png" /> Falta ${minutesToHoursMin(targetDailyMins)}`;
       workloadBadge.title = `${dayConfig.label} (${formatDateShort(dateObj)}): Nenhuma batida registrada. Meta diária: ${targetWorkload}.`;
       workloadBadge.addEventListener('click', () => {
         showToast(`${dayConfig.label}: Nenhuma batida registrada. Meta de hoje: ${targetWorkload}.`);

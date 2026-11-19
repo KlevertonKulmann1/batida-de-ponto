@@ -129,6 +129,13 @@
   -ms-overflow-style: none !important;
 }
 
+.modal-body label span,
+.modal-body .schedule-form-toolbar span {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .modal-body::-webkit-scrollbar {
   display: none !important;
   width: 0 !important;
@@ -345,6 +352,12 @@
   align-items: center;
   gap: 6px;
   flex-wrap: wrap;
+}
+
+.schedule-day-actions button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .btn-day-action {
